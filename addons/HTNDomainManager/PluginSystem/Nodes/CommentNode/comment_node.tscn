@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://dy1cusa008ehx"]
+
+[ext_resource type="PackedScene" uid="uid://btn3uuev55mor" path="res://addons/HTNDomainManager/PluginSystem/Nodes/BaseNode/base_node.tscn" id="1_yn4t7"]
+[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/Nodes/CommentNode/CommentNode.gd" id="2_woc7n"]
+
+[node name="HTNCommentNode" instance=ExtResource("1_yn4t7")]
+tooltip_text = "This is used for commenting your code...
+Uhh I mean your domain...yes..uhh 
+Yeah! :)
+(You may need to expand this node...)"
+resizable = true
+title = "Comment Node"
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color(1, 1, 1, 1)
+slot/1/left_icon = null
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color(1, 1, 1, 1)
+slot/1/right_icon = null
+slot/1/draw_stylebox = true
+script = ExtResource("2_woc7n")
+
+[node name="Connections" parent="." index="1"]
+visible = false
+
+[node name="TextEdit" type="TextEdit" parent="." index="2"]
+layout_mode = 2
+size_flags_vertical = 3
+placeholder_text = "Comment Here"
+wrap_mode = 1

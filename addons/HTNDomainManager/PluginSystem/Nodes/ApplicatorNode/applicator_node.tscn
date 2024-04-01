@@ -1,0 +1,36 @@
+[gd_scene load_steps=3 format=3 uid="uid://dbr4ixdu1ness"]
+
+[ext_resource type="PackedScene" uid="uid://btn3uuev55mor" path="res://addons/HTNDomainManager/PluginSystem/Nodes/BaseNode/base_node.tscn" id="1_krqqn"]
+[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/Nodes/ApplicatorNode/ApplicatorNode.gd" id="2_ptvf6"]
+
+[node name="HTNApplicatorNode" instance=ExtResource("1_krqqn")]
+title = "Applicator"
+slot/0/left_enabled = true
+slot/0/left_type = 2
+slot/0/left_color = Color(0.27451, 0.509804, 0.196078, 1)
+slot/0/right_enabled = true
+slot/0/right_type = 2
+slot/0/right_color = Color(0.27451, 0.509804, 0.196078, 1)
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color(1, 1, 1, 1)
+slot/1/left_icon = null
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color(1, 1, 1, 1)
+slot/1/right_icon = null
+slot/1/draw_stylebox = true
+script = ExtResource("2_ptvf6")
+
+[node name="Input" parent="Connections" index="0"]
+text = "Task"
+
+[node name="Output" parent="Connections" index="2"]
+text = "Task"
+
+[node name="EditEffects" type="Button" parent="." index="2"]
+texture_filter = 1
+layout_mode = 2
+text = "Edit Effects"
+
+[connection signal="pressed" from="EditEffects" to="." method="_on_edit_effects_pressed"]

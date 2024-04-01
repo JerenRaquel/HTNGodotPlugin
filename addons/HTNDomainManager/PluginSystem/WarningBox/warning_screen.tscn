@@ -1,0 +1,81 @@
+[gd_scene load_steps=6 format=3 uid="uid://c4bx8on5rmruu"]
+
+[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/WarningBox/WarningScreen.gd" id="1_hwj8l"]
+[ext_resource type="Theme" uid="uid://dnjawm4lkym68" path="res://addons/HTNDomainManager/PluginSystem/PluginTheme.tres" id="2_l3lkg"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_rs6sx"]
+font_size = 30
+font_color = Color(1, 0.866667, 0.396078, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_0q2k7"]
+font_size = 20
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ioyga"]
+
+[node name="WarningScreen" type="Panel"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_l3lkg")
+script = ExtResource("1_hwj8l")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.075
+anchor_top = 0.133333
+anchor_right = 0.912
+anchor_bottom = 0.866556
+offset_right = 0.32
+offset_bottom = 0.0399971
+metadata/_edit_use_anchors_ = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="WarningLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Warning"
+label_settings = SubResource("LabelSettings_rs6sx")
+horizontal_alignment = 1
+
+[node name="WarningText" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+label_settings = SubResource("LabelSettings_0q2k7")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ChoiceBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/ChoiceBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_ioyga")
+
+[node name="Accept" type="Button" parent="MarginContainer/VBoxContainer/ChoiceBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Accept"
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/ChoiceBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_ioyga")
+
+[node name="Decline" type="Button" parent="MarginContainer/VBoxContainer/ChoiceBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+text = "Decline"
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer/ChoiceBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_ioyga")
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ChoiceBox/Accept" to="." method="_on_accept_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/ChoiceBox/Decline" to="." method="_on_decline_pressed"]

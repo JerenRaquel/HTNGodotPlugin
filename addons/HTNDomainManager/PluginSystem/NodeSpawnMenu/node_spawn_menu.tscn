@@ -1,0 +1,133 @@
+[gd_scene load_steps=10 format=3 uid="uid://duqv4b4aibewc"]
+
+[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/NodeSpawnMenu/NodeSpawnMenuManager.gd" id="1_8hvd0"]
+[ext_resource type="StyleBox" uid="uid://cf7rogi4qlhc4" path="res://addons/HTNDomainManager/PluginSystem/Components/NodeMenuButtonNormal.tres" id="2_1vknb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q71oq"]
+bg_color = Color(0.0980392, 0.113725, 0.137255, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5piei"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_833we"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hh47u"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6npuh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_606ym"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_v7rby"]
+
+[node name="NodeSpawnMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_bottom = 0.0799866
+script = ExtResource("1_8hvd0")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -66.5
+offset_top = -85.5
+offset_right = 66.5
+offset_bottom = 85.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_q71oq")
+
+[node name="Buttons" type="VBoxContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer/PanelContainer/Buttons"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_5piei")
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/Buttons"]
+layout_mode = 2
+text = "Nodes"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/PanelContainer/Buttons"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_5piei")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer/Buttons"]
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="VBoxContainer/PanelContainer/Buttons/HBoxContainer"]
+custom_minimum_size = Vector2(4, 0)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_833we")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer/Buttons/HBoxContainer"]
+layout_mode = 2
+
+[node name="Compound" type="Button" parent="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = ExtResource("2_1vknb")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_hh47u")
+text = "Compound Task"
+
+[node name="Method" type="Button" parent="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = ExtResource("2_1vknb")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_hh47u")
+text = "Method"
+
+[node name="AlwaysMethod" type="Button" parent="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = ExtResource("2_1vknb")
+text = "Always True Method"
+
+[node name="Primitive" type="Button" parent="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = ExtResource("2_1vknb")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_hh47u")
+text = "Primitive Task"
+
+[node name="Applicator" type="Button" parent="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = ExtResource("2_1vknb")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_6npuh")
+text = "Applicator
+"
+
+[node name="Comment" type="Button" parent="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/normal = ExtResource("2_1vknb")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_606ym")
+text = "Comment"
+
+[node name="VSeparator2" type="VSeparator" parent="VBoxContainer/PanelContainer/Buttons/HBoxContainer"]
+custom_minimum_size = Vector2(4, 0)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_833we")
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/PanelContainer/Buttons"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_v7rby")
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer/Compound" to="." method="_on_compound_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer/Method" to="." method="_on_method_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer/AlwaysMethod" to="." method="_on_always_method_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer/Primitive" to="." method="_on_primitive_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer/Applicator" to="." method="_on_applicator_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer/Comment" to="." method="_on_comment_pressed"]

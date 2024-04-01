@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bvtsqa85pslmb"]
+
+[ext_resource type="Script" path="res://addons/HTNDomainManager/HTNGameLibrary/Scripts/HTNPlanner.gd" id="1_gmcwj"]
+
+[node name="HTNPlanner" type="Node"]
+script = ExtResource("1_gmcwj")

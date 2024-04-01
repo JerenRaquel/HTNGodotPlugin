@@ -1,0 +1,92 @@
+[gd_scene load_steps=4 format=3 uid="uid://hbw6coxe0kap"]
+
+[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/Nodes/PrimitiveNode/PrimitiveNode.gd" id="1_iqm3a"]
+[ext_resource type="PackedScene" uid="uid://btn3uuev55mor" path="res://addons/HTNDomainManager/PluginSystem/Nodes/BaseNode/base_node.tscn" id="1_ltwfq"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ffsc8"]
+
+[node name="HTNPrimitiveNode" instance=ExtResource("1_ltwfq")]
+resizable = true
+title = "Primitive Task"
+slot/0/left_enabled = true
+slot/0/left_type = 2
+slot/0/left_color = Color(0.27451, 0.509804, 0.196078, 1)
+slot/0/right_enabled = true
+slot/0/right_type = 2
+slot/0/right_color = Color(0.27451, 0.509804, 0.196078, 1)
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color(1, 1, 1, 1)
+slot/1/left_icon = null
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color(1, 1, 1, 1)
+slot/1/right_icon = null
+slot/1/draw_stylebox = true
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color(1, 1, 1, 1)
+slot/2/left_icon = null
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color(1, 1, 1, 1)
+slot/2/right_icon = null
+slot/2/draw_stylebox = true
+slot/3/left_enabled = false
+slot/3/left_type = 0
+slot/3/left_color = Color(1, 1, 1, 1)
+slot/3/left_icon = null
+slot/3/right_enabled = false
+slot/3/right_type = 0
+slot/3/right_color = Color(1, 1, 1, 1)
+slot/3/right_icon = null
+slot/3/draw_stylebox = true
+slot/4/left_enabled = false
+slot/4/left_type = 0
+slot/4/left_color = Color(1, 1, 1, 1)
+slot/4/left_icon = null
+slot/4/right_enabled = false
+slot/4/right_type = 0
+slot/4/right_color = Color(1, 1, 1, 1)
+slot/4/right_icon = null
+slot/4/draw_stylebox = true
+script = ExtResource("1_iqm3a")
+
+[node name="Input" parent="Connections" index="0"]
+text = "Task"
+
+[node name="Output" parent="Connections" index="2"]
+text = "Task"
+
+[node name="WaitingButton" type="CheckButton" parent="." index="2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Requires Waiting"
+
+[node name="TaskToolBox" type="HBoxContainer" parent="." index="3"]
+layout_mode = 2
+
+[node name="TaskName" type="Label" parent="TaskToolBox" index="0"]
+layout_mode = 2
+text = "Task Name"
+
+[node name="HSeparator" type="HSeparator" parent="TaskToolBox" index="1"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_ffsc8")
+
+[node name="EditFile" type="Button" parent="TaskToolBox" index="2"]
+layout_mode = 2
+text = "Edit File"
+
+[node name="MenuOptionButton" type="OptionButton" parent="." index="4"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Extension" type="VBoxContainer" parent="." index="5"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[connection signal="toggled" from="WaitingButton" to="." method="_on_waiting_button_toggled"]
+[connection signal="pressed" from="TaskToolBox/EditFile" to="." method="_on_edit_file_pressed"]
+[connection signal="item_selected" from="MenuOptionButton" to="." method="_on_menu_option_button_item_selected"]
