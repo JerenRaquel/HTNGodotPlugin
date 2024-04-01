@@ -6,7 +6,7 @@ The plugin can be seen as two parts:
 - The [Hierarchical Task Network](https://en.wikipedia.org/wiki/Hierarchical_task_network) (HTN) Planner node that can be see under `res://addons/HTNDomainManager/HTNGameLibrary/htn_planner.tscn`
 
 For more information on how to get started with using this plugin, please refer to the wiki pages setup with this repository. 
-- [Installation]()
-- [Getting Started]()
+- [Installation](https://github.com/JerenRaquel/HTNGodotPlugin/wiki/Installation)
+- [Getting Started](https://github.com/JerenRaquel/HTNGodotPlugin/wiki/Getting-Started)
 
 Thank you for taking some time to look at or use this plugin!
