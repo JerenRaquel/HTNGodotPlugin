@@ -2,11 +2,12 @@
 class_name HTNPrimitiveNode
 extends HTNBaseNode
 
-const NODE_FIELD = preload("res://addons/HTNDomainManager/PluginSystem/Components/NodeField/node_field.tscn")
+const NODE_FIELD = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/PrimitiveNode/NodeField/node_field.tscn")
 
 @onready var waiting_button: CheckButton = %WaitingButton
 @onready var menu_option_button: OptionButton = %MenuOptionButton
 @onready var extension: VBoxContainer = %Extension
+@onready var export_label: VBoxContainer = %ExportLabel
 
 var _selected_task: String
 var _requires_waiting: bool
@@ -14,6 +15,7 @@ var _requires_waiting: bool
 func initialize(manager: HTNDomainManager) -> void:
 	super(manager)
 
+	export_label.hide()
 	_requires_waiting = waiting_button.button_pressed
 	_update_task_list()
 	_set_and_extend_default()
@@ -78,7 +80,10 @@ func _update_task_list() -> void:
 
 func _extend_node_parameters(export_data: Dictionary) -> void:
 	for child in extension.get_children(): child.queue_free()
+	if export_label.visible: export_label.hide()
 	if export_data.is_empty(): return
+
+	if export_data.size() > 1: export_label.show()
 
 	for key: String in export_data.keys():
 		if key == "requires_awaiting":

@@ -50,6 +50,15 @@ slot/4/right_type = 0
 slot/4/right_color = Color(1, 1, 1, 1)
 slot/4/right_icon = null
 slot/4/draw_stylebox = true
+slot/5/left_enabled = false
+slot/5/left_type = 0
+slot/5/left_color = Color(1, 1, 1, 1)
+slot/5/left_icon = null
+slot/5/right_enabled = false
+slot/5/right_type = 0
+slot/5/right_color = Color(1, 1, 1, 1)
+slot/5/right_icon = null
+slot/5/draw_stylebox = true
 script = ExtResource("1_iqm3a")
 
 [node name="Input" parent="Connections" index="0"]
@@ -82,8 +91,27 @@ text = "Edit File"
 [node name="MenuOptionButton" type="OptionButton" parent="." index="4"]
 unique_name_in_owner = true
 layout_mode = 2
+allow_reselect = true
 
-[node name="Extension" type="VBoxContainer" parent="." index="5"]
+[node name="ExportLabel" type="VBoxContainer" parent="." index="5"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+tooltip_text = "NOTICE: Changing these values will change the values of all Primitive Nodes that has this Task.
+Using Exports in your task should be used for testing values that you will set to CONST later in development."
+
+[node name="HSeparator" type="HSeparator" parent="ExportLabel" index="0"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ExportLabel" index="1"]
+layout_mode = 2
+text = "@export variables"
+horizontal_alignment = 1
+
+[node name="HSeparator2" type="HSeparator" parent="ExportLabel" index="2"]
+layout_mode = 2
+
+[node name="Extension" type="VBoxContainer" parent="." index="6"]
 unique_name_in_owner = true
 layout_mode = 2
 

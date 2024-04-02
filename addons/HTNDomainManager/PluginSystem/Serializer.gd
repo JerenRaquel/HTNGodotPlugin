@@ -119,14 +119,11 @@ func delete_primitive_task(task_name: String) -> void:
 		push_error(error_message)
 
 func _convert_to_class_name(task_name: String) -> String:
-	var space_tokens = task_name.split(" ", false)
-	var under_score_tokens = []
-	for token in space_tokens:
-		under_score_tokens.append_array(token.split("_", false))
+	var tokens = task_name.capitalize().split(" ", false)
+	var result := ""
+	for token in tokens:
+		result += token
 
-	var result = ""
-	for token: String in under_score_tokens:
-		result += token.capitalize()
 	return result
 
 func _build_script(task_name: String) -> Script:
