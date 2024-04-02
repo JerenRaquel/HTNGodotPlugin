@@ -64,6 +64,24 @@ func send_message(message: String, type: MessageType, start_timer: bool=false) -
 
 	if start_timer: timer.start()
 
+func validate_graph(domain_name: String) -> bool:
+	# Validate that there are any connections....
+	# I know who you are. I put this in for you... ._.
+	if not validate_there_are_any_connections(domain_name): return false
+
+	if not validate_node_data(): return false
+
+	# Validate each node's rules (listed above function declaration)
+	if not validate_node_connections(_manager.graph_handler): return false
+
+	# Save Primitive Node Data to File
+	if not save_primitive_node_data(): return false
+
+	# Save graph to domain file
+	if not _manager.domain_builder.write_domain_file(domain_name): return false
+
+	return true
+
 func validate_there_are_any_connections(domain_name: String) -> bool:
 	var connection_list := _manager.graph_handler.graph_edit.get_connection_list()
 

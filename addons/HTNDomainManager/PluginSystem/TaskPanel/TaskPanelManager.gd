@@ -5,17 +5,16 @@ extends VBoxContainer
 signal file_system_updated
 
 const TASK_LINE = preload("res://addons/HTNDomainManager/PluginSystem/TaskPanel/task_line.tscn")
-const BLACK_LIST := ["task_name", "preconditions", "requires_awaiting"]
-
-@onready var task_list: VBoxContainer = %TaskList
-@onready var task_name: LineEdit = $TaskName
 
 var _manager: HTNDomainManager
-var _task_name: String
+var _task_list: VBoxContainer
+var _task_name_line_edit: LineEdit
 var _primitives: Array[String]
 
 func initialize(manager: HTNDomainManager) -> void:
 	_manager = manager
+	_task_list = %TaskList
+	_task_name_line_edit = %TaskNameLineEdit
 	EditorInterface.get_file_system_dock().file_removed.connect(_on_file_deleted)
 	_on_refresh_pressed()
 
@@ -36,14 +35,14 @@ func _remove_file_from_task_list(file_path: String) -> bool:
 
 func _sort_list() -> void:
 	_primitives.sort()
-	var child_count := task_list.get_child_count()
+	var child_count := _task_list.get_child_count()
 	while _primitives.size() < child_count:
-		var child := task_list.get_child(0)
+		var child := _task_list.get_child(0)
 		child.free()
 		child_count -= 1
 
 	var idx := 0
-	for task_line: HBoxContainer in task_list.get_children():
+	for task_line: HBoxContainer in _task_list.get_children():
 		if task_line.is_queued_for_deletion(): continue
 
 		task_line.initialize(
@@ -58,13 +57,9 @@ func _sort_list() -> void:
 		)
 		idx += 1
 
-func _show_all() -> void:
-	for task_list: HBoxContainer in task_list.get_children():
-		task_list.show()
-
 func _update_visible_task_list(filter: String) -> void:
-	for task_line: HBoxContainer in task_list.get_children():
-		if filter == "" or task_line.contains(filter):
+	for task_line: HBoxContainer in _task_list.get_children():
+		if filter.is_empty() or task_line.contains(filter):
 			task_line.show()
 		else:
 			task_line.hide()
@@ -74,7 +69,7 @@ func _refresh_tasks_from(path: String, list: Array[String]) -> void:
 	for file_name in file_names:
 		if file_name not in list:
 			var task_line := TASK_LINE.instantiate()
-			task_list.add_child(task_line)
+			_task_list.add_child(task_line)
 			list.push_back(file_name)
 
 func _on_file_deleted(file_path: String) -> void:
@@ -93,13 +88,10 @@ func _on_refresh_pressed() -> void:
 	_sort_list()
 
 func _on_primitive_pressed() -> void:
-	_manager.serializer.build_primitive_task(_task_name)
-	task_name.clear()
+	_manager.serializer.build_primitive_task(_task_name_line_edit.text)
+	_task_name_line_edit.clear()
 	_on_refresh_pressed()
 	file_system_updated.emit()
-
-func _on_line_edit_text_changed(new_text: String) -> void:
-	_task_name = new_text
 
 func _on_search_bar_text_changed(new_text: String) -> void:
 	_update_visible_task_list(new_text)

@@ -2,6 +2,8 @@
 class_name HTNDomainManager
 extends Control
 
+enum LeftPanel { NONE, TASK, GOTO, SIM }
+
 @onready var graph_handler: HTNGraphHandler = $GraphHandler
 @onready var condition_editor: HTNConditionEditor = %ConditionEditor
 @onready var effect_editor: EffectEditor = %EffectEditor
@@ -60,34 +62,45 @@ func _load_domain() -> void:
 	)
 	not_saved = false
 
+func _toggle_left_panel(panel_ID: LeftPanel) -> void:
+	side_panel_container.hide()
+	task_list_button.button_pressed = false
+	simulator_button.button_pressed = false
+	goto_panel_button.button_pressed = false
+	task_panel.hide()
+	simulation_panel.hide()
+	goto_panel.hide()
+
+	if panel_ID == LeftPanel.NONE:
+		return
+
+	side_panel_container.show()
+	match panel_ID:
+		LeftPanel.TASK:
+			task_list_button.button_pressed = true
+			task_panel.show()
+		LeftPanel.SIM:
+			simulator_button.button_pressed = true
+			simulation_panel.show()
+		LeftPanel.GOTO:
+			goto_panel_button.button_pressed = true
+			goto_panel.show()
+
 func _on_build_pressed() -> void:
-	if domain_name.is_empty() or domain_name == "":
+	if domain_name.is_empty():
 		validation_handler.send_message(
 			validation_handler.INVALID_DOMAIN_NAME,
 			validation_handler.MessageType.ERROR
 		)
 		return
 
-	# Validate that there are any connections....
-	# I know who you are. I put this in for you... ._.
-	if not validation_handler.validate_there_are_any_connections(domain_name): return
-
-	if not validation_handler.validate_node_data(): return
-
-	# Validate each node's rules (listed above function declaration)
-	if not validation_handler.validate_node_connections(graph_handler): return
-
-	# Save Primitive Node Data to File
-	if not validation_handler.save_primitive_node_data(): return
-
-	# Save graph to domain file
-	if not domain_builder.write_domain_file(domain_name): return
+	if not validation_handler.validate_graph(domain_name): return
 
 	validation_handler.send_message("Build Complete! Graph Saved! :D", validation_handler.MessageType.OK, true)
 	not_saved = false
 
 func _on_load_pressed() -> void:
-	if domain_name.is_empty() or domain_name == "":
+	if domain_name.is_empty():
 		validation_handler.send_message(
 			validation_handler.INVALID_DOMAIN_NAME,
 			validation_handler.MessageType.ERROR
@@ -104,44 +117,17 @@ func _on_load_pressed() -> void:
 		_load_domain()
 
 func _on_task_list_toggled(toggled_on: bool) -> void:
-	if toggled_on:
-		simulator_button.button_pressed = false
-		goto_panel_button.button_pressed = false
-		side_panel_container.show()
-		task_panel.show()
-		simulation_panel.hide()
-		goto_panel.hide()
-	else:
-		side_panel_container.hide()
-		task_panel.hide()
+	_toggle_left_panel(LeftPanel.TASK if toggled_on else LeftPanel.NONE)
 
 func _on_simulator_toggled(toggled_on: bool) -> void:
-	if toggled_on:
-		task_list_button.button_pressed = false
-		goto_panel_button.button_pressed = false
-		side_panel_container.show()
-		simulation_panel.show()
-		task_panel.hide()
-		goto_panel.hide()
-	else:
-		side_panel_container.hide()
-		simulation_panel.hide()
+	_toggle_left_panel(LeftPanel.SIM if toggled_on else LeftPanel.NONE)
 
 func _on_goto_panel_button_toggled(toggled_on: bool) -> void:
-	if toggled_on:
-		task_list_button.button_pressed = false
-		simulator_button.button_pressed = false
-		side_panel_container.show()
-		goto_panel.show()
-		task_panel.hide()
-		simulation_panel.hide()
-	else:
-		side_panel_container.hide()
-		goto_panel.hide()
+	_toggle_left_panel(LeftPanel.GOTO if toggled_on else LeftPanel.NONE)
 
 func _on_name_text_changed(new_text: String) -> void:
 	domain_name = new_text
-	if new_text.is_empty() or new_text == "":
+	if new_text.is_empty():
 		graph_handler._root_node.title = "Root"
 	else:
 		graph_handler._root_node.title = "Root - " + new_text

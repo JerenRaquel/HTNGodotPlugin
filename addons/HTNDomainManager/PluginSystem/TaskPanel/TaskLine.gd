@@ -1,16 +1,16 @@
 @tool
 extends HBoxContainer
 
-@onready var task_name_button: Button = %TaskName
-
 var _manager: HTNDomainManager
+var _task_name_button: Button
 var _task_name: StringName
 var _delete_callback: Callable
 
 func initialize(manager: HTNDomainManager, task_name: StringName, delete_callback: Callable) -> void:
 	_manager = manager
 	_task_name = task_name.replace(" ", "")
-	task_name_button.text = task_name
+	_task_name_button = %TaskName
+	_task_name_button.text = task_name
 	_delete_callback = delete_callback
 
 func contains(what: String) -> bool:
