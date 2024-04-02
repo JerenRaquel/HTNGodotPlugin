@@ -20,6 +20,7 @@ const FAILED_FILE_WRITE := "Couldn't write to file. Halting futher writting"
 const INVALID_DOMAIN_NAME := "Domain name is empty."
 const GOTO_FAILED := "Can't find node. Missing a nickname?"
 const EMPTY_FIELD := "Input field is empty."
+const SIM_INVALID_STATES := "There is at least one invalid world state."
 
 #endregion
 
@@ -32,8 +33,8 @@ func initialize(manager: HTNDomainManager) -> void:
 	_manager = manager
 	timer.timeout.connect( func(): send_message("", MessageType.DEFAULT) )
 
-func send_error_generic(error_message: String) -> void:
-	send_message(error_message, MessageType.ERROR)
+func send_error_generic(error_message: String, fade: bool=false) -> void:
+	send_message(error_message, MessageType.ERROR, fade)
 
 func send_error_message(node_name: String, error_message: String) -> void:
 	send_message("'" + node_name + "' is invalid::" + error_message, MessageType.ERROR)

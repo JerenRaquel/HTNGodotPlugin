@@ -100,6 +100,18 @@ func wipe_nodes() -> void:
 
 	_current_ID = 1
 
+func clear_node_colors() -> void:
+	for node_key: StringName in nodes:
+		(nodes[node_key] as GraphNode).modulate = Color.WHITE
+
+func color_node_path(path: Array[StringName], is_valid: bool) -> void:
+	for node_key: StringName in path:
+		var node := nodes[node_key] as GraphNode
+		if is_valid:
+			node.modulate = Color("1aff00")
+		else:
+			node.modulate = Color("ff5f5f")
+
 func is_connection_valid(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> bool:
 	var from_type := get_output_port_type(from_node, from_port)
 	var to_type := get_input_port_type(to_node, to_port)
@@ -227,10 +239,15 @@ func get_every_primitive() -> Dictionary:
 
 	return primitives
 
-func get_every_effect() -> Dictionary:
-	var data := {}
+# return [ node_key (StringName)... ]
+func get_every_compound() -> Array[StringName]:
+	var compounds: Array[StringName] = []
 
-	return data
+	for node_key: StringName in nodes:
+		if nodes[node_key] is HTNCompoundNode and node_key not in compounds:
+			compounds.push_back(node_key)
+
+	return compounds
 
 func get_every_node_til_compound(node_key: String) -> Array[StringName]:
 	var task_chain: Array[StringName] = []

@@ -198,8 +198,7 @@ func _handle_applicator_node(node: HTNApplicatorNode, node_key: StringName, task
 	}
 
 func _handle_primitive_node(node_name: String, task_chain: Array[StringName], resource: HTNDomain) -> void:
-	var stripped_name: String = node_name
-	stripped_name = stripped_name.substr("Primitive - ".length())
+	var stripped_name: String = node_name.replace("Primitive - ", "")
 	task_chain.push_back(stripped_name)
 
 	# Record the task resource file path
