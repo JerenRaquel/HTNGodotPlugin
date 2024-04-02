@@ -15,7 +15,8 @@ extends Control
 @onready var validation_handler: HTNNodeValidationHandler = $ValidationHandler
 @onready var domain_builder: HTNDomainBuilder = $DomainBuilder
 @onready var warning_screen: Panel = $WarningScreen
-@onready var goto_line_edit: LineEdit = %GotoLineEdit
+@onready var goto_panel: HTNGotoManager = %GotoPanel
+@onready var goto_panel_button: Button = %GotoPanelButton
 
 var is_enabled := false
 var not_saved := false
@@ -30,6 +31,7 @@ func _ready() -> void:
 	serializer.initialize(self)
 	task_panel.initialize(self)
 	simulation_panel.initialize(self)
+	goto_panel.initialize(self)
 	validation_handler.initialize(self)
 	domain_builder.initialize(self)
 
@@ -104,9 +106,11 @@ func _on_load_pressed() -> void:
 func _on_task_list_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		simulator_button.button_pressed = false
+		goto_panel_button.button_pressed = false
 		side_panel_container.show()
 		task_panel.show()
 		simulation_panel.hide()
+		goto_panel.hide()
 	else:
 		side_panel_container.hide()
 		task_panel.hide()
@@ -114,12 +118,26 @@ func _on_task_list_toggled(toggled_on: bool) -> void:
 func _on_simulator_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		task_list_button.button_pressed = false
+		goto_panel_button.button_pressed = false
 		side_panel_container.show()
 		simulation_panel.show()
 		task_panel.hide()
+		goto_panel.hide()
 	else:
 		side_panel_container.hide()
 		simulation_panel.hide()
+
+func _on_goto_panel_button_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		task_list_button.button_pressed = false
+		simulator_button.button_pressed = false
+		side_panel_container.show()
+		goto_panel.show()
+		task_panel.hide()
+		simulation_panel.hide()
+	else:
+		side_panel_container.hide()
+		goto_panel.hide()
 
 func _on_name_text_changed(new_text: String) -> void:
 	domain_name = new_text
@@ -127,33 +145,3 @@ func _on_name_text_changed(new_text: String) -> void:
 		graph_handler._root_node.title = "Root"
 	else:
 		graph_handler._root_node.title = "Root - " + new_text
-
-func _on_goto_root_button_pressed() -> void:
-	graph_handler.graph_edit.zoom = 1.0
-	var center := graph_handler.graph_edit.size / 2
-	graph_handler.graph_edit.scroll_offset =\
-		(graph_handler._root_node.position_offset +\
-		graph_handler._root_node.size * Vector2(0.5, 1.0) -\
-		center) / graph_handler.graph_edit.zoom
-
-func _on_goto_button_pressed() -> void:
-	if goto_line_edit.text.is_empty() or goto_line_edit.text == "":
-		validation_handler.send_message(
-			validation_handler.EMPTY_FIELD,
-			validation_handler.MessageType.ERROR,
-			true
-		)
-		return
-
-	var data: Dictionary = graph_handler.get_node_offset(goto_line_edit.text)
-	if data.is_empty():
-		validation_handler.send_error_message_fade(
-			goto_line_edit.text,
-			validation_handler.GOTO_FAILED
-		)
-		return
-
-	graph_handler.graph_edit.zoom = 1.0
-	var center := graph_handler.graph_edit.size / 2
-	var offset: Vector2 = data["offset"] + data["size"] * Vector2(0.5, 1.0) - center
-	graph_handler.graph_edit.scroll_offset = offset / graph_handler.graph_edit.zoom

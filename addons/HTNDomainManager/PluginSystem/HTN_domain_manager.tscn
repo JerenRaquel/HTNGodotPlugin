@@ -1,6 +1,7 @@
-[gd_scene load_steps=16 format=3 uid="uid://cxlyealsdcnj7"]
+[gd_scene load_steps=18 format=3 uid="uid://cxlyealsdcnj7"]
 
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/HTNDomainManager.gd" id="1_q71i4"]
+[ext_resource type="Theme" uid="uid://dnjawm4lkym68" path="res://addons/HTNDomainManager/PluginSystem/PluginTheme.tres" id="1_wbdp5"]
 [ext_resource type="PackedScene" uid="uid://duqv4b4aibewc" path="res://addons/HTNDomainManager/PluginSystem/NodeSpawnMenu/node_spawn_menu.tscn" id="2_0xakn"]
 [ext_resource type="PackedScene" uid="uid://ducg45k0rmpbk" path="res://addons/HTNDomainManager/PluginSystem/TaskPanel/task_panel.tscn" id="2_8ueuw"]
 [ext_resource type="PackedScene" uid="uid://yeeetaq2c7s" path="res://addons/HTNDomainManager/PluginSystem/ConditionEditor/condition_editor.tscn" id="3_tgwvb"]
@@ -9,6 +10,7 @@
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/DomainBuilder.gd" id="5_8kpu3"]
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/GraphHandler.gd" id="5_nimtx"]
 [ext_resource type="PackedScene" uid="uid://bkr1h7upggpda" path="res://addons/HTNDomainManager/PluginSystem/SimulationPanel/simulation_panel.tscn" id="7_6nb8y"]
+[ext_resource type="PackedScene" uid="uid://bujhagly1wiye" path="res://addons/HTNDomainManager/PluginSystem/GotoPanel/goto_panel.tscn" id="9_iucm1"]
 [ext_resource type="PackedScene" uid="uid://dcrduduumuqin" path="res://addons/HTNDomainManager/PluginSystem/EffectEditor/effect_editor.tscn" id="9_k2g64"]
 [ext_resource type="PackedScene" uid="uid://c4bx8on5rmruu" path="res://addons/HTNDomainManager/PluginSystem/WarningBox/warning_screen.tscn" id="10_nj1q0"]
 
@@ -31,6 +33,7 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 focus_mode = 2
+theme = ExtResource("1_wbdp5")
 script = ExtResource("1_q71i4")
 
 [node name="GraphHandler" type="Control" parent="."]
@@ -89,7 +92,14 @@ layout_mode = 2
 focus_mode = 0
 theme_override_styles/focus = SubResource("StyleBoxEmpty_vquqo")
 toggle_mode = true
-text = "Task List"
+text = "Task Panel"
+
+[node name="GotoPanelButton" type="Button" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_4pnlj")
+toggle_mode = true
+text = "Goto Panel"
 
 [node name="Simulator" type="Button" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
 unique_name_in_owner = true
@@ -97,22 +107,7 @@ layout_mode = 2
 focus_mode = 0
 theme_override_styles/focus = SubResource("StyleBoxEmpty_vquqo")
 toggle_mode = true
-text = "Simulator"
-
-[node name="GotoRootButton" type="Button" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
-layout_mode = 2
-theme_override_styles/focus = SubResource("StyleBoxEmpty_4pnlj")
-text = "Goto Root"
-
-[node name="GotoButton" type="Button" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
-layout_mode = 2
-text = "Goto"
-
-[node name="GotoLineEdit" type="LineEdit" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-placeholder_text = "Nickname"
+text = "Simulator Panel"
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
 layout_mode = 2
@@ -158,12 +153,19 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
+[node name="GotoPanel" parent="MarginContainer/PluginContainer/ContentContainer/EditorContainer/SidePanelContainer" instance=ExtResource("9_iucm1")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
 [node name="GraphEdit" type="GraphEdit" parent="MarginContainer/PluginContainer/ContentContainer/EditorContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 right_disconnects = true
+show_zoom_label = true
+show_arrange_button = false
 
 [node name="NodeSpawnMenu" parent="." instance=ExtResource("2_0xakn")]
 unique_name_in_owner = true
@@ -193,9 +195,8 @@ wait_time = 2.0
 one_shot = true
 
 [connection signal="toggled" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/TaskList" to="." method="_on_task_list_toggled"]
+[connection signal="toggled" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/GotoPanelButton" to="." method="_on_goto_panel_button_toggled"]
 [connection signal="toggled" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/Simulator" to="." method="_on_simulator_toggled"]
-[connection signal="pressed" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/GotoRootButton" to="." method="_on_goto_root_button_pressed"]
-[connection signal="pressed" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/GotoButton" to="." method="_on_goto_button_pressed"]
 [connection signal="text_changed" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/Name" to="." method="_on_name_text_changed"]
 [connection signal="pressed" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/Load" to="." method="_on_load_pressed"]
 [connection signal="pressed" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/Build" to="." method="_on_build_pressed"]

@@ -1,0 +1,48 @@
+[gd_scene load_steps=2 format=3 uid="uid://bujhagly1wiye"]
+
+[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/GotoPanel/GotoPanelManager.gd" id="1_40a7j"]
+
+[node name="GotoPanel" type="VBoxContainer"]
+custom_minimum_size = Vector2(300, 0)
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+script = ExtResource("1_40a7j")
+
+[node name="RefreshButton" type="Button" parent="."]
+layout_mode = 2
+text = "Refresh List"
+
+[node name="GotoRoot" type="Button" parent="."]
+layout_mode = 2
+text = "Go to Root"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+tooltip_text = "This is a list of all the created nodes within the Domain.
+Click on a node to move to that node's location.
+A node without a nickname will be listed as its Sandwich ID (Internal ID System)."
+mouse_filter = 0
+text = "Created Nodes"
+horizontal_alignment = 1
+
+[node name="SearchBar" type="LineEdit" parent="."]
+layout_mode = 2
+placeholder_text = "Search..."
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Parent" type="VBoxContainer" parent="ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[connection signal="pressed" from="RefreshButton" to="." method="_on_refresh_button_pressed"]
+[connection signal="pressed" from="GotoRoot" to="." method="_on_goto_root_pressed"]
+[connection signal="text_changed" from="SearchBar" to="." method="_on_search_bar_text_changed"]

@@ -137,6 +137,15 @@ func get_node_offset(nickname: String) -> Dictionary:
 			}
 	return {}
 
+func get_node_offset_by_key(node_key: StringName) -> Dictionary:
+	if node_key not in nodes: return {}
+
+	var node = nodes[node_key]
+	return {
+		"offset": node.position_offset,
+		"size": node.size
+	}
+
 func get_output_port_type(node: StringName, port: int) -> int:
 	var graph_node := (nodes[node] as GraphNode)
 	var slot := graph_node.get_output_port_slot(port)
@@ -159,6 +168,14 @@ func has_connections_from_input(node_key: StringName) -> bool:
 
 func get_root_key() -> StringName:
 	return _root_node.name
+
+func get_node_nickname(node_key: StringName, default_to_key:bool=true) -> String:
+	var node: HTNBaseNode = nodes[node_key]
+	var nick_name := node.get_node_name()
+	if nick_name.is_empty():
+		return node_key
+	else:
+		return nick_name
 
 # return { node_key (StringName) : data (String) }
 func get_comment_node_data() -> Dictionary:
