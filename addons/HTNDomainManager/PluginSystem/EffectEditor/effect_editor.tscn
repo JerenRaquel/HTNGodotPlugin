@@ -62,7 +62,6 @@ layout_mode = 2
 [node name="LineParent" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
-[connection signal="text_changed" from="VBoxContainer/ToolBox/NickNameLineEdit" to="." method="_on_nick_name_line_edit_text_changed"]
 [connection signal="pressed" from="VBoxContainer/ToolBox/AddEffect" to="." method="_on_add_effect_pressed"]
 [connection signal="pressed" from="VBoxContainer/ToolBox/Close" to="." method="_on_close_pressed"]
 [connection signal="text_changed" from="VBoxContainer/SearchBar" to="." method="_on_search_bar_text_changed"]

@@ -1,5 +1,5 @@
 @tool
-class_name EffectEditor
+class_name HTNEffectEditor
 extends Panel
 
 const EFFECT_LINE = preload("res://addons/HTNDomainManager/PluginSystem/EffectEditor/effect_line.tscn")
@@ -9,7 +9,6 @@ const EFFECT_LINE = preload("res://addons/HTNDomainManager/PluginSystem/EffectEd
 @onready var search_bar: LineEdit = %SearchBar
 
 var _manager: HTNDomainManager
-var _nick_name: String
 var _applicator_node: HTNApplicatorNode
 var _effects: Array[StringName]
 
@@ -55,13 +54,10 @@ func _on_close_pressed() -> void:
 			"value": child_data["value"]
 		}
 	_applicator_node.effect_data = data
-	_applicator_node._nick_name = _nick_name
+	_applicator_node._nick_name = nick_name_line_edit.text
 	for child in line_parent.get_children():
 		if child.is_queued_for_deletion(): continue
 		child.queue_free()
-
-func _on_nick_name_line_edit_text_changed(new_text: String) -> void:
-	_nick_name = new_text
 
 func _on_add_effect_pressed() -> void:
 	var effect_line_instance := EFFECT_LINE.instantiate()

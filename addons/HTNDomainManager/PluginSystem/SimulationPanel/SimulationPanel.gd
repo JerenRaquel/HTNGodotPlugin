@@ -104,10 +104,7 @@ func _load_primitives(loaded_primitives: Dictionary) -> void:
 
 		# Load resource
 		var resource_path: String = _manager.serializer.get_resource_path_from_name(stripped_name)
-		if resource_path == "":
-			_manager.validation_handler.send_error_generic(
-				"File path doesn't exist for " + stripped_name
-			)
+		if resource_path.is_empty(): continue
 		loaded_primitives[primitive_key] = load(resource_path).duplicate()
 
 func _get_next_node_from_methods(connected_methods: Array[StringName], world_state: Dictionary) -> Array[StringName]:

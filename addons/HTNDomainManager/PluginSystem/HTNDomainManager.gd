@@ -6,7 +6,7 @@ enum LeftPanel { NONE, TASK, GOTO, SIM }
 
 @onready var graph_handler: HTNGraphHandler = $GraphHandler
 @onready var condition_editor: HTNConditionEditor = %ConditionEditor
-@onready var effect_editor: EffectEditor = %EffectEditor
+@onready var effect_editor: HTNEffectEditor = %EffectEditor
 @onready var side_panel_container: PanelContainer = %SidePanelContainer
 @onready var task_list_button: Button = %TaskList
 @onready var simulator_button: Button = %Simulator
@@ -22,7 +22,6 @@ enum LeftPanel { NONE, TASK, GOTO, SIM }
 
 var is_enabled := false
 var not_saved := false
-var editor_interface_ref: EditorPlugin
 var domain_name: String
 
 func _ready() -> void:
@@ -64,9 +63,9 @@ func _load_domain() -> void:
 
 func _toggle_left_panel(panel_ID: LeftPanel) -> void:
 	side_panel_container.hide()
-	task_list_button.button_pressed = false
-	simulator_button.button_pressed = false
-	goto_panel_button.button_pressed = false
+	task_list_button.set_pressed_no_signal(false)
+	simulator_button.set_pressed_no_signal(false)
+	goto_panel_button.set_pressed_no_signal(false)
 	task_panel.hide()
 	simulation_panel.hide()
 	goto_panel.hide()
@@ -77,13 +76,13 @@ func _toggle_left_panel(panel_ID: LeftPanel) -> void:
 	side_panel_container.show()
 	match panel_ID:
 		LeftPanel.TASK:
-			task_list_button.button_pressed = true
+			task_list_button.set_pressed_no_signal(true)
 			task_panel.show()
 		LeftPanel.SIM:
-			simulator_button.button_pressed = true
+			simulator_button.set_pressed_no_signal(true)
 			simulation_panel.show()
 		LeftPanel.GOTO:
-			goto_panel_button.button_pressed = true
+			goto_panel_button.set_pressed_no_signal(true)
 			goto_panel.show()
 
 func _on_build_pressed() -> void:

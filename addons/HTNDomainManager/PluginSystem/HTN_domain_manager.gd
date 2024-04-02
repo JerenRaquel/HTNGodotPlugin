@@ -9,7 +9,6 @@ var manager: Control
 func _enter_tree() -> void:
 	manager = HTN_DOMAIN_MANAGER.instantiate()
 	EditorInterface.get_editor_main_screen().add_child(manager)
-	manager.editor_interface_ref = self
 	_make_visible(false)
 	manager.visibility_changed.connect(
 		func() -> void:

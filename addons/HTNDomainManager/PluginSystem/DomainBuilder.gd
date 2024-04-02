@@ -203,10 +203,7 @@ func _handle_primitive_node(node_name: String, task_chain: Array[StringName], re
 
 	# Record the task resource file path
 	var resource_path: String = _manager.serializer.get_resource_path_from_name(stripped_name)
-	if resource_path == "":
-		_manager.validation_handler.send_error_generic(
-			"File path doesn't exist for " + stripped_name
-		)
+	if resource_path == "": return
 	if stripped_name in resource["required_primitives"]: return
 	resource["required_primitives"][stripped_name] = resource_path
 

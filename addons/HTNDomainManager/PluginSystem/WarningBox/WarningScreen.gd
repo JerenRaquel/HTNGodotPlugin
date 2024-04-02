@@ -1,22 +1,22 @@
 @tool
 extends Panel
 
-@onready var warning_text: Label = %WarningText
-
+var _warning_text: Label
 var _on_accept: Callable
 var _on_decline: Callable
 
 func initialize() -> void:
 	hide()
+	_warning_text = %WarningText
 
 func open(message: String, on_accept: Callable, on_decline: Callable) -> void:
-	warning_text.text = message
+	_warning_text.text = message
 	_on_accept = on_accept
 	_on_decline = on_decline
 	show()
 
 func _close() -> void:
-	warning_text.text = ""
+	_warning_text.text = ""
 	hide()
 
 func _on_accept_pressed() -> void:

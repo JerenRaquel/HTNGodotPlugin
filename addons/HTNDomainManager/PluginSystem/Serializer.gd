@@ -29,28 +29,37 @@ var _manager: HTNDomainManager
 func initialize(manager: HTNDomainManager) -> void:
 	_manager = manager
 
-func edit_script(file_name: String) -> void:
-	var scrip_file_path := SCRIPT_PATH + file_name + ".gd"
-	if not FileAccess.file_exists(scrip_file_path):
-		push_error("Editing Primitive Task:: Can't locate path: " + scrip_file_path)
-		return
+func get_script_path_from_name(file_name: String) -> String:
+	var script_file_path := SCRIPT_PATH + file_name + ".gd"
+	if not FileAccess.file_exists(script_file_path):
+		_manager.validation_handler.send_error_generic(
+			"Can't locate path for file: " + file_name
+		)
+		return ""
 
-	var script := load(scrip_file_path)
-	EditorInterface.edit_script(script)
-	EditorInterface.set_main_screen_editor("Script")
+	return script_file_path
 
 func get_resource_path_from_name(file_name: String) -> String:
 	var resource_file_path := RESOURCE_PATH + file_name + ".tres"
-	if not FileAccess.file_exists(resource_file_path): return ""
+	if not FileAccess.file_exists(resource_file_path):
+		_manager.validation_handler.send_error_generic(
+			"Can't locate path for file: " + file_name
+		)
+		return ""
 
 	return resource_file_path
 
+func edit_script(file_name: String) -> void:
+	var script_file_path := get_script_path_from_name(file_name)
+	if script_file_path.is_empty(): return
+
+	var script := load(script_file_path)
+	EditorInterface.edit_script(script)
+	EditorInterface.set_main_screen_editor("Script")
+
 func get_script_export_data(file_name: String) -> Dictionary:
-	var resource_file_path := RESOURCE_PATH + file_name + ".tres"
-	if not FileAccess.file_exists(resource_file_path):
-		_manager.validation_handler\
-			.send_error_generic("Getting Primitive Task Export Data:: Can't locate path: " + resource_file_path)
-		return {}
+	var resource_file_path := get_resource_path_from_name(file_name)
+	if resource_file_path.is_empty(): return {}
 
 	var resource: HTNPrimitiveTask = ResourceLoader.load(resource_file_path)
 	var data := {}
@@ -69,11 +78,8 @@ func get_script_export_data(file_name: String) -> Dictionary:
 	return data
 
 func set_script_export_data(file_name: String, data: Array[Dictionary]) -> bool:
-	var resource_file_path := RESOURCE_PATH + file_name + ".tres"
-	if not FileAccess.file_exists(resource_file_path):
-		_manager.validation_handler\
-			.send_error_generic("Getting Primitive Task Export Data:: Can't locate path: " + resource_file_path)
-		return false
+	var resource_file_path := get_resource_path_from_name(file_name)
+	if resource_file_path.is_empty(): return false
 
 	var resource := ResourceLoader.load(resource_file_path)
 	for prop: Dictionary in data:
