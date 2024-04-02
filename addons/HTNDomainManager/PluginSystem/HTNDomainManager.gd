@@ -8,7 +8,7 @@ extends Control
 @onready var side_panel_container: PanelContainer = %SidePanelContainer
 @onready var task_list_button: Button = %TaskList
 @onready var simulator_button: Button = %Simulator
-@onready var simulation_panel: VBoxContainer = %SimulationPanel
+@onready var simulation_panel: SimulationManager = %SimulationPanel
 @onready var build_notice: Label = %BuildNotice
 @onready var task_panel: HTNTaskPanelManager = %TaskPanel
 @onready var serializer: HTNSerializer = $Serializer
@@ -29,6 +29,7 @@ func _ready() -> void:
 	graph_handler.initialize(self)
 	serializer.initialize(self)
 	task_panel.initialize(self)
+	simulation_panel.initialize(self)
 	validation_handler.initialize(self)
 	domain_builder.initialize(self)
 

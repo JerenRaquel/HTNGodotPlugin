@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://bkr1h7upggpda"]
+[gd_scene load_steps=3 format=3 uid="uid://bkr1h7upggpda"]
 
 [ext_resource type="Theme" uid="uid://dnjawm4lkym68" path="res://addons/HTNDomainManager/PluginSystem/PluginTheme.tres" id="1_0t54c"]
+[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/SimulationPanel/SimulationPanel.gd" id="2_1d8wa"]
 
 [node name="SimulationPanel" type="VBoxContainer"]
 anchors_preset = -1
@@ -9,6 +10,7 @@ anchor_bottom = 1.0
 offset_right = 0.32
 grow_vertical = 2
 theme = ExtResource("1_0t54c")
+script = ExtResource("2_1d8wa")
 metadata/_edit_use_anchors_ = true
 
 [node name="RunButton" type="Button" parent="."]
@@ -23,12 +25,28 @@ layout_mode = 2
 text = "Psuedo World States"
 horizontal_alignment = 1
 
-[node name="Button" type="Button" parent="."]
+[node name="AddStateButton" type="Button" parent="."]
 layout_mode = 2
 text = "Add World State"
+
+[node name="SearchBar" type="LineEdit" parent="."]
+layout_mode = 2
+placeholder_text = "Search..."
 
 [node name="HSeparator2" type="HSeparator" parent="."]
 layout_mode = 2
 
-[node name="States" type="VBoxContainer" parent="."]
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="States" type="VBoxContainer" parent="ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[connection signal="pressed" from="AddStateButton" to="." method="_on_add_state_button_pressed"]
+[connection signal="text_changed" from="SearchBar" to="." method="_on_search_bar_text_changed"]
