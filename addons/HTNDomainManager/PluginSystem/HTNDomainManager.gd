@@ -28,9 +28,13 @@ enum LeftPanel { NONE, TASK, GOTO, SIM }
 @onready var domain_file_name: Label = %DomainFileName
 # Other
 @onready var build_notice: Label = %BuildNotice
+@onready var clear_button: Button = %ClearButton
 
 var is_enabled := false
-var not_saved := false
+var not_saved := false:
+	set(value):
+		not_saved = value
+		clear_button.disabled = not value
 var domain_name: String
 
 func _ready() -> void:
@@ -49,6 +53,7 @@ func _ready() -> void:
 	validation_handler.send_message("", validation_handler.MessageType.DEFAULT)
 	side_panel_container_left.visible = false
 	side_panel_container_right.visible = false
+	clear_button.disabled = true
 
 	graph_handler.graph_altered.connect(
 		func():

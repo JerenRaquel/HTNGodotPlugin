@@ -85,7 +85,7 @@ func _on_load_pressed(domain_name: String) -> void:
 	if _manager.not_saved:
 		_manager.warning_screen.open(
 			"You are about overwrite a domain with unsaved changes.\nAre you sure?",
-			_load_domain,
+			func(): _load_domain(domain_name),
 			Callable()
 		)
 	else:

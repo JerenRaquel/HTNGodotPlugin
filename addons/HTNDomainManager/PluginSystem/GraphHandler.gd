@@ -95,10 +95,12 @@ func wipe_nodes() -> void:
 		var node = nodes[node_key]
 		if node is HTNRootNode: continue
 
-		node.free()
-		nodes.erase(node_key)
+		register_selected(node)
 
+	_delete_nodes(false)
 	_current_ID = 1
+	_manager.not_saved = false
+	_manager.validation_handler.clear_message()
 
 func clear_node_colors() -> void:
 	for node_key: StringName in nodes:
@@ -306,14 +308,14 @@ func _open_node_menu(port_type: int=-1) -> void:
 	node_spawn_menu.enable_usable_nodes(port_type)
 	node_spawn_menu.global_position = get_global_mouse_position()
 
-func _delete_nodes() -> void:
+func _delete_nodes(emit_altered_signal:bool=true) -> void:
 	while not _selected_nodes.is_empty():
 		var node: GraphNode = _selected_nodes.pop_back()
 		_remove_connections(node)
 		if not nodes.erase(node.name):
 			push_error(node.name + " did not exist and is trying to erase.")
-		node.queue_free()
-	graph_altered.emit()
+		node.free()
+	if emit_altered_signal: graph_altered.emit()
 
 func _remove_connections(node: GraphNode) -> void:
 	for connection in graph_edit.get_connection_list():
@@ -346,3 +348,13 @@ func _on_graph_edit_focus_entered() -> void:
 
 func _on_graph_edit_focus_exited() -> void:
 	_can_open_node_menu = false
+
+func _on_clear_button_pressed() -> void:
+	if _manager.not_saved:
+		_manager.warning_screen.open(
+			"This will clear the entire graph.\nYou have unsaved changes.\nAre you sure?",
+			func(): wipe_nodes(),
+			Callable()
+		)
+	else:
+		wipe_nodes()

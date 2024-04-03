@@ -33,6 +33,9 @@ func initialize(manager: HTNDomainManager) -> void:
 	_manager = manager
 	timer.timeout.connect( func(): send_message("", MessageType.DEFAULT) )
 
+func clear_message() -> void:
+	send_message("", MessageType.DEFAULT)
+
 func send_error_generic(error_message: String, fade: bool=false) -> void:
 	send_message(error_message, MessageType.ERROR, fade)
 
