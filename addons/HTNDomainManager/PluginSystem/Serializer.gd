@@ -4,6 +4,8 @@ extends Control
 
 const RESOURCE_PATH := "res://addons/HTNDomainManager/HTNGameLibrary/Data/Resources/"
 const SCRIPT_PATH := "res://addons/HTNDomainManager/HTNGameLibrary/Data/Scripts/"
+const DOMAIN_PATH := "res://addons/HTNDomainManager/HTNGameLibrary/Data/Domains/"
+const SAVE_PATH := "res://addons/HTNDomainManager/HTNGameLibrary/Data/GraphSaves/"
 const BLACK_LIST := ["task_name", "preconditions"]
 #region Primitive Task Script Template
 const FILE_TEMPLATE := "
@@ -100,29 +102,45 @@ func build_primitive_task(task_name: String) -> void:
 	var script: Script = _build_script(file_name)
 	_build_resource(script, RESOURCE_PATH + file_name + ".tres")
 
-func delete_primitive_task(task_name: String) -> void:
-	var found_script := false
-	var found_resource := false
-	var script_file_path := SCRIPT_PATH + task_name + ".gd"
-	var resource_file_path := RESOURCE_PATH + task_name + ".tres"
+func delete_primitive_task(task_name: String) -> bool:
+	return _delete_files(
+		task_name,
+		"Script", SCRIPT_PATH + task_name + ".gd",
+		"Resource", RESOURCE_PATH + task_name + ".tres"
+	)
 
-	if FileAccess.file_exists(script_file_path):
-		found_script = true
-	if FileAccess.file_exists(resource_file_path):
-		found_resource = true
+func delete_domain(domain_name: String) -> bool:
+	return _delete_files(
+		domain_name,
+		"Graph Save", SAVE_PATH + domain_name + ".tres",
+		"Domain", DOMAIN_PATH + domain_name + ".tres"
+	)
 
-	if found_script and found_resource:
-		DirAccess.remove_absolute(script_file_path)
-		DirAccess.remove_absolute(resource_file_path)
+func _delete_files(
+		file_name: String,
+		file_type1: String, file_path1: String,
+		file_type2: String, file_path2: String) -> bool:
+	var found_file1 := false
+	var found_file2 := false
+	if FileAccess.file_exists(file_path1):
+		found_file1 = true
+	if FileAccess.file_exists(file_path2):
+		found_file2 = true
+
+	if found_file1 and found_file2:
+		DirAccess.remove_absolute(file_path1)
+		DirAccess.remove_absolute(file_path2)
+		return true
 	else:
 		var error_message: String = "Missing Files::"
-		if not found_script:
-			error_message += "Script File"
-		if not found_script and not found_resource:
+		if not found_file1:
+			error_message += file_type1 + " File"
+		if not found_file1 and not found_file2:
 			error_message += " and "
-		if not found_resource:
-			error_message += "Resource File"
+		if not found_file2:
+			error_message += file_type2 + " File"
 		push_error(error_message)
+		return false
 
 func _convert_to_class_name(task_name: String) -> String:
 	var tokens = task_name.capitalize().split(" ", false)

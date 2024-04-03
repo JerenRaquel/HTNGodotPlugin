@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://cxlyealsdcnj7"]
+[gd_scene load_steps=19 format=3 uid="uid://cxlyealsdcnj7"]
 
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/HTNDomainManager.gd" id="1_q71i4"]
 [ext_resource type="Theme" uid="uid://dnjawm4lkym68" path="res://addons/HTNDomainManager/PluginSystem/PluginTheme.tres" id="1_wbdp5"]
@@ -13,9 +13,10 @@
 [ext_resource type="PackedScene" uid="uid://bujhagly1wiye" path="res://addons/HTNDomainManager/PluginSystem/GotoPanel/goto_panel.tscn" id="9_iucm1"]
 [ext_resource type="PackedScene" uid="uid://dcrduduumuqin" path="res://addons/HTNDomainManager/PluginSystem/EffectEditor/effect_editor.tscn" id="9_k2g64"]
 [ext_resource type="PackedScene" uid="uid://c4bx8on5rmruu" path="res://addons/HTNDomainManager/PluginSystem/WarningBox/warning_screen.tscn" id="10_nj1q0"]
+[ext_resource type="PackedScene" uid="uid://dpyik3p6ymf5m" path="res://addons/HTNDomainManager/PluginSystem/DomainPanel/domain_panel.tscn" id="10_vxt8j"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_y47xm"]
-font_color = Color(0.996078, 0.862745, 0.396078, 1)
+font_color = Color(0.878431, 0.878431, 0.878431, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vquqo"]
 
@@ -114,46 +115,47 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxEmpty_wpu7a")
 
-[node name="Name" type="LineEdit" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
+[node name="DomainFileName" type="Label" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-placeholder_text = "Domain Name"
+text = "No File Loaded"
+horizontal_alignment = 2
 
-[node name="Load" type="Button" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
+[node name="DomainQuickSave" type="Button" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
 unique_name_in_owner = true
 layout_mode = 2
-focus_mode = 0
-theme_override_styles/focus = SubResource("StyleBoxEmpty_vquqo")
-text = "Load"
+tooltip_text = "Will build the domain without having to open the domain panel.
+This is intended to be used as a way to quickly overwrite a domain file you are working on 
+while bouncing between running the project and this plugin screen.
+NOTICE: Requires a file to be loaded."
+disabled = true
+text = "Quick Build"
 
-[node name="Build" type="Button" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
-unique_name_in_owner = true
+[node name="DomainPanelButton" type="Button" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
 layout_mode = 2
-focus_mode = 0
-theme_override_styles/focus = SubResource("StyleBoxEmpty_vquqo")
-text = "Build"
+toggle_mode = true
+text = "Domain Panel"
 
 [node name="EditorContainer" type="HBoxContainer" parent="MarginContainer/PluginContainer/ContentContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="SidePanelContainer" type="PanelContainer" parent="MarginContainer/PluginContainer/ContentContainer/EditorContainer"]
+[node name="SidePanelContainerLeft" type="PanelContainer" parent="MarginContainer/PluginContainer/ContentContainer/EditorContainer"]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="TaskPanel" parent="MarginContainer/PluginContainer/ContentContainer/EditorContainer/SidePanelContainer" instance=ExtResource("2_8ueuw")]
+[node name="TaskPanel" parent="MarginContainer/PluginContainer/ContentContainer/EditorContainer/SidePanelContainerLeft" instance=ExtResource("2_8ueuw")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="SimulationPanel" parent="MarginContainer/PluginContainer/ContentContainer/EditorContainer/SidePanelContainer" instance=ExtResource("7_6nb8y")]
+[node name="SimulationPanel" parent="MarginContainer/PluginContainer/ContentContainer/EditorContainer/SidePanelContainerLeft" instance=ExtResource("7_6nb8y")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="GotoPanel" parent="MarginContainer/PluginContainer/ContentContainer/EditorContainer/SidePanelContainer" instance=ExtResource("9_iucm1")]
+[node name="GotoPanel" parent="MarginContainer/PluginContainer/ContentContainer/EditorContainer/SidePanelContainerLeft" instance=ExtResource("9_iucm1")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
@@ -166,6 +168,15 @@ size_flags_vertical = 3
 right_disconnects = true
 show_zoom_label = true
 show_arrange_button = false
+
+[node name="SidePanelContainerRight" type="PanelContainer" parent="MarginContainer/PluginContainer/ContentContainer/EditorContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="DomainPanel" parent="MarginContainer/PluginContainer/ContentContainer/EditorContainer/SidePanelContainerRight" instance=ExtResource("10_vxt8j")]
+unique_name_in_owner = true
+layout_mode = 2
 
 [node name="NodeSpawnMenu" parent="." instance=ExtResource("2_0xakn")]
 unique_name_in_owner = true
@@ -197,9 +208,7 @@ one_shot = true
 [connection signal="toggled" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/TaskList" to="." method="_on_task_list_toggled"]
 [connection signal="toggled" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/GotoPanelButton" to="." method="_on_goto_panel_button_toggled"]
 [connection signal="toggled" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/Simulator" to="." method="_on_simulator_toggled"]
-[connection signal="text_changed" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/Name" to="." method="_on_name_text_changed"]
-[connection signal="pressed" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/Load" to="." method="_on_load_pressed"]
-[connection signal="pressed" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/Build" to="." method="_on_build_pressed"]
+[connection signal="toggled" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/DomainPanelButton" to="." method="_on_domain_panel_button_toggled"]
 [connection signal="connection_request" from="MarginContainer/PluginContainer/ContentContainer/EditorContainer/GraphEdit" to="GraphHandler" method="_on_graph_edit_connection_request"]
 [connection signal="connection_to_empty" from="MarginContainer/PluginContainer/ContentContainer/EditorContainer/GraphEdit" to="GraphHandler" method="_on_graph_edit_connection_to_empty"]
 [connection signal="disconnection_request" from="MarginContainer/PluginContainer/ContentContainer/EditorContainer/GraphEdit" to="GraphHandler" method="_on_graph_edit_disconnection_request"]
