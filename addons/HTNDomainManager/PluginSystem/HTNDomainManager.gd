@@ -29,12 +29,12 @@ enum LeftPanel { NONE, TASK, GOTO, SIM }
 # Other
 @onready var build_notice: Label = %BuildNotice
 @onready var clear_button: Button = %ClearButton
+@onready var graph_tools_toggle: CheckButton = %GraphToolsToggle
 
 var is_enabled := false
 var not_saved := false:
 	set(value):
 		not_saved = value
-		clear_button.disabled = not value
 var domain_name: String
 
 func _ready() -> void:
@@ -54,11 +54,16 @@ func _ready() -> void:
 	side_panel_container_left.visible = false
 	side_panel_container_right.visible = false
 	clear_button.disabled = true
+	graph_tools_toggle.set_pressed_no_signal(true)
 
 	graph_handler.graph_altered.connect(
 		func():
 			validation_handler.send_message("Unsaved Changes", validation_handler.MessageType.WARNING)
 			not_saved = true
+			if graph_handler.nodes.size() > 1:
+				clear_button.disabled = false
+			else:
+				clear_button.disabled = true
 	)
 
 func _process(delta: float) -> void:

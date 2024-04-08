@@ -101,6 +101,8 @@ func wipe_nodes() -> void:
 	_current_ID = 1
 	_manager.not_saved = false
 	_manager.validation_handler.clear_message()
+	_manager.clear_button.disabled = true
+	_manager.domain_panel.clear_graph()
 
 func clear_node_colors() -> void:
 	for node_key: StringName in nodes:
@@ -233,6 +235,8 @@ func get_every_node_type() -> Dictionary:
 				data[node_key] = "Method"
 			elif node is HTNApplicatorNode:
 				data[node_key] = "Applicator"
+			elif node is HTNDomainNode:
+				data[node_key] = "Domain"
 			else:
 				data[node_key] = "Unknown"
 
@@ -267,6 +271,19 @@ func get_every_compound() -> Array[StringName]:
 			compounds.push_back(node_key)
 
 	return compounds
+
+# return { node_key (StringName) : task_name (StringName) }
+func get_every_domain() -> Dictionary:
+	var data: Dictionary = {}
+
+	for node_key: StringName in nodes:
+		if nodes[node_key] is HTNDomainNode and node_key not in data:
+			var domain_name: String = nodes[node_key].get_selected_domain_name()
+			if domain_name.is_empty(): continue
+
+			data[node_key] = domain_name
+
+	return data
 
 func get_every_node_til_compound(node_key: String) -> Array[StringName]:
 	var task_chain: Array[StringName] = []
@@ -358,3 +375,6 @@ func _on_clear_button_pressed() -> void:
 		)
 	else:
 		wipe_nodes()
+
+func _on_graph_tools_toggle_toggled(toggled_on: bool) -> void:
+	graph_edit.show_menu = toggled_on

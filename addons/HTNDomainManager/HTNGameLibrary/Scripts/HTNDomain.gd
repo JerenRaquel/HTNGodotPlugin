@@ -7,6 +7,9 @@ extends Resource
 # {task_name (StringName) : resource_path (string)}
 @export var required_primitives: Dictionary
 
+# {domain_name (StringName) : resource_path (string)}
+@export var required_domains: Dictionary
+
 # {compound_node_key (StringName) : { "nick_name": "" (String), "method_branches": [(method_node_key: StringName)...] }}
 @export var compounds: Dictionary
 

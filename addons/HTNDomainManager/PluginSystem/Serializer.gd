@@ -41,6 +41,16 @@ func get_script_path_from_name(file_name: String) -> String:
 
 	return script_file_path
 
+func get_domain_path_from_name(file_name: String) -> String:
+	var domain_file_path := DOMAIN_PATH + file_name + ".tres"
+	if not FileAccess.file_exists(domain_file_path):
+		_manager.validation_handler.send_error_generic(
+			"Can't locate path for file: " + file_name
+		)
+		return ""
+
+	return domain_file_path
+
 func get_resource_path_from_name(file_name: String) -> String:
 	var resource_file_path := RESOURCE_PATH + file_name + ".tres"
 	if not FileAccess.file_exists(resource_file_path):

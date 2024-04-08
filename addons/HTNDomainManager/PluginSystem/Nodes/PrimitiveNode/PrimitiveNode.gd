@@ -39,7 +39,7 @@ func load_data(data) -> void:
 	_extend_node_parameters(export_data)
 
 func get_task_name() -> String:
-	if _selected_task.is_empty() or _selected_task == "": return ""
+	if _selected_task.is_empty(): return ""
 	return _selected_task
 
 func write_data() -> bool:

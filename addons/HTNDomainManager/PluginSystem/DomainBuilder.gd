@@ -63,6 +63,8 @@ func write_domain_file(file_name: String) -> bool:
 	save_file["node_data"].merge(save_file["primitives"], true)
 	# Compound Data - Nickname
 	save_file["node_data"].merge(_grab_compound_nicknames(resource), true)
+	# Domain Data - Domain Name
+	save_file["node_data"].merge(_manager.graph_handler.get_every_domain(), true)
 	# Comment Data - Comment
 	save_file["node_data"].merge(_manager.graph_handler.get_comment_node_data(), true)
 	# Method Data - The whole thingy
@@ -114,6 +116,8 @@ func load_domain_file(file_name: String) -> bool:
 				continue	# Root already exists
 			"Compound":
 				node = _manager.graph_handler.node_spawn_menu.COMPOUND_NODE
+			"Domain":
+				node = _manager.graph_handler.node_spawn_menu.DOMAIN_NODE
 			"Comment":
 				node = _manager.graph_handler.node_spawn_menu.COMMENT_NODE
 			"AlwaysTrueMethod":
@@ -140,6 +144,7 @@ func load_domain_file(file_name: String) -> bool:
 
 func _clear_previous_data(resource: HTNDomain) -> void:
 	resource["required_primitives"].clear()
+	resource["required_domains"].clear()
 	resource["compounds"].clear()
 	resource["methods"].clear()
 	resource["effects"].clear()
@@ -179,12 +184,22 @@ func _handle_method_key(method_key: StringName, resource: HTNDomain) -> void:
 			_handle_primitive_node(node.get_node_name(), task_chain, resource)
 		elif node is HTNApplicatorNode:
 			_handle_applicator_node(node, node_key, task_chain, resource)
+		elif node is HTNDomainNode:
+			_handle_domain_node(node.get_node_name(), node_key, task_chain, resource)
 
 	resource["methods"][method_key] = {
 		"nick_name": (_manager.graph_handler.nodes[method_key] as HTNMethodNode).get_node_name(),
 		"method_data": (_manager.graph_handler.nodes[method_key] as HTNMethodNode).condition_data,
 		"task_chain": task_chain
 	}
+
+func _handle_domain_node(node_name: String, node_key: StringName, task_chain: Array[StringName], resource: HTNDomain) -> void:
+	task_chain.push_back(node_key)
+	if node_key in resource["required_domains"]: return
+
+	var stripped_name: String = node_name.replace("Domain - ", "")
+	var resource_path: String = _manager.serializer.get_domain_path_from_name(stripped_name)
+	resource["required_domains"][node_key] = resource_path
 
 func _handle_applicator_node(node: HTNApplicatorNode, node_key: StringName, task_chain: Array[StringName], resource: HTNDomain) -> void:
 	var stripped_name: String = node.get_node_name()

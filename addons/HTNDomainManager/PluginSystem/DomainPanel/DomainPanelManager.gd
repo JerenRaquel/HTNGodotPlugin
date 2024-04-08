@@ -2,6 +2,8 @@
 class_name HTNDomainPanel
 extends VBoxContainer
 
+signal files_updated
+
 const DOMAIN_LINE = preload("res://addons/HTNDomainManager/PluginSystem/DomainPanel/domain_line.tscn")
 
 var _manager: HTNDomainManager
@@ -21,6 +23,26 @@ func initialize(manager: HTNDomainManager, quick_save_button: Button, domain_fil
 	_quick_save_button.disabled = true
 	_refresh()
 	_filter("")
+
+func get_availible_domains() -> Array[String]:
+	var domain_names: Array[String] = []
+	var file_names := DirAccess.get_files_at(_manager.serializer.DOMAIN_PATH)
+	for file_name in file_names:
+		var parsed_name := file_name.replace(".tres", "")
+		if parsed_name not in domain_names:
+			domain_names.push_back(parsed_name)
+
+	return domain_names
+
+func get_current_working_domain() -> String:
+	if _domain_file_name.text == "No File Loaded": return ""	# Empty
+
+	return _domain_file_name.text.replace("Domain Loaded: ", "")
+
+func clear_graph() -> void:
+	_domain_file_name.text = "No File Loaded"
+	_domain_name_line_edit.clear()
+	_quick_save_button.disabled = true
 
 func _load_domain(domain_name: String) -> void:
 	if not _manager.domain_builder.load_domain_file(domain_name): return
@@ -70,6 +92,7 @@ func _on_delete_pressed(instance: HBoxContainer, domain_name: String) -> void:
 			if _manager.serializer.delete_domain(domain_name):
 				instance.queue_free()
 				_refresh()
+				files_updated.emit()
 			),
 		Callable()
 	)
@@ -118,6 +141,8 @@ func _on_build_button_pressed() -> void:
 	)
 	_manager.not_saved = false
 	_refresh()
+	files_updated.emit()
+	_domain_file_name.text = "Domain Loaded: " + _domain_name_line_edit.text
 
 func _on_domain_name_line_edit_text_changed(new_text: String) -> void:
 	_quick_save_button.disabled = true

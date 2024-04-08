@@ -79,6 +79,11 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Compound Task"
 
+[node name="Domain" type="Button" parent="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Domain Link"
+
 [node name="Method" type="Button" parent="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
@@ -120,6 +125,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_v7rby")
 
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer/Compound" to="." method="_on_compound_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer/Domain" to="." method="_on_domain_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer/Method" to="." method="_on_method_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer/AlwaysMethod" to="." method="_on_always_method_pressed"]
 [connection signal="pressed" from="VBoxContainer/PanelContainer/Buttons/HBoxContainer/VBoxContainer/Primitive" to="." method="_on_primitive_pressed"]

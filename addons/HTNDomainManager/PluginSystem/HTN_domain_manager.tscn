@@ -110,21 +110,27 @@ theme_override_styles/focus = SubResource("StyleBoxEmpty_vquqo")
 toggle_mode = true
 text = "Simulator Panel"
 
+[node name="GraphToolsToggle" type="CheckButton" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Graph Tools"
+
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxEmpty_wpu7a")
-
-[node name="ClearButton" type="Button" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Clear Graph"
 
 [node name="DomainFileName" type="Label" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "No File Loaded"
 horizontal_alignment = 2
+
+[node name="ClearButton" type="Button" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
+unique_name_in_owner = true
+layout_mode = 2
+disabled = true
+text = "Clear Graph"
 
 [node name="DomainQuickSave" type="Button" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
 unique_name_in_owner = true
@@ -213,6 +219,7 @@ one_shot = true
 [connection signal="toggled" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/TaskList" to="." method="_on_task_list_toggled"]
 [connection signal="toggled" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/GotoPanelButton" to="." method="_on_goto_panel_button_toggled"]
 [connection signal="toggled" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/Simulator" to="." method="_on_simulator_toggled"]
+[connection signal="toggled" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/GraphToolsToggle" to="GraphHandler" method="_on_graph_tools_toggle_toggled"]
 [connection signal="pressed" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/ClearButton" to="GraphHandler" method="_on_clear_button_pressed"]
 [connection signal="toggled" from="MarginContainer/PluginContainer/ContentContainer/Toolbox/DomainPanelButton" to="." method="_on_domain_panel_button_toggled"]
 [connection signal="connection_request" from="MarginContainer/PluginContainer/ContentContainer/EditorContainer/GraphEdit" to="GraphHandler" method="_on_graph_edit_connection_request"]

@@ -12,6 +12,7 @@ extends Control
 #- Tasks <-> Tasks: 2
 
 const COMPOUND_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/CompoundNode/compound_node.tscn")
+const DOMAIN_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/DomainNode/domain_node.tscn")
 const METHOD_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/MethodNode/Original/method_node.tscn")
 const ALWAYS_TRUE_METHOD = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/MethodNode/AlwaysTrue/always_true_method.tscn")
 const PRIMITIVE_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/PrimitiveNode/primitive_node.tscn")
@@ -59,6 +60,7 @@ func enable_usable_nodes(port_type: int) -> void:
 			compound.show()
 			primitive.show()
 			applicator.show()
+
 		_:
 			_hide_all()
 
@@ -125,6 +127,9 @@ func _set_node_position(node: GraphNode, target_position: Vector2, offset: Vecto
 func _on_compound_pressed() -> void:
 	_add_node(COMPOUND_NODE).initialize(_manager)
 
+func _on_domain_pressed() -> void:
+	_add_node(DOMAIN_NODE).initialize(_manager)
+
 func _on_method_pressed() -> void:
 	_add_node(METHOD_NODE).initialize(_manager)
 
@@ -145,3 +150,5 @@ func _on_visibility_changed() -> void:
 
 	if visible:
 		_mouse_local_position = _manager.graph_handler.graph_edit.get_local_mouse_position()
+
+
