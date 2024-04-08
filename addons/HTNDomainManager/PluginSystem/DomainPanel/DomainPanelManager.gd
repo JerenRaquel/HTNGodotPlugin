@@ -69,7 +69,8 @@ func _refresh() -> void:
 	var file_names := DirAccess.get_files_at(_manager.serializer.DOMAIN_PATH)
 	var found_loaded_file := false
 	for file_name in file_names:
-		if _domain_name_line_edit.text == file_name.replace(".tres", ""):
+		var domain_name: String = _manager.serializer.convert_to_class_name(_domain_name_line_edit.text)
+		if domain_name == file_name.replace(".tres", ""):
 			found_loaded_file = true
 		_create_domain_line(file_name)
 	if not found_loaded_file:
@@ -129,7 +130,9 @@ func _on_build_button_pressed() -> void:
 		_quick_save_button.disabled = true
 		return
 
-	if not _manager.validation_handler.validate_graph(_domain_name_line_edit.text):
+	var domain_name: String = _manager.serializer.convert_to_class_name(_domain_name_line_edit.text)
+
+	if not _manager.validation_handler.validate_graph(domain_name):
 		_quick_save_button.disabled = true
 		return
 
@@ -142,7 +145,7 @@ func _on_build_button_pressed() -> void:
 	_manager.not_saved = false
 	_refresh()
 	files_updated.emit()
-	_domain_file_name.text = "Domain Loaded: " + _domain_name_line_edit.text
+	_domain_file_name.text = "Domain Loaded: " + domain_name
 
 func _on_domain_name_line_edit_text_changed(new_text: String) -> void:
 	_quick_save_button.disabled = true

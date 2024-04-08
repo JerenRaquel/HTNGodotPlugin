@@ -89,7 +89,7 @@ func validate_there_are_any_connections(domain_name: String) -> bool:
 	var connection_list := _manager.graph_handler.graph_edit.get_connection_list()
 
 	if connection_list.is_empty():
-		if domain_name.is_empty() or domain_name == "":
+		if domain_name.is_empty():
 			send_error_message("Domain", EMPTY_CONNECTIONS)
 		else:
 			send_error_message(domain_name, EMPTY_CONNECTIONS)

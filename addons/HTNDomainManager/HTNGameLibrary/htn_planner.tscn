@@ -1,6 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://bvtsqa85pslmb"]
+[gd_scene load_steps=3 format=3 uid="uid://bvtsqa85pslmb"]
 
 [ext_resource type="Script" path="res://addons/HTNDomainManager/HTNGameLibrary/Scripts/HTNPlanner.gd" id="1_gmcwj"]
+[ext_resource type="Script" path="res://addons/HTNDomainManager/HTNGameLibrary/Scripts/HTNStateManager.gd" id="2_cbg51"]
 
 [node name="HTNPlanner" type="Node"]
 script = ExtResource("1_gmcwj")
+
+[node name="StateManager" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("2_cbg51")

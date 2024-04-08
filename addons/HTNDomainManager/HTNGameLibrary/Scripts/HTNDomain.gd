@@ -1,6 +1,9 @@
 class_name HTNDomain
 extends Resource
 
+# Used to refer to sub domains
+@export var domain_name: StringName
+
 # The start of the tree
 @export var root_key: StringName
 

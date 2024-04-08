@@ -1,75 +1,44 @@
 class_name HTNPlanner
 extends Node
 
-enum PlanState { IDLE, SETUP, RUN, WAIT, EFFECT, FINISHED }
-
 signal finished	# Emits success state
 signal interrupt_plan	# Stops the current plan
 
 @export var domain: HTNDomain
 @export_group("Debugging Options")
 @export var enable_debugging := false
+@export var suppress_warnings := true
 
+@onready var state_manager: HTNStateManager = %StateManager
+
+var _sub_domain_library := {}
 var _primitive_library := {}
-var _plan: Array[StringName]
-var _agent: Node
-var _world_state_plan_copy: Dictionary
-var _running_plan := false
-var _plan_state: PlanState = PlanState.IDLE
-var _current_task: StringName
 
 var is_planning := false
 
 func _ready() -> void:
-	for primitive_key: String in domain["required_primitives"]:
-		var task: HTNPrimitiveTask = _load_primitive_resource(domain["required_primitives"][primitive_key])
-		_primitive_library[primitive_key] = task
-		if task.requires_awaiting:
-			task.finished_operation.connect( func(): _plan_state = PlanState.EFFECT )
+	# Load self
+	_sub_domain_library[domain["domain_name"]] = domain
+	# Load all valid sub domains -- load sub domains in root
+	for domain_name: StringName in domain["required_domains"]:
+		if domain_name in _sub_domain_library: continue
+		# Keep Digging
+		_load_sub_domains(domain_name, domain["required_domains"][domain_name])
 
-	interrupt_plan.connect(
-		func():
-			if _plan_state != PlanState.WAIT: return
+	for domain_name: StringName in _sub_domain_library.keys():
+		var sub_domain: HTNDomain = _sub_domain_library[domain_name]
+		for primitive_key: String in sub_domain["required_primitives"]:
+			if primitive_key in _primitive_library: continue
 
-			_plan_state = PlanState.IDLE
-			_running_plan = false
-			is_planning = false
-			finished.emit()
-	)
+			var task: HTNPrimitiveTask = _load_primitive_resource(sub_domain["required_primitives"][primitive_key])
+			_primitive_library[primitive_key] = task
+			if task.requires_awaiting:
+				task.finished_operation.connect( func(): state_manager.set_state(state_manager.PlanState.EFFECT) )
+
+	interrupt_plan.connect(state_manager.on_interrupt)
 
 func _physics_process(_delta: float) -> void:
-	if not _running_plan: return
-
-	match _plan_state:
-		PlanState.IDLE: pass
-		PlanState.SETUP:
-			_current_task = _plan.pop_back()
-			_plan_state = PlanState.RUN
-		PlanState.RUN:
-			if _current_task in _primitive_library:
-				var task: HTNPrimitiveTask = _primitive_library[_current_task]
-				task.run_operation(_agent, _world_state_plan_copy)
-				if task.requires_awaiting:
-					_plan_state = PlanState.WAIT
-					return
-			_plan_state = PlanState.EFFECT
-		PlanState.WAIT: pass
-		PlanState.EFFECT:
-			if _current_task in _primitive_library:
-				var task: HTNPrimitiveTask = _primitive_library[_current_task]
-				task.apply_effects(_world_state_plan_copy)
-			else:	# Apply Effects from Applicator Node
-				domain.apply_effects(_current_task, _world_state_plan_copy)
-			_plan_state = PlanState.FINISHED
-		PlanState.FINISHED:
-			if enable_debugging: print(_agent, "::Finished Task Operation: ", _current_task)
-			if _plan.is_empty():
-				_plan_state = PlanState.IDLE
-				_running_plan = false
-				is_planning = false
-				finished.emit()
-			else:
-				_plan_state = PlanState.SETUP
+	state_manager.update(domain)
 
 func handle_planning(agent: Node, world_state: Dictionary) -> void:
 	is_planning = true
@@ -78,48 +47,29 @@ func handle_planning(agent: Node, world_state: Dictionary) -> void:
 		is_planning = false
 		if enable_debugging: print("Failed plan generation")
 	else:
-		_running_plan = true
-		_agent = agent
-		_plan = plan
-		_world_state_plan_copy = world_state
-		_plan_state = PlanState.SETUP
+		state_manager.start(agent, plan, world_state)
 
 func generate_plan(world_states: Dictionary) -> Array[StringName]:
+	return _generate_plan_from_domain(domain, world_states)[0]
+
+# Returns: [final_plan, world_states]
+func _generate_plan_from_domain(domain: HTNDomain, world_states: Dictionary) -> Array:
 	var world_state_copy := world_states.duplicate(true)
 	var tasks_to_process: Array[StringName] = []
 	var final_plan: Array[StringName] = []
 	var history_stack: Array[Dictionary] = []
 	var visited_methods: Array[StringName] = []
 
-	tasks_to_process.push_back(domain["root_key"])
-
 	while not tasks_to_process.is_empty():
 		var task_key: StringName = tasks_to_process.pop_back()
 
 		if task_key in domain["compounds"]:
-			var valid_method_data := domain.get_task_chain_from_valid_method(
-				task_key,
-				visited_methods,
-				world_state_copy
+			var success_flag := _handle_compound(
+				task_key, visited_methods,
+				world_state_copy, history_stack,
+				final_plan, tasks_to_process
 			)
-			# Record Branch
-			var key: StringName = valid_method_data.get("method_key", task_key)
-			if key not in visited_methods: visited_methods.push_back(key)
-
-			if valid_method_data.is_empty() or valid_method_data["task_chain"].is_empty():	# Not valid
-				# OHHHHHHHHH EVERYTHING IS ON FIRE! GO BACK! GO BACK! GO BA- *LOUD CRASH NOISES*
-				if not _roll_back(history_stack, tasks_to_process, final_plan, world_state_copy):
-					# Failed to find anything to roll back to
-					if task_key == domain["root_key"]:
-						# Back at the root with nothing to roll back to
-						push_warning("Failed plan generations...")
-						return []
-			else:	# Valid
-				# Record a backup
-				_record_decomposition_task(task_key, history_stack, tasks_to_process, final_plan, world_state_copy)
-				# Queue tasks to be processed
-				for task_name: StringName in valid_method_data["task_chain"]:
-					tasks_to_process.push_back(task_name)
+			if not success_flag: return []
 		elif task_key in domain["required_primitives"]:
 			_primitive_library[task_key].apply_effects(world_state_copy)
 			_primitive_library[task_key].apply_expected_effects(world_state_copy)
@@ -127,10 +77,68 @@ func generate_plan(world_states: Dictionary) -> Array[StringName]:
 		elif task_key in domain["effects"]:
 			domain.apply_effects(task_key, world_states)
 			final_plan.push_back(task_key)
+		elif task_key in domain["required_domains"]:
+			var success_flag := _handle_domain(
+				task_key, world_state_copy, history_stack,
+				final_plan, tasks_to_process
+			)
+			if not success_flag: return []
 		else:
 			assert(false, "So like uhh... " + task_key + " isn't something that is in the domain...")
 
-	return final_plan
+	return [final_plan, world_state_copy]
+
+func _handle_domain(
+		task_key: StringName, world_state_copy: Dictionary, history_stack: Array[Dictionary],
+		final_plan: Array[StringName], tasks_to_process: Array[StringName]) -> bool:
+	var generated_data: Array = _generate_plan_from_domain(
+		_sub_domain_library[task_key],
+		world_state_copy
+	)
+	if generated_data.is_empty():	# Failed
+		# OHHHHHHHHH EVERYTHING IS ON FIRE! GO BACK! GO BACK! GO BA- *LOUD CRASH NOISES*
+		if not _roll_back(history_stack, tasks_to_process, final_plan, world_state_copy):
+			# Failed to find anything to roll back to
+			if task_key == domain["root_key"]:
+				# Back at the root with nothing to roll back to
+				push_warning("Failed plan generations...")
+				return false
+	else:	# Valid
+		# Record a backup
+		_record_decomposition_task(task_key, history_stack, tasks_to_process, final_plan, world_state_copy)
+		# Queue tasks to be processed
+		for task_name: StringName in generated_data[0]:
+			tasks_to_process.push_back(task_name)
+	return true
+
+func _handle_compound(
+		task_key: StringName, visited_methods: Array[StringName],
+		world_state_copy: Dictionary, history_stack: Array[Dictionary],
+		final_plan: Array[StringName], tasks_to_process: Array[StringName]) -> bool:
+	var valid_method_data := domain.get_task_chain_from_valid_method(
+		task_key,
+		visited_methods,
+		world_state_copy
+	)
+	# Record Branch
+	var key: StringName = valid_method_data.get("method_key", task_key)
+	if key not in visited_methods: visited_methods.push_back(key)
+
+	if valid_method_data.is_empty() or valid_method_data["task_chain"].is_empty():	# Not valid
+		# OHHHHHHHHH EVERYTHING IS ON FIRE! GO BACK! GO BACK! GO BA- *LOUD CRASH NOISES*
+		if not _roll_back(history_stack, tasks_to_process, final_plan, world_state_copy):
+			# Failed to find anything to roll back to
+			if task_key == domain["root_key"]:
+				# Back at the root with nothing to roll back to
+				push_warning("Failed plan generations...")
+				return false
+	else:	# Valid
+		# Record a backup
+		_record_decomposition_task(task_key, history_stack, tasks_to_process, final_plan, world_state_copy)
+		# Queue tasks to be processed
+		for task_name: StringName in valid_method_data["task_chain"]:
+			tasks_to_process.push_back(task_name)
+	return true
 
 func _roll_back(
 		history_stack: Array[Dictionary], tasks_to_process: Array[StringName],
@@ -140,9 +148,8 @@ func _roll_back(
 	var past_state := history_stack.pop_back()
 	tasks_to_process.assign(past_state["tasks_to_process"])
 	final_plan.assign(past_state["final_plan"])
-	var keys := (past_state["world_state"] as Dictionary).keys()
-	for key: StringName in keys:
-		world_state[key] = past_state["world_state"][key]
+	world_state.clear()
+	world_state.merge(past_state["world_state"], true)
 	return true	# Success
 
 func _record_decomposition_task(
@@ -161,3 +168,29 @@ func _load_primitive_resource(file_path: String) -> HTNPrimitiveTask:
 
 	# TODO: Removed .duplicate() once project upgrades to ver 4.3
 	return ResourceLoader.load(file_path).duplicate()
+
+func _load_domain_resource(file_path: String) -> HTNDomain:
+	assert(FileAccess.file_exists(file_path), "Domain File Doesn't Exist: " + file_path)
+
+	# TODO: Remove .duplicate() once project upgrades to version 4.3
+	return ResourceLoader.load(file_path).duplicate()
+
+func _load_sub_domains(current_name: StringName, current_domain: HTNDomain) -> void:
+	# Check if already loaded
+	if current_name in _sub_domain_library:
+		if not suppress_warnings:
+			push_warning("Domain: " + current_name + " was encountered again.\nThis may lead to recursion issues.")
+		return
+
+	# Load domain
+	var sub_domain: HTNDomain = _load_domain_resource(current_domain["required_domains"][current_name])
+	_sub_domain_library[current_name] = sub_domain
+
+	# Load all valid sub domains
+	for domain_name: StringName in current_domain["required_domains"]:
+		if domain_name in _sub_domain_library:
+			if not suppress_warnings:
+				push_warning("Domain: " + domain_name + " was encountered again.\nThis may lead to recursion issues.")
+			continue
+
+		_load_sub_domains(domain_name, current_domain["required_domains"][domain_name])

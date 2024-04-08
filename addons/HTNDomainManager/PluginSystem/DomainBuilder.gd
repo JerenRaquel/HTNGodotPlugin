@@ -31,6 +31,7 @@ func write_domain_file(file_name: String) -> bool:
 
 	# Gather and record data
 	_clear_previous_data(resource)
+	resource["domain_name"] = file_name
 	_gather_data(resource)
 
 	# Save
@@ -143,6 +144,7 @@ func load_domain_file(file_name: String) -> bool:
 	return true
 
 func _clear_previous_data(resource: HTNDomain) -> void:
+	resource["domain_name"] = ""
 	resource["required_primitives"].clear()
 	resource["required_domains"].clear()
 	resource["compounds"].clear()

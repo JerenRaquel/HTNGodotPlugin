@@ -113,6 +113,7 @@ text = "Simulator Panel"
 [node name="GraphToolsToggle" type="CheckButton" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]
 unique_name_in_owner = true
 layout_mode = 2
+button_pressed = true
 text = "Graph Tools"
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/PluginContainer/ContentContainer/Toolbox"]

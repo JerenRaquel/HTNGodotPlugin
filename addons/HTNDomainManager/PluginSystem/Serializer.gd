@@ -100,7 +100,15 @@ func set_script_export_data(file_name: String, data: Array[Dictionary]) -> bool:
 
 func prettify_task_name(file_name: String) -> String:
 	var result := file_name
-	return _convert_to_class_name(result.split(".")[0])
+	return convert_to_class_name(result.split(".")[0])
+
+func convert_to_class_name(task_name: String) -> String:
+	var tokens = task_name.capitalize().split(" ", false)
+	var result := ""
+	for token in tokens:
+		result += token
+
+	return result
 
 func build_primitive_task(task_name: String) -> void:
 	if task_name.is_empty() or task_name == "": return
@@ -108,7 +116,7 @@ func build_primitive_task(task_name: String) -> void:
 	# TODO: Find out if task resource exists -- Need to find a way
 	# But slapping HTN on everything should help
 
-	var file_name: String = _convert_to_class_name(task_name)
+	var file_name: String = convert_to_class_name(task_name)
 	var script: Script = _build_script(file_name)
 	_build_resource(script, RESOURCE_PATH + file_name + ".tres")
 
@@ -152,13 +160,7 @@ func _delete_files(
 		push_error(error_message)
 		return false
 
-func _convert_to_class_name(task_name: String) -> String:
-	var tokens = task_name.capitalize().split(" ", false)
-	var result := ""
-	for token in tokens:
-		result += token
 
-	return result
 
 func _build_script(task_name: String) -> Script:
 	var file_path := SCRIPT_PATH + task_name +".gd"
