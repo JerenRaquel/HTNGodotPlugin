@@ -53,7 +53,7 @@ func generate_plan(world_states: Dictionary) -> Array[StringName]:
 	return _generate_plan_from_domain(domain, world_states)[0]
 
 # Returns: [final_plan, world_states]
-func _generate_plan_from_domain(domain: HTNDomain, world_states: Dictionary) -> Array:
+func _generate_plan_from_domain(current_domain: HTNDomain, world_states: Dictionary) -> Array:
 	var world_state_copy := world_states.duplicate(true)
 	var tasks_to_process: Array[StringName] = []
 	var final_plan: Array[StringName] = []
@@ -63,82 +63,68 @@ func _generate_plan_from_domain(domain: HTNDomain, world_states: Dictionary) -> 
 	while not tasks_to_process.is_empty():
 		var task_key: StringName = tasks_to_process.pop_back()
 
-		if task_key in domain["compounds"]:
-			var success_flag := _handle_compound(
-				task_key, visited_methods,
-				world_state_copy, history_stack,
-				final_plan, tasks_to_process
+		if task_key in current_domain["compounds"]:
+			var valid_method_data := current_domain.get_task_chain_from_valid_method(
+				task_key,
+				visited_methods,
+				world_state_copy
 			)
-			if not success_flag: return []
-		elif task_key in domain["required_primitives"]:
+			# Record Branch
+			var key: StringName = valid_method_data.get("method_key", task_key)
+			if key not in visited_methods: visited_methods.push_back(key)
+
+			if valid_method_data.is_empty() or valid_method_data["task_chain"].is_empty():	# Not valid
+				# OHHHHHHHHH EVERYTHING IS ON FIRE! GO BACK! GO BACK! GO BA- *LOUD CRASH NOISES*
+				if not _roll_back(history_stack, tasks_to_process, final_plan, world_state_copy):
+					# Failed to find anything to roll back to
+					if task_key == current_domain["root_key"]:
+						# Back at the root with nothing to roll back to
+						push_warning("Failed plan generations...")
+						return []
+			else:	# Valid
+				# Record a backup
+				_record_decomposition_task(task_key, history_stack, tasks_to_process, final_plan, world_state_copy)
+				# Queue tasks to be processed
+				for task_name: StringName in valid_method_data["task_chain"]:
+					tasks_to_process.push_back(task_name)
+		elif task_key in current_domain["required_primitives"]:
 			_primitive_library[task_key].apply_effects(world_state_copy)
 			_primitive_library[task_key].apply_expected_effects(world_state_copy)
 			final_plan.push_back(task_key)
-		elif task_key in domain["effects"]:
-			domain.apply_effects(task_key, world_states)
+		elif task_key in current_domain["effects"]:
+			current_domain.apply_effects(task_key, world_states)
 			final_plan.push_back(task_key)
-		elif task_key in domain["required_domains"]:
-			var success_flag := _handle_domain(
-				task_key, world_state_copy, history_stack,
-				final_plan, tasks_to_process
+		elif task_key in current_domain["required_domains"]:
+			var generated_data: Array = _generate_plan_from_domain(
+				_sub_domain_library[task_key],
+				world_state_copy
 			)
-			if not success_flag: return []
+			if generated_data.is_empty():	# Failed
+				# OHHHHHHHHH EVERYTHING IS ON FIRE! GO BACK! GO BACK! GO BA- *LOUD CRASH NOISES*
+				while true:
+					if not _roll_back(history_stack, tasks_to_process, final_plan, world_state_copy):
+						# Failed to find anything to roll back to
+						# Back at the root with nothing to roll back to
+						return []
+					if tasks_to_process.is_empty():
+						# Nothing to process
+						return []
+
+					var next_task: StringName = tasks_to_process.back()
+					if next_task in current_domain["compounds"]: break
+
+			else:	# Valid
+				# Record a backup
+				_record_decomposition_task(task_key, history_stack, tasks_to_process, final_plan, world_state_copy)
+				# Set the world states
+				world_state_copy.merge(generated_data[1], true)
+				# Queue tasks to be processed
+				for task_name: StringName in generated_data[0]:
+					final_plan.push_back(task_name)
 		else:
-			assert(false, "So like uhh... " + task_key + " isn't something that is in the domain...")
+			assert(false, "So like uhh... " + task_key + " isn't something that is in the current_domain...")
 
 	return [final_plan, world_state_copy]
-
-func _handle_domain(
-		task_key: StringName, world_state_copy: Dictionary, history_stack: Array[Dictionary],
-		final_plan: Array[StringName], tasks_to_process: Array[StringName]) -> bool:
-	var generated_data: Array = _generate_plan_from_domain(
-		_sub_domain_library[task_key],
-		world_state_copy
-	)
-	if generated_data.is_empty():	# Failed
-		# OHHHHHHHHH EVERYTHING IS ON FIRE! GO BACK! GO BACK! GO BA- *LOUD CRASH NOISES*
-		if not _roll_back(history_stack, tasks_to_process, final_plan, world_state_copy):
-			# Failed to find anything to roll back to
-			if task_key == domain["root_key"]:
-				# Back at the root with nothing to roll back to
-				push_warning("Failed plan generations...")
-				return false
-	else:	# Valid
-		# Record a backup
-		_record_decomposition_task(task_key, history_stack, tasks_to_process, final_plan, world_state_copy)
-		# Queue tasks to be processed
-		for task_name: StringName in generated_data[0]:
-			tasks_to_process.push_back(task_name)
-	return true
-
-func _handle_compound(
-		task_key: StringName, visited_methods: Array[StringName],
-		world_state_copy: Dictionary, history_stack: Array[Dictionary],
-		final_plan: Array[StringName], tasks_to_process: Array[StringName]) -> bool:
-	var valid_method_data := domain.get_task_chain_from_valid_method(
-		task_key,
-		visited_methods,
-		world_state_copy
-	)
-	# Record Branch
-	var key: StringName = valid_method_data.get("method_key", task_key)
-	if key not in visited_methods: visited_methods.push_back(key)
-
-	if valid_method_data.is_empty() or valid_method_data["task_chain"].is_empty():	# Not valid
-		# OHHHHHHHHH EVERYTHING IS ON FIRE! GO BACK! GO BACK! GO BA- *LOUD CRASH NOISES*
-		if not _roll_back(history_stack, tasks_to_process, final_plan, world_state_copy):
-			# Failed to find anything to roll back to
-			if task_key == domain["root_key"]:
-				# Back at the root with nothing to roll back to
-				push_warning("Failed plan generations...")
-				return false
-	else:	# Valid
-		# Record a backup
-		_record_decomposition_task(task_key, history_stack, tasks_to_process, final_plan, world_state_copy)
-		# Queue tasks to be processed
-		for task_name: StringName in valid_method_data["task_chain"]:
-			tasks_to_process.push_back(task_name)
-	return true
 
 func _roll_back(
 		history_stack: Array[Dictionary], tasks_to_process: Array[StringName],
