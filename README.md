@@ -1,4 +1,4 @@
-# HTN Godot Plugin - Work in Progress
+# HTN Godot Plugin - Documentation in Progress
 This is a plugin designed to work in the Godot Engine. It facilitates an easy to use visual node based graph editor to setup complex AI interactions for your game development needs. 
 
 The plugin can be seen as two parts: 
