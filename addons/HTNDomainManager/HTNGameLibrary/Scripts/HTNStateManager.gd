@@ -66,6 +66,10 @@ func _finished() -> void:
 	if htn_planner.enable_debugging: print(_agent, "::Finished Task Operation: ", _current_task)
 	if _plan.is_empty():
 		_plan_state = PlanState.IDLE
+		_current_task = ""
+		_plan.clear()
+		_world_state_copy.clear()
+		_agent = null
 		_running_plan = false
 		htn_planner.is_planning = false
 		htn_planner.finished.emit()

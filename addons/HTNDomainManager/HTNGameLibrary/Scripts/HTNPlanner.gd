@@ -118,7 +118,7 @@ func _generate_plan_from_domain(current_domain: HTNDomain, world_states: Diction
 				_record_decomposition_task(task_key, history_stack, tasks_to_process, final_plan, world_state_copy)
 				# Set the world states
 				world_state_copy.merge(generated_data[1], true)
-				# Queue tasks to be processed
+				# Add tasks to the final plan
 				for task_name: StringName in generated_data[0]:
 					final_plan.push_back(task_name)
 		else:
