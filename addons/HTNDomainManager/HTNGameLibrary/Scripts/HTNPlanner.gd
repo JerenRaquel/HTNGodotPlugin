@@ -20,10 +20,10 @@ func _ready() -> void:
 	# Load self
 	_sub_domain_library[domain["domain_name"]] = domain
 	# Load all valid sub domains -- load sub domains in root
-	for domain_name: StringName in domain["required_domains"]:
-		if domain_name in _sub_domain_library: continue
+	for domain_key: StringName in domain["required_domains"]:
+		if domain_key in _sub_domain_library: continue
 		# Keep Digging
-		_load_sub_domains(domain_name, domain["required_domains"][domain_name])
+		_load_sub_domains(domain_key, domain["required_domains"][domain_key])
 
 	for domain_name: StringName in _sub_domain_library.keys():
 		var sub_domain: HTNDomain = _sub_domain_library[domain_name]
@@ -60,8 +60,10 @@ func _generate_plan_from_domain(current_domain: HTNDomain, world_states: Diction
 	var history_stack: Array[Dictionary] = []
 	var visited_methods: Array[StringName] = []
 
+	tasks_to_process.push_back(current_domain["root_key"])
+
 	while not tasks_to_process.is_empty():
-		var task_key: StringName = tasks_to_process.pop_back()
+		var task_key: StringName = tasks_to_process.pop_front()
 
 		if task_key in current_domain["compounds"]:
 			var valid_method_data := current_domain.get_task_chain_from_valid_method(
@@ -99,7 +101,7 @@ func _generate_plan_from_domain(current_domain: HTNDomain, world_states: Diction
 				_sub_domain_library[task_key],
 				world_state_copy
 			)
-			if generated_data.is_empty():	# Failed
+			if generated_data[0].is_empty():	# Failed
 				# OHHHHHHHHH EVERYTHING IS ON FIRE! GO BACK! GO BACK! GO BA- *LOUD CRASH NOISES*
 				while true:
 					if not _roll_back(history_stack, tasks_to_process, final_plan, world_state_copy):
@@ -161,22 +163,22 @@ func _load_domain_resource(file_path: String) -> HTNDomain:
 	# TODO: Remove .duplicate() once project upgrades to version 4.3
 	return ResourceLoader.load(file_path).duplicate()
 
-func _load_sub_domains(current_name: StringName, current_domain: HTNDomain) -> void:
+func _load_sub_domains(domain_key: StringName, current_domain: HTNDomain) -> void:
 	# Check if already loaded
-	if current_name in _sub_domain_library:
+	if domain_key in _sub_domain_library:
 		if not suppress_warnings:
-			push_warning("Domain: " + current_name + " was encountered again.\nThis may lead to recursion issues.")
+			push_warning("Domain: " + domain_key + " was encountered again.\nThis may lead to recursion issues.")
 		return
 
 	# Load domain
-	var sub_domain: HTNDomain = _load_domain_resource(current_domain["required_domains"][current_name])
-	_sub_domain_library[current_name] = sub_domain
+	var sub_domain: HTNDomain = _load_domain_resource(current_domain["required_domains"][domain_key])
+	_sub_domain_library[domain_key] = sub_domain
 
 	# Load all valid sub domains
-	for domain_name: StringName in current_domain["required_domains"]:
-		if domain_name in _sub_domain_library:
+	for domain_sub_key: StringName in current_domain["required_domains"]:
+		if domain_sub_key in _sub_domain_library:
 			if not suppress_warnings:
-				push_warning("Domain: " + domain_name + " was encountered again.\nThis may lead to recursion issues.")
+				push_warning("Domain: " + domain_sub_key + " was encountered again.\nThis may lead to recursion issues.")
 			continue
 
-		_load_sub_domains(domain_name, current_domain["required_domains"][domain_name])
+		_load_sub_domains(domain_sub_key, current_domain["required_domains"][domain_sub_key])

@@ -39,7 +39,7 @@ func _load(data: Dictionary) -> void:
 	_world_state_key = data["key"]
 	compare_option_button.select(data["compare_id"])
 	_compare_id = data["compare_id"]
-	type_option_button.select(_type_id)
+	type_option_button.select(data["type_id"])
 	_show_type_field(data["type_id"])
 	match data["type_id"]:
 		0:

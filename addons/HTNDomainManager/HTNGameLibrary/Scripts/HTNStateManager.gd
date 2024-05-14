@@ -42,7 +42,7 @@ func on_interrupt() -> void:
 	htn_planner.finished.emit()
 
 func _setup() -> void:
-	_current_task = _plan.pop_back()
+	_current_task = _plan.pop_front()
 	_plan_state = PlanState.RUN
 
 func _run() -> void:
