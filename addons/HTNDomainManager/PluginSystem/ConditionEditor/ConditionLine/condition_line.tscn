@@ -38,7 +38,7 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_2xknv")
 
 [node name="WorldStateLineEditor" type="LineEdit" parent="HBoxContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 0)
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 placeholder_text = "World State"
 
@@ -111,10 +111,13 @@ alignment = 2
 [node name="IsTrueToggle" type="CheckButton" parent="DataContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+text = "State:"
 
 [node name="StringValue" type="LineEdit" parent="DataContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
+placeholder_text = "text..."
 
 [node name="XLabel" type="Label" parent="DataContainer"]
 unique_name_in_owner = true
