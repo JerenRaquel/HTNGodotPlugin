@@ -20,6 +20,7 @@ extends VBoxContainer
 #6:	# World State
 
 # Options
+@onready var compare_option: OptionButton = %CompareOption
 @onready var range_type_option: OptionButton = %RangeTypeOption
 @onready var single_type_option: OptionButton = %SingleTypeOption
 # Data
@@ -38,18 +39,82 @@ extends VBoxContainer
 @onready var y_check_box: CheckBox = %YCheckBox
 # Other
 @onready var range_separator: HSeparator = %RangeSeparator
-
-var _compare_type: int
+@onready var world_state_line_editor: LineEdit = %WorldStateLineEditor
 
 func initialize(data: Dictionary = {}) -> void:
 	data_container.hide()
 	if data.is_empty():
 		_show_based_on_compare_type(0)
 	else:	# Load data
-		pass
+		_load_data(data)
+
+func get_data() -> Dictionary:
+	var value
+	if range_type_option.visible:
+		if range_type_option.selected == 0:	# Int:
+			value = Vector2i(x_value.value, y_value.value)
+		else:	# Float
+			value = Vector2(x_value.value, y_value.value)
+	else:	# Single type option
+		match single_type_option.selected:
+			0:	# Boolean
+				value = is_true_toggle.button_pressed
+			1:	# Int
+				value = int(x_value.value)
+			2:	# Float
+				value = float(x_value.value)
+			3, 6:	# String | World State
+				value = string_value.text
+			4:	# Vector2
+				value = Vector2(x_value.value, y_value.value)
+			5:	# Vector3
+				value = Vector3(x_value.value, y_value.value, z_value.value)
+	return {
+		"CompareID": compare_option.selected,
+		"RangeID": range_type_option.selected if range_type_option.visible else -1,
+		"SingleID": single_type_option.selected if single_type_option.visible else -1,
+		"WorldState": world_state_line_editor.text,
+		"Value": value,
+		"RangeInclusivity": [x_check_box.button_pressed, y_check_box.button_pressed]
+	}
+
+func _load_data(data: Dictionary) -> void:
+	world_state_line_editor.text = data["WorldState"]
+	compare_option.select(data["CompareID"])
+	_on_compare_option_item_selected(compare_option.selected)
+	if data["RangeID"] > -1:
+		print(data)
+		range_type_option.select(data["RangeID"])
+		x_check_box.set_pressed_no_signal(data["RangeInclusivity"][0])
+		y_check_box.set_pressed_no_signal(data["RangeInclusivity"][1])
+		_on_range_type_option_item_selected(data["RangeID"])
+		if data["RangeID"] == 0:	# Int
+			x_value.value = int(data["Value"].x)
+			y_value.value = int(data["Value"].y)
+		else:	# Float
+			x_value.value = float(data["Value"].x)
+			y_value.value = float(data["Value"].y)
+	else:
+		single_type_option.select(data["SingleID"])
+		_on_single_type_option_item_selected(single_type_option.selected)
+		match single_type_option.selected:
+			0:	# Boolean
+				is_true_toggle.set_pressed_no_signal(data["Value"])
+			1:	# Int
+				x_value.value = int(data["Value"])
+			3, 6:	# String | World State
+				string_value.text = data["Value"]
+			var idx:
+				if idx == 5:
+					z_value.value = float(data["Value"].z)
+				if idx >= 4:
+					y_value.value = float(data["Value"].y)
+				if idx == 2:
+					x_value.value = float(data["Value"])
+				else:
+					x_value.value = float(data["Value"].x)
 
 func _show_based_on_compare_type(idx: int) -> void:
-	_compare_type = idx
 	_on_data_container_hidden()
 	match idx:
 		0, 1, 3, 4:
@@ -93,13 +158,11 @@ func _show_based_on_single_type_ID(idx: int) -> void:
 			var text: String = "Value: "
 			if idx == 5:	# Vector3
 				_show_spin_box(2, "Z: ", false, false)
-				text = "X: "
 			if idx >= 4:	# Vector2
 				_show_spin_box(1, "Y: ", false, false)
 				text = "X: "
 
 			_show_spin_box(0, text, false, false)
-
 
 func _show_spin_box(component_idx: int, label_text: String, is_rounded: bool, enable_checkbox: bool) -> void:
 	var spin_box: SpinBox
@@ -138,6 +201,7 @@ func _on_delete_button_pressed() -> void:
 	queue_free()
 
 func _on_compare_option_item_selected(index: int) -> void:
+	print("Triggered")
 	_show_based_on_compare_type(index)
 
 func _on_range_type_option_item_selected(index: int) -> void:
