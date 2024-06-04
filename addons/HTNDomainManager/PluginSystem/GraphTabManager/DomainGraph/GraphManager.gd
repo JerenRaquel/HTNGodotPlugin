@@ -52,6 +52,14 @@ func register_node(node: GraphNode, reg_key: StringName="") -> void:
 	node.name = node_key
 	graph_altered.emit()
 
+func register_selected(node: GraphNode) -> void:
+	if node in _selected_nodes: return
+	_selected_nodes.push_back(node)
+
+func unregister_selected(node: GraphNode) -> void:
+	if node not in _selected_nodes: return
+	_selected_nodes.erase(node)
+
 func _on_connection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	pass # Replace with function body.
 
@@ -70,5 +78,5 @@ func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
 func _on_paste_nodes_request() -> void:
 	pass # Replace with function body.
 
-func _on_popup_request(position: Vector2) -> void:
-	pass # Replace with function body.
+func _on_popup_request(_position: Vector2) -> void:
+	_manager.node_spawn_menu.enable()
