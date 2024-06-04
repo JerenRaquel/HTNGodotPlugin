@@ -13,6 +13,9 @@ extends Control
 
 const HTN_ROOT_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/RootNode/htn_root_node.tscn")
 const HTN_COMMENT_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/CommentNode/htn_comment_node.tscn")
+const HTN_SPLITTER_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/SplitterNode/htn_splitter_node.tscn")
+const HTN_METHOD_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/MethodNode/Original/htn_method_node.tscn")
+const HTN_ALWAYS_TRUE_METHOD_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/MethodNode/AlwaysTrue/htn_always_true_method_node.tscn")
 
 @onready var splitter: Button = %Splitter
 @onready var domain_link: Button = %DomainLink
@@ -126,7 +129,7 @@ func _place_and_connect(node_instance: GraphNode) -> void:
 		var to_node := node_instance.name
 		var to_port := node_instance.get_input_port_slot(idx)
 
-		if _manager.current_graph.is_connection_valid(from_node, from_port, to_node, to_port):
+		if _manager.current_graph.connection_handler.is_connection_valid(from_node, from_port, to_node, to_port):
 			_manager.current_graph.connect_node(from_node, from_port, to_node, to_port)
 			connect_node_data.clear()
 			return
@@ -138,16 +141,16 @@ func _set_node_position(node: GraphNode, target_position: Vector2, offset: Vecto
 	node.set_position_offset((target_position + scroll_offset) / zoom + offset)
 
 func _on_splitter_pressed() -> void:
-	pass # Replace with function body.
+	_add_node(HTN_SPLITTER_NODE).initialize(_manager)
 
 func _on_domain_link_pressed() -> void:
 	pass # Replace with function body.
 
 func _on_method_pressed() -> void:
-	pass # Replace with function body.
+	_add_node(HTN_METHOD_NODE).initialize(_manager)
 
 func _on_at_method_pressed() -> void:
-	pass # Replace with function body.
+	_add_node(HTN_ALWAYS_TRUE_METHOD_NODE).initialize(_manager)
 
 func _on_task_pressed() -> void:
 	pass # Replace with function body.
@@ -156,7 +159,7 @@ func _on_applicator_pressed() -> void:
 	pass # Replace with function body.
 
 func _on_comment_pressed() -> void:
-	_add_node(HTN_COMMENT_NODE)
+	_add_node(HTN_COMMENT_NODE).initialize(_manager)
 
 func _on_visibility_changed() -> void:
 	if _manager == null or _manager.current_graph == null:

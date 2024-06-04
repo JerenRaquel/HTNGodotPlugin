@@ -4,6 +4,8 @@ extends GraphEdit
 
 signal graph_altered
 
+@onready var connection_handler: HTNConnectionHandler = $ConnectionHandler
+
 var _manager: HTNDomainManager
 var _root_node: GraphNode
 var _selected_nodes: Array[GraphNode]
@@ -61,13 +63,19 @@ func unregister_selected(node: GraphNode) -> void:
 	_selected_nodes.erase(node)
 
 func _on_connection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
-	pass # Replace with function body.
+	connection_handler.load_connection(from_node, from_port, to_node, to_port)
 
 func _on_connection_to_empty(from_node: StringName, from_port: int, release_position: Vector2) -> void:
-	pass # Replace with function body.
+	_manager.node_spawn_menu.connect_node_data = {
+		"from_node": from_node,
+		"from_port": from_port,
+		"release_position": release_position
+	}
+	_manager.node_spawn_menu.enable(connection_handler.get_output_port_type(from_node, from_port))
 
 func _on_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
-	pass # Replace with function body.
+	disconnect_node(from_node, from_port, to_node, to_port)
+	graph_altered.emit()
 
 func _on_copy_nodes_request() -> void:
 	pass # Replace with function body.

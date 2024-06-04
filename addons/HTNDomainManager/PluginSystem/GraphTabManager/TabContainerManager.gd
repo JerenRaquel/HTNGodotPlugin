@@ -1,5 +1,5 @@
 @tool
-class_name TabGraphManager
+class_name HTNTabGraphManager
 extends TabContainer
 
 const GRAPH_TAB = preload("res://addons/HTNDomainManager/PluginSystem/GraphTabManager/GraphTab/graph_tab.tscn")

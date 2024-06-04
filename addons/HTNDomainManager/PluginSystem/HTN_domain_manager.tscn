@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://bxjws2hrnn63e"]
+[gd_scene load_steps=7 format=3 uid="uid://bxjws2hrnn63e"]
 
 [ext_resource type="Theme" uid="uid://diu3ahrw1puva" path="res://addons/HTNDomainManager/PluginSystem/PluginTheme.tres" id="1_4moif"]
 [ext_resource type="PackedScene" uid="uid://bel7aoiqishu0" path="res://addons/HTNDomainManager/PluginSystem/GraphTabManager/tab_graph_container.tscn" id="2_n8gmp"]
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/HTNDomainManager.gd" id="2_un2xf"]
 [ext_resource type="PackedScene" uid="uid://53r2l0aa47xe" path="res://addons/HTNDomainManager/PluginSystem/NodeSpawnMenu/node_spawn_menu.tscn" id="4_2r86d"]
+[ext_resource type="PackedScene" uid="uid://d2k5i0p65qudy" path="res://addons/HTNDomainManager/PluginSystem/ConditionEditor/condition_editor.tscn" id="5_j8nky"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o5cyj"]
 
@@ -108,4 +109,8 @@ layout_mode = 2
 
 [node name="NodeSpawnMenu" parent="." instance=ExtResource("4_2r86d")]
 unique_name_in_owner = true
+
+[node name="ConditionEditor" parent="." instance=ExtResource("5_j8nky")]
+unique_name_in_owner = true
 visible = false
+layout_mode = 1

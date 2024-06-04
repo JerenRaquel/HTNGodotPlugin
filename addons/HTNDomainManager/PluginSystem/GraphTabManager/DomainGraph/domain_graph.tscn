@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://by5bcofkf83ks"]
+[gd_scene load_steps=3 format=3 uid="uid://by5bcofkf83ks"]
 
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/GraphTabManager/DomainGraph/GraphManager.gd" id="1_lhp4v"]
+[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/GraphTabManager/DomainGraph/ConnectionHandler.gd" id="2_4wphh"]
 
 [node name="DomainGraph" type="GraphEdit"]
 anchors_preset = 15
@@ -11,6 +12,12 @@ grow_vertical = 2
 show_zoom_label = true
 show_arrange_button = false
 script = ExtResource("1_lhp4v")
+
+[node name="ConnectionHandler" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_4wphh")
 
 [connection signal="connection_request" from="." to="." method="_on_connection_request"]
 [connection signal="connection_to_empty" from="." to="." method="_on_connection_to_empty"]
