@@ -11,6 +11,7 @@ signal graph_tool_bar_toggled(state: bool)
 # Other
 @onready var node_spawn_menu: HTNNodeSpawnMenu = %NodeSpawnMenu
 @onready var condition_editor: HTNConditionEditor = %ConditionEditor
+@onready var effect_editor: HTNEffectEditor = %EffectEditor
 
 var current_graph: HTNDomainGraph = null
 
@@ -21,3 +22,4 @@ func _ready() -> void:
 	tab_container.initialize(self)
 	node_spawn_menu.initialize(self)
 	condition_editor.initialize(self)
+	effect_editor.initialize(self)

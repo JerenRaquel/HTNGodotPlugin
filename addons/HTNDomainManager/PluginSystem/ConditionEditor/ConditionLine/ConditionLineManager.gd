@@ -115,7 +115,7 @@ func _load_data(data: Dictionary) -> void:
 					x_value.value = float(data["Value"].x)
 
 func _show_based_on_compare_type(idx: int) -> void:
-	_on_data_container_hidden()
+	_hide_data_container()
 	match idx:
 		0, 1, 3, 4:
 			range_type_option.hide()
@@ -197,11 +197,21 @@ func _hide_data_fields() -> void:
 	y_label.hide()
 	z_label.hide()
 
+func _hide_data_container() -> void:
+	_hide_data_fields()
+	x_check_box.hide()
+	y_check_box.hide()
+	range_separator.hide()
+	single_type_option.set_item_disabled(0, false)
+	single_type_option.set_item_disabled(3, false)
+	single_type_option.set_item_disabled(4, false)
+	single_type_option.set_item_disabled(5, false)
+	single_type_option.set_item_disabled(6, false)
+
 func _on_delete_button_pressed() -> void:
 	queue_free()
 
 func _on_compare_option_item_selected(index: int) -> void:
-	print("Triggered")
 	_show_based_on_compare_type(index)
 
 func _on_range_type_option_item_selected(index: int) -> void:
@@ -212,13 +222,12 @@ func _on_range_type_option_item_selected(index: int) -> void:
 func _on_single_type_option_item_selected(index: int) -> void:
 	_show_based_on_single_type_ID(index)
 
-func _on_data_container_hidden() -> void:
-	_hide_data_fields()
-	x_check_box.hide()
-	y_check_box.hide()
-	range_separator.hide()
-	single_type_option.set_item_disabled(0, false)
-	single_type_option.set_item_disabled(3, false)
-	single_type_option.set_item_disabled(4, false)
-	single_type_option.set_item_disabled(5, false)
-	single_type_option.set_item_disabled(6, false)
+func _on_visibility_changed() -> void:
+	if visible:
+		_on_compare_option_item_selected(compare_option.selected)
+		if range_type_option.visible:
+			_on_range_type_option_item_selected(range_type_option.selected)
+		else:
+			_on_single_type_option_item_selected(single_type_option.selected)
+	else:
+		_hide_data_container()

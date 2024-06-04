@@ -16,6 +16,7 @@ const HTN_COMMENT_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nod
 const HTN_SPLITTER_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/SplitterNode/htn_splitter_node.tscn")
 const HTN_METHOD_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/MethodNode/Original/htn_method_node.tscn")
 const HTN_ALWAYS_TRUE_METHOD_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/MethodNode/AlwaysTrue/htn_always_true_method_node.tscn")
+const HTN_APPLICATOR_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/ApplicatorNode/htn_applicator_node.tscn")
 
 @onready var splitter: Button = %Splitter
 @onready var domain_link: Button = %DomainLink
@@ -156,7 +157,7 @@ func _on_task_pressed() -> void:
 	pass # Replace with function body.
 
 func _on_applicator_pressed() -> void:
-	pass # Replace with function body.
+	_add_node(HTN_APPLICATOR_NODE).initialize(_manager)
 
 func _on_comment_pressed() -> void:
 	_add_node(HTN_COMMENT_NODE).initialize(_manager)
