@@ -17,6 +17,7 @@ extends VBoxContainer
 #3:	# String
 #4:	# Vector2
 #5:	# Vector3
+#6:	# World State
 
 # Options
 @onready var range_type_option: OptionButton = %RangeTypeOption
@@ -58,6 +59,7 @@ func _show_based_on_compare_type(idx: int) -> void:
 			single_type_option.set_item_disabled(3, true)
 			single_type_option.set_item_disabled(4, true)
 			single_type_option.set_item_disabled(5, true)
+			single_type_option.set_item_disabled(6, true)
 			if single_type_option.selected != 1 and single_type_option.selected != 2:
 				single_type_option.select(1)
 			_show_based_on_single_type_ID(single_type_option.selected)
@@ -75,13 +77,17 @@ func _show_based_on_compare_type(idx: int) -> void:
 
 func _show_based_on_single_type_ID(idx: int) -> void:
 	if not data_container.visible: data_container.show()
-	_on_data_container_hidden()
+	_hide_data_fields()
 	match idx:
 		0:	# Boolean
 			is_true_toggle.show()
 		1:	# Int
 			_show_spin_box(0, "Value: ", true, false)
 		3:	# String
+			string_value.placeholder_text = "Text..."
+			string_value.show()
+		6:	# World State
+			string_value.placeholder_text = "World State..."
 			string_value.show()
 		_:	# Float Based Data Types
 			var text: String = "Value: "
@@ -118,6 +124,16 @@ func _show_spin_box(component_idx: int, label_text: String, is_rounded: bool, en
 	label.text = label_text
 	label.show()
 
+func _hide_data_fields() -> void:
+	is_true_toggle.hide()
+	string_value.hide()
+	x_value.hide()
+	y_value.hide()
+	z_value.hide()
+	x_label.hide()
+	y_label.hide()
+	z_label.hide()
+
 func _on_delete_button_pressed() -> void:
 	queue_free()
 
@@ -133,14 +149,7 @@ func _on_single_type_option_item_selected(index: int) -> void:
 	_show_based_on_single_type_ID(index)
 
 func _on_data_container_hidden() -> void:
-	is_true_toggle.hide()
-	string_value.hide()
-	x_value.hide()
-	y_value.hide()
-	z_value.hide()
-	x_label.hide()
-	y_label.hide()
-	z_label.hide()
+	_hide_data_fields()
 	x_check_box.hide()
 	y_check_box.hide()
 	range_separator.hide()
@@ -148,3 +157,4 @@ func _on_data_container_hidden() -> void:
 	single_type_option.set_item_disabled(3, false)
 	single_type_option.set_item_disabled(4, false)
 	single_type_option.set_item_disabled(5, false)
+	single_type_option.set_item_disabled(6, false)
