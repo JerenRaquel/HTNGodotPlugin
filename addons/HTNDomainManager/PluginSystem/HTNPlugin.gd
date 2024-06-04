@@ -3,13 +3,13 @@ extends EditorPlugin
 
 const HTN_DOMAIN_MANAGER = preload("res://addons/HTNDomainManager/PluginSystem/HTN_domain_manager.tscn")
 const PLUGIN_NAME := "HTNDomainManager"
-const HTN_DATABASE_SCRIPT = "res://addons/HTNDomainManager/PluginSystem/ReferenceFiles/HTNDatabase.gd"
+#const HTN_DATABASE_SCRIPT = "res://addons/HTNDomainManager/PluginSystem/ReferenceFiles/HTNDatabase.gd"
 
 var manager: Control
 
 func _enter_tree() -> void:
 	manager = HTN_DOMAIN_MANAGER.instantiate()
-	add_autoload_singleton("HTNDatabase", HTN_DATABASE_SCRIPT)
+	#add_autoload_singleton("HTNDatabase", HTN_DATABASE_SCRIPT)
 	EditorInterface.get_editor_main_screen().add_child(manager)
 	_make_visible(false)
 	#manager.visibility_changed.connect(
@@ -22,12 +22,13 @@ func _enter_tree() -> void:
 	main_screen_changed.connect(
 		func(screen_name: String):
 			if screen_name == PLUGIN_NAME:
-				manager.grab_focus()
+				manager.set_focus_mode(Control.FOCUS_CLICK)
+				#manager.grab_focus()
 	)
 
 func _exit_tree() -> void:
 	if manager:
-		remove_autoload_singleton("HTNDatabase")
+		#remove_autoload_singleton("HTNDatabase")
 		manager.queue_free()
 
 func _has_main_screen() -> bool:

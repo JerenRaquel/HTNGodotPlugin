@@ -1,4 +1,11 @@
-[gd_scene format=3 uid="uid://bxjws2hrnn63e"]
+[gd_scene load_steps=6 format=3 uid="uid://bxjws2hrnn63e"]
+
+[ext_resource type="Theme" uid="uid://diu3ahrw1puva" path="res://addons/HTNDomainManager/PluginSystem/PluginTheme.tres" id="1_4moif"]
+[ext_resource type="PackedScene" uid="uid://bel7aoiqishu0" path="res://addons/HTNDomainManager/PluginSystem/GraphTabManager/tab_graph_container.tscn" id="2_n8gmp"]
+[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/HTNDomainManager.gd" id="2_un2xf"]
+[ext_resource type="PackedScene" uid="uid://53r2l0aa47xe" path="res://addons/HTNDomainManager/PluginSystem/NodeSpawnMenu/node_spawn_menu.tscn" id="4_2r86d"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o5cyj"]
 
 [node name="HTNDomainManager" type="Control"]
 layout_mode = 3
@@ -7,3 +14,98 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+theme = ExtResource("1_4moif")
+script = ExtResource("2_un2xf")
+metadata/_edit_lock_ = true
+
+[node name="ContainerRoot" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_edit_lock_ = true
+
+[node name="PluginContainer" type="VBoxContainer" parent="ContainerRoot"]
+layout_mode = 2
+mouse_filter = 2
+metadata/_edit_lock_ = true
+
+[node name="BuildNotice" type="Label" parent="ContainerRoot/PluginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 0
+metadata/_edit_lock_ = true
+
+[node name="ContentContainer" type="VBoxContainer" parent="ContainerRoot/PluginContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+metadata/_edit_lock_ = true
+metadata/_edit_group_ = true
+
+[node name="ToolBox" type="HBoxContainer" parent="ContainerRoot/PluginContainer/ContentContainer"]
+layout_mode = 2
+
+[node name="TaskPanelButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
+layout_mode = 2
+text = "Task Panel"
+
+[node name="GotoPanelButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
+layout_mode = 2
+text = "Goto Panel"
+
+[node name="GraphToolsToggle" type="CheckButton" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
+unique_name_in_owner = true
+layout_mode = 2
+button_pressed = true
+text = "Graph Tools"
+
+[node name="HSeparator" type="HSeparator" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_o5cyj")
+
+[node name="FileLoadedLabel" type="Label" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
+layout_mode = 2
+text = "No File Loaded"
+horizontal_alignment = 2
+
+[node name="ClearGraphButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
+layout_mode = 2
+text = "Clear Graph"
+
+[node name="QuickBuildButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
+layout_mode = 2
+text = "Quick Build"
+
+[node name="DomainPanelButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
+layout_mode = 2
+text = "Domain Panel"
+
+[node name="EditorContainer" type="HBoxContainer" parent="ContainerRoot/PluginContainer/ContentContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 0
+
+[node name="LeftSidePanelContainer" type="PanelContainer" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer"]
+layout_mode = 2
+
+[node name="TabContainer" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer" instance=ExtResource("2_n8gmp")]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="RightSidePanelContainer" type="PanelContainer" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer"]
+layout_mode = 2
+
+[node name="NodeSpawnMenu" parent="." instance=ExtResource("4_2r86d")]
+unique_name_in_owner = true
+visible = false

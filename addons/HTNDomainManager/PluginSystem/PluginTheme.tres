@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=16 format=3 uid="uid://dnjawm4lkym68"]
+[gd_resource type="Theme" load_steps=18 format=3 uid="uid://diu3ahrw1puva"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ovtam"]
 
@@ -81,6 +81,20 @@ bg_color = Color(0.211765, 0.239216, 0.290196, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h3nwt"]
 bg_color = Color(0.145098, 0.168627, 0.203922, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2oasg"]
+content_margin_left = 5.0
+content_margin_right = 5.0
+bg_color = Color(0.211765, 0.239216, 0.290196, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_owcwy"]
+content_margin_left = 5.0
+content_margin_right = 5.0
+bg_color = Color(0.145098, 0.168627, 0.203922, 1)
+border_width_left = 2
+border_width_top = 4
+border_width_right = 2
+border_color = Color(0.104863, 0.123787, 0.152174, 1)
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l0q5x"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w6xnk"]
@@ -133,6 +147,8 @@ Panel/styles/panel = SubResource("StyleBoxFlat_qjv3a")
 PopupMenu/colors/font_hover_color = Color(0.384314, 0.615686, 0.819608, 1)
 PopupMenu/styles/hover = SubResource("StyleBoxFlat_j45p7")
 PopupMenu/styles/panel = SubResource("StyleBoxFlat_h3nwt")
+TabContainer/styles/tab_hovered = SubResource("StyleBoxFlat_2oasg")
+TabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_owcwy")
 TextEdit/styles/focus = SubResource("StyleBoxEmpty_l0q5x")
 TextEdit/styles/normal = SubResource("StyleBoxFlat_w6xnk")
 VScrollBar/styles/scroll = SubResource("StyleBoxFlat_ea0n3")
