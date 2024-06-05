@@ -36,6 +36,12 @@ func check_if_valid_name(task_name: String) -> bool:
 func get_all_task_names() -> Array:
 	return HTN_REFERENCE_FILE["tasks"].keys()
 
+func get_awaiting_task_state(task_name: String) -> bool:
+	return HTN_REFERENCE_FILE["tasks"][task_name]["requires_awaiting"]
+
+func toggle_awaiting_task_state(task_name: String, state: bool) -> void:
+	HTN_REFERENCE_FILE["tasks"][task_name]["requires_awaiting"] = state
+
 func create_task(task_name: String) -> bool:
 	if task_name.is_empty(): return false
 	if not check_if_valid_name(task_name): return false
