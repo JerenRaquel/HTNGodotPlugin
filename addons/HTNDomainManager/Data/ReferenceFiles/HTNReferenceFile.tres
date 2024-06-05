@@ -11,9 +11,5 @@ requires_awaiting = false
 script = ExtResource("1_yjvic")
 domains = {}
 graph_saves = {}
-tasks = {
-"test": SubResource("Resource_teymi")
-}
-scripts = {
-"test": "res://addons/HTNDomainManager/Data/Scripts/test.gd"
-}
+tasks = {}
+scripts = {}
