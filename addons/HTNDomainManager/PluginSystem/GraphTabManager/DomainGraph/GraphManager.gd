@@ -54,6 +54,15 @@ func register_node(node: GraphNode, reg_key: StringName="") -> String:
 	_manager.graph_altered.emit()
 	return node_key
 
+func clear() -> void:
+	var node_keys: Array = nodes.keys()
+	for node_key in node_keys:
+		var node = nodes[node_key]
+		if node is HTNRootNode: continue
+		_delete_node(node)
+	_current_ID = 1
+	_manager.graph_altered.emit()
+
 func get_node_offset_by_key(node_key: StringName) -> Dictionary:
 	if node_key not in nodes: return {}
 
@@ -88,6 +97,12 @@ func get_node_keys_with_meta() -> Dictionary:
 		}
 	return data
 
+func _delete_node(node: HTNBaseNode) -> void:
+	connection_handler.remove_connections(node)
+	if not nodes.erase(node.name):
+		push_error(node.name + " did not exist and is trying to erase.")
+	node.free()
+
 func _on_connection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	connection_handler.load_connection(from_node, from_port, to_node, to_port)
 
@@ -111,10 +126,7 @@ func _on_delete_nodes_request(selected_nodes: Array[StringName]) -> void:
 		if node is HTNRootNode:
 			continue
 
-		connection_handler.remove_connections(node)
-		if not nodes.erase(node.name):
-			push_error(node.name + " did not exist and is trying to erase.")
-		node.free()
+		_delete_node(node)
 	_manager.graph_altered.emit()
 
 func _on_copy_nodes_request() -> void:

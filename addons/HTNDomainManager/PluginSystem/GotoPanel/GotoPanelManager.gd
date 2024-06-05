@@ -11,6 +11,7 @@ var _manager: HTNDomainManager
 func initialize(manager: HTNDomainManager) -> void:
 	_manager = manager
 	_manager.graph_altered.connect(_refresh)
+	_manager.graph_tab_changed.connect(_refresh)
 	_manager.node_name_altered.connect(_refresh)
 	hide()
 
@@ -20,13 +21,14 @@ func _refresh() -> void:
 	search_bar.clear()
 	goto_root_button.disabled = (_manager.current_graph == null)
 
-	if not _manager.current_graph:
-		search_bar.editable = false
-		return
-
+	# Clear container
 	for child: Button in goto_container.get_children():
 		if child.is_queued_for_deletion(): continue
 		child.queue_free()
+
+	if not _manager.current_graph:
+		search_bar.editable = false
+		return
 
 	var node_naming_data: Dictionary = _manager.current_graph.get_node_keys_with_meta()
 	var node_keys: Array[StringName] = []

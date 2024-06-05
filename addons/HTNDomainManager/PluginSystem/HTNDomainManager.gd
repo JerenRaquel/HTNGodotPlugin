@@ -4,6 +4,7 @@ extends Control
 
 signal graph_tool_bar_toggled(state: bool)
 signal graph_altered
+signal graph_tab_changed
 signal task_created
 signal task_deleted
 signal node_name_altered
@@ -58,3 +59,7 @@ func _on_goto_panel_button_toggled(toggled_on: bool) -> void:
 	else:
 		goto_panel.hide()
 		left_v_separator.hide()
+
+func _on_clear_graph_button_pressed() -> void:
+	if not current_graph: return
+	current_graph.clear()

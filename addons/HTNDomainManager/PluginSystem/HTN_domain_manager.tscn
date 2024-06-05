@@ -96,11 +96,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxEmpty_o5cyj")
 
-[node name="FileLoadedLabel" type="Label" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
-layout_mode = 2
-text = "No File Loaded"
-horizontal_alignment = 2
-
 [node name="ClearGraphButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
 layout_mode = 2
 text = "Clear Graph"
@@ -158,3 +153,4 @@ layout_mode = 1
 
 [connection signal="toggled" from="ContainerRoot/PluginContainer/ContentContainer/ToolBox/TaskPanelButton" to="." method="_on_task_panel_button_toggled"]
 [connection signal="toggled" from="ContainerRoot/PluginContainer/ContentContainer/ToolBox/GotoPanelButton" to="." method="_on_goto_panel_button_toggled"]
+[connection signal="pressed" from="ContainerRoot/PluginContainer/ContentContainer/ToolBox/ClearGraphButton" to="." method="_on_clear_graph_button_pressed"]

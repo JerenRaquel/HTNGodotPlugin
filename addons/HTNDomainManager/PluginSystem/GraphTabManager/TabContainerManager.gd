@@ -35,7 +35,9 @@ func _create_new_tab() -> void:
 	_empty_tab_idx += 1
 
 func _on_tab_changed(tab: int) -> void:
-	_manager.graph_altered.emit()
+	var tab_ctx: HTNGraphTab = get_tab_control(tab)
+	_manager.current_graph = tab_ctx.domain_graph
+	_manager.graph_tab_changed.emit()
 
 func _on_tab_button_pressed(tab: int) -> void:
 	_manager.graph_altered.emit()
