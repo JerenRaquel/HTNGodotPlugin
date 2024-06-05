@@ -123,6 +123,7 @@ layout_mode = 2
 
 [node name="LeftVSeparator" type="VSeparator" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
 [node name="TabContainer" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer" instance=ExtResource("2_n8gmp")]

@@ -4,20 +4,23 @@ extends VBoxContainer
 
 const TASK_LINE = preload("res://addons/HTNDomainManager/PluginSystem/TaskPanel/TaskLine/task_line.tscn")
 
-signal task_created
-
 @onready var task_name_line_edit: LineEdit = %TaskNameLineEdit
 @onready var task_list: VBoxContainer = %TaskList
 
 var _manager: HTNDomainManager
+var _avoid_refresh := false
 
 func initialize(manager: HTNDomainManager) -> void:
 	_manager = manager
 	hide()
 	_refresh_list()
-	task_created.connect(_refresh_list)
+	_manager.task_created.connect(_refresh_list)
 
 func _refresh_list() -> void:
+	if _avoid_refresh:
+		_avoid_refresh = false
+		return
+
 	for child: HTNTaskLine in task_list.get_children():
 		if child.is_queued_for_deletion(): continue
 		child.queue_free()
@@ -82,6 +85,8 @@ func _on_create_button_pressed() -> void:
 	if not _manager.file_manager.create_task(task_name): return
 
 	_create_task_line(task_name)
+	_avoid_refresh = true
+	_manager.task_created.emit()
 
 func _on_search_bar_text_changed(new_text: String) -> void:
 	_filter_children(new_text)

@@ -3,6 +3,7 @@ class_name HTNDomainManager
 extends Control
 
 signal graph_tool_bar_toggled(state: bool)
+signal task_created
 signal task_deleted
 
 # Toolbar
