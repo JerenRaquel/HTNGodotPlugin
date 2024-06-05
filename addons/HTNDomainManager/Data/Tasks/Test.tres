@@ -1,7 +1,0 @@
-[gd_resource type="Resource" script_class="HTNTest" load_steps=2 format=3 uid="uid://ob0k803gvpdj"]
-
-[ext_resource type="Script" path="res://addons/HTNDomainManager/Data/Scripts/test.gd" id="1_sshcr"]
-
-[resource]
-script = ExtResource("1_sshcr")
-requires_awaiting = false
