@@ -23,4 +23,4 @@ addons/HTNDomainManager/Data/Domains/*.tres
 addons/HTNDomainManager/Data/GraphSaves/*.tres
 addons/HTNDomainManager/Data/Scripts/*.gd
 addons/HTNDomainManager/Data/Tasks/*.tres
-addons/HTNDomainManager/Data/ReferenceFiles/*.tres
+addons/HTNDomainManager/Data/ReferenceFiles/HTNReferenceFile.tres
