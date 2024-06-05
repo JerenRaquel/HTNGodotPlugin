@@ -4,21 +4,17 @@ extends HTNBaseNode
 
 @onready var nick_name: LineEdit = $NickName
 
-var _nick_name: String
-
 func initialize(manager: HTNDomainManager) -> void:
 	super(manager)
 
 func get_node_name() -> String:
-	return _nick_name
+	return nick_name.text
 
 func validate_self() -> String:
 	return ""
 
 func load_data(data) -> void:
-	var parsed_nickname := (data as String)
-	nick_name.text = parsed_nickname
-	_nick_name = parsed_nickname
+	nick_name.text = (data as String)
 
-func _on_nick_name_text_changed(new_text: String) -> void:
-	_nick_name = new_text
+func _on_nick_name_text_submitted(new_text: String) -> void:
+	_manager.node_name_altered.emit()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bxjws2hrnn63e"]
+[gd_scene load_steps=11 format=3 uid="uid://bxjws2hrnn63e"]
 
 [ext_resource type="Theme" uid="uid://diu3ahrw1puva" path="res://addons/HTNDomainManager/PluginSystem/PluginTheme.tres" id="1_4moif"]
 [ext_resource type="PackedScene" uid="uid://bel7aoiqishu0" path="res://addons/HTNDomainManager/PluginSystem/GraphTabManager/tab_graph_container.tscn" id="2_n8gmp"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/FileManager.gd" id="3_nt8yi"]
 [ext_resource type="PackedScene" uid="uid://53r2l0aa47xe" path="res://addons/HTNDomainManager/PluginSystem/NodeSpawnMenu/node_spawn_menu.tscn" id="4_2r86d"]
 [ext_resource type="PackedScene" uid="uid://bl31umnhdg1uw" path="res://addons/HTNDomainManager/PluginSystem/TaskPanel/task_panel.tscn" id="4_dcdp5"]
+[ext_resource type="PackedScene" uid="uid://4rfd8im0s35y" path="res://addons/HTNDomainManager/PluginSystem/GotoPanel/goto_panel.tscn" id="5_arhpn"]
 [ext_resource type="PackedScene" uid="uid://d2k5i0p65qudy" path="res://addons/HTNDomainManager/PluginSystem/ConditionEditor/condition_editor.tscn" id="5_j8nky"]
 [ext_resource type="PackedScene" uid="uid://bt8e1tea2412b" path="res://addons/HTNDomainManager/PluginSystem/EffectEditor/effect_editor.tscn" id="6_kek1x"]
 
@@ -73,12 +74,15 @@ metadata/_edit_group_ = true
 layout_mode = 2
 
 [node name="TaskPanelButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
+unique_name_in_owner = true
 layout_mode = 2
 toggle_mode = true
 text = "Task Panel"
 
 [node name="GotoPanelButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
+unique_name_in_owner = true
 layout_mode = 2
+toggle_mode = true
 text = "Goto Panel"
 
 [node name="GraphToolsToggle" type="CheckButton" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
@@ -119,6 +123,12 @@ layout_mode = 2
 
 [node name="TaskPanel" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer/LeftSidePanelContainer" instance=ExtResource("4_dcdp5")]
 unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="GotoPanel" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer/LeftSidePanelContainer" instance=ExtResource("5_arhpn")]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
 [node name="LeftVSeparator" type="VSeparator" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer"]
@@ -147,3 +157,4 @@ visible = false
 layout_mode = 1
 
 [connection signal="toggled" from="ContainerRoot/PluginContainer/ContentContainer/ToolBox/TaskPanelButton" to="." method="_on_task_panel_button_toggled"]
+[connection signal="toggled" from="ContainerRoot/PluginContainer/ContentContainer/ToolBox/GotoPanelButton" to="." method="_on_goto_panel_button_toggled"]

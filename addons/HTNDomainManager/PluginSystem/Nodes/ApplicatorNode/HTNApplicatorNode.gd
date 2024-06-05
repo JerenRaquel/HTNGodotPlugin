@@ -7,6 +7,7 @@ extends HTNBaseNode
 var _nick_name: String:
 	set(value):
 		_nick_name = value
+		_manager.node_name_altered.emit()
 		if value.is_empty():
 			title = "Applicator"
 		else:

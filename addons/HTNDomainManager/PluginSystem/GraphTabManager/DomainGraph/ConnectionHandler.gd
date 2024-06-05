@@ -13,7 +13,7 @@ func remove_connections(node: GraphNode) -> void:
 				connection.to_node,
 				connection.to_port
 			)
-	domain_graph.graph_altered.emit()
+	domain_graph._manager.graph_altered.emit()
 
 func get_output_port_type(node: StringName, port: int) -> int:
 	var graph_node := (domain_graph.nodes[node] as HTNBaseNode)
@@ -34,4 +34,4 @@ func is_connection_valid(from_node: StringName, from_port: int, to_node: StringN
 func load_connection(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	if is_connection_valid(from_node, from_port, to_node, to_port):
 		domain_graph.connect_node(from_node, from_port, to_node, to_port)
-		domain_graph.graph_altered.emit()
+		domain_graph._manager.graph_altered.emit()

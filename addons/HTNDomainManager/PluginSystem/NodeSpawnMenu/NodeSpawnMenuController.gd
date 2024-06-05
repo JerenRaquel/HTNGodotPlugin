@@ -67,18 +67,18 @@ func enable(port_type: int=-1) -> void:
 	show()
 	global_position = get_global_mouse_position()
 
-func spawn_root() -> HTNRootNode:
+func spawn_root() -> Array:
 	assert(_manager.current_graph != null, "Current Graph is NULL")
 
 	var root_instance: HTNRootNode = HTN_ROOT_NODE.instantiate()
 	_manager.current_graph.add_child(root_instance)
-	_manager.current_graph.register_node(root_instance)
+	var root_key: String = _manager.current_graph.register_node(root_instance)
 	_set_node_position(
 		root_instance,
 		Vector2.ZERO,
 		root_instance.size * Vector2(0.5, 1.0)
 	)
-	return root_instance
+	return [root_instance, root_key]
 
 func _show_all() -> void:
 	splitter.show()

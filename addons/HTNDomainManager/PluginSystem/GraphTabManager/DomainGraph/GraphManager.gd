@@ -2,13 +2,12 @@
 class_name HTNDomainGraph
 extends GraphEdit
 
-signal graph_altered
-
 @onready var connection_handler: HTNConnectionHandler = $ConnectionHandler
 
 var _manager: HTNDomainManager
 var _root_node: GraphNode
 var _current_ID: int = 0
+var root_key: String
 
 var nodes: Dictionary = {}
 
@@ -18,7 +17,9 @@ func initialize(manager: HTNDomainManager) -> void:
 	add_valid_connection_type(1, 1)
 	add_valid_connection_type(2, 2)
 
-	_root_node = _manager.node_spawn_menu.spawn_root()
+	var data: Array = _manager.node_spawn_menu.spawn_root()
+	_root_node = data[0]
+	root_key = data[1]
 
 func generate_node_key() -> StringName:
 	var ID := _current_ID
@@ -41,7 +42,7 @@ func generate_node_key() -> StringName:
 
 	return key	# This is the internal ID and you will love it >:3 ~ I was eating lol
 
-func register_node(node: GraphNode, reg_key: StringName="") -> void:
+func register_node(node: GraphNode, reg_key: StringName="") -> String:
 	var node_key: StringName
 	if reg_key != "":
 		node_key = reg_key
@@ -50,7 +51,42 @@ func register_node(node: GraphNode, reg_key: StringName="") -> void:
 
 	nodes[node_key] = node
 	node.name = node_key
-	graph_altered.emit()
+	_manager.graph_altered.emit()
+	return node_key
+
+func get_node_offset_by_key(node_key: StringName) -> Dictionary:
+	if node_key not in nodes: return {}
+
+	var node = nodes[node_key]
+	return {
+		"offset": node.position_offset,
+		"size": node.size
+	}
+
+func get_node_keys_with_meta() -> Dictionary:
+	var data := {}
+	for node_key: StringName in nodes.keys():
+		var type: String
+		if nodes[node_key] is HTNRootNode:
+			type = "Root"
+		elif nodes[node_key] is HTNApplicatorNode:
+			type = "Applicator"
+		elif nodes[node_key] is HTNCommentNode:
+			type = "Comment"
+		elif nodes[node_key] is HTNMethodNodeAlwaysTrue:
+			type = "Always True Method"
+		elif nodes[node_key] is HTNMethodNode:
+			type = "Method"
+		elif nodes[node_key] is HTNSplitterNode:
+			type = "Splitter"
+		elif nodes[node_key] is HTNTaskNode:
+			type = "Task"
+
+		data[node_key] = {
+			"name": (nodes[node_key] as HTNBaseNode).get_node_name(),
+			"type": type
+		}
+	return data
 
 func _on_connection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	connection_handler.load_connection(from_node, from_port, to_node, to_port)
@@ -65,7 +101,7 @@ func _on_connection_to_empty(from_node: StringName, from_port: int, release_posi
 
 func _on_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	disconnect_node(from_node, from_port, to_node, to_port)
-	graph_altered.emit()
+	_manager.graph_altered.emit()
 
 func _on_delete_nodes_request(selected_nodes: Array[StringName]) -> void:
 	while not selected_nodes.is_empty():
@@ -79,7 +115,7 @@ func _on_delete_nodes_request(selected_nodes: Array[StringName]) -> void:
 		if not nodes.erase(node.name):
 			push_error(node.name + " did not exist and is trying to erase.")
 		node.free()
-	graph_altered.emit()
+	_manager.graph_altered.emit()
 
 func _on_copy_nodes_request() -> void:
 	pass # Replace with function body.

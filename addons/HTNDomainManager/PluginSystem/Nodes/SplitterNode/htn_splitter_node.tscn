@@ -35,4 +35,4 @@ text = "Methods"
 layout_mode = 2
 placeholder_text = "Nick Name (Optional)"
 
-[connection signal="text_changed" from="NickName" to="." method="_on_nick_name_text_changed"]
+[connection signal="text_submitted" from="NickName" to="." method="_on_nick_name_text_submitted"]

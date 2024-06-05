@@ -8,6 +8,7 @@ var _priority: int = 0
 var _nick_name: String:
 	set(value):
 		_nick_name = value
+		_manager.node_name_altered.emit()
 		if value == "":
 			title = "Method"
 		else:

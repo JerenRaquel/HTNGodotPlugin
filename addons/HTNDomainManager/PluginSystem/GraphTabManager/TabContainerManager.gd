@@ -27,6 +27,7 @@ func _create_new_tab() -> void:
 		func(graph: HTNDomainGraph) -> void:
 			_manager.current_graph = graph
 			graph.initialize(_manager)
+			_manager.graph_altered.emit()
 			set_tab_button_icon(current_tab, TRASH)
 			_create_new_tab()
 	)
@@ -34,7 +35,8 @@ func _create_new_tab() -> void:
 	_empty_tab_idx += 1
 
 func _on_tab_changed(tab: int) -> void:
-	pass # Replace with function body.
+	_manager.graph_altered.emit()
 
 func _on_tab_button_pressed(tab: int) -> void:
-	pass # Replace with function body.
+	_manager.graph_altered.emit()
+	# CRITICAL: Add tab deletion

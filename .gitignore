@@ -24,3 +24,7 @@ addons/HTNDomainManager/Data/GraphSaves/*.tres
 addons/HTNDomainManager/Data/Scripts/*.gd
 addons/HTNDomainManager/Data/Tasks/*.tres
 addons/HTNDomainManager/Data/ReferenceFiles/HTNReferenceFile.tres
+
+# Other Tools for plugin testing
+addons/*
+!addons/HTNDomainManager
