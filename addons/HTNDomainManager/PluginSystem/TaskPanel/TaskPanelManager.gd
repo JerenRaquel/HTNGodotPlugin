@@ -2,6 +2,8 @@
 class_name HTNTaskPanelManager
 extends VBoxContainer
 
+const TASK_LINE = preload("res://addons/HTNDomainManager/PluginSystem/TaskPanel/TaskLine/task_line.tscn")
+
 signal task_created
 
 @onready var task_name_line_edit: LineEdit = %TaskNameLineEdit
@@ -11,36 +13,33 @@ var _manager: HTNDomainManager
 
 func initialize(manager: HTNDomainManager) -> void:
 	_manager = manager
+	hide()
 	_refresh_list()
 	task_created.connect(_refresh_list)
 
-func get_all_task_file_names() -> Array[String]:
-	var data: Array[String] = []
-
-	return data
-
 func _refresh_list() -> void:
-	pass
+	for child: HTNTaskLine in task_list.get_children():
+		if child.is_queued_for_deletion(): continue
+		child.queue_free()
+	var data: Array = _manager.file_manager.get_all_task_names()
+	data.sort()
+	for task_name: String in data:
+		_create_task_line(task_name)
 
-#const TASK_LINE = preload("res://addons/HTNDomainManager/PluginSystem/TaskPanel/task_line.tscn")
-#
-#var _primitives: Array[String]
-#
-#func get_all_primitive_task_names() -> Array:
-	#return _primitives.map(
-		#func(file_name: String):
-			#return _manager.serializer.prettify_task_name(file_name).replace(" ", "")
-	#)
-#
-#func _remove_file_from_task_list(file_path: String) -> bool:
-	#var tokens := file_path.split("/", false)
-	#var file_name := tokens[-1]
-#
-	#if file_name in _primitives:
-		#_primitives.erase(file_name)
-		#return true
-	#return false
-#
+func _filter_children(filter: String) -> void:
+	var filter_santized := filter.to_lower()
+	for child: HTNTaskLine in task_list.get_children():
+		var line_name: String = child.edit_button.text.to_lower()
+		if filter_santized.is_empty() or line_name.contains(filter_santized):
+			child.show()
+		else:
+			child.hide()
+
+func _create_task_line(task_name: String) -> void:
+	var task_line_instance := TASK_LINE.instantiate()
+	task_list.add_child(task_line_instance)
+	task_line_instance.initialize(_manager, task_name)
+
 #func _sort_list() -> void:
 	#_primitives.sort()
 	#var child_count := _task_list.get_child_count()
@@ -66,21 +65,6 @@ func _refresh_list() -> void:
 		#)
 		#idx += 1
 #
-#func _update_visible_task_list(filter: String) -> void:
-	#for task_line: HBoxContainer in _task_list.get_children():
-		#if filter.is_empty() or task_line.contains(filter):
-			#task_line.show()
-		#else:
-			#task_line.hide()
-#
-#func _refresh_tasks_from(path: String, list: Array[String]) -> void:
-	#var file_names := DirAccess.get_files_at(path)
-	#for file_name in file_names:
-		#if file_name not in list:
-			#var task_line := TASK_LINE.instantiate()
-			#_task_list.add_child(task_line)
-			#list.push_back(file_name)
-#
 #func _on_file_deleted(file_path: String) -> void:
 	## Dont fire on scripts, only the resources
 	## At least for now
@@ -93,4 +77,11 @@ func _refresh_list() -> void:
 	#file_system_updated.emit()
 
 func _on_create_button_pressed() -> void:
-	pass # Replace with function body.
+	var task_name: String = task_name_line_edit.text
+	if not _manager.file_manager.check_if_valid_name(task_name): return
+	if not _manager.file_manager.create_task(task_name): return
+
+	_create_task_line(task_name)
+
+func _on_search_bar_text_changed(new_text: String) -> void:
+	_filter_children(new_text)

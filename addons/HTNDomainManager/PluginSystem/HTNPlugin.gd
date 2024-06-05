@@ -3,11 +3,15 @@ extends EditorPlugin
 
 const HTN_DOMAIN_MANAGER = preload("res://addons/HTNDomainManager/PluginSystem/HTN_domain_manager.tscn")
 const PLUGIN_NAME := "HTNDomainManager"
-const HTN_DATABASE_SCRIPT = "res://addons/HTNDomainManager/PluginSystem/ReferenceFiles/HTNDatabase.gd"
+const HTN_DATABASE_SCRIPT = "res://addons/HTNDomainManager/GameLibrary/Scripts/HTNDatabase.gd"
 
 var manager: Control
 
 func _enter_tree() -> void:
+	# If not running in editor mode, shut off the plugin
+	# -- HTNDatabase autoload should be included by runtime
+	if not Engine.is_editor_hint(): return
+
 	manager = HTN_DOMAIN_MANAGER.instantiate()
 	if not ProjectSettings.has_setting("autoload/HTNDatabase"):
 		add_autoload_singleton("HTNDatabase", HTN_DATABASE_SCRIPT)
@@ -36,7 +40,6 @@ Thank you for using this! [rainbow freq=1.0 sat=0.8 val=0.8]:D[/rainbow]
 
 func _exit_tree() -> void:
 	if manager:
-		#remove_autoload_singleton("HTNDatabase")
 		manager.queue_free()
 
 func _has_main_screen() -> bool:
