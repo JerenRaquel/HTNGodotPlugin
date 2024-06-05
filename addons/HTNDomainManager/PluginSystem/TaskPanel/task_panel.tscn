@@ -1,0 +1,40 @@
+[gd_scene load_steps=2 format=3 uid="uid://bl31umnhdg1uw"]
+
+[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/TaskPanel/TaskPanelManager.gd" id="1_aklcb"]
+
+[node name="TaskPanel" type="VBoxContainer"]
+anchors_preset = -1
+anchor_right = 0.15
+anchor_bottom = 1.0
+grow_vertical = 2
+script = ExtResource("1_aklcb")
+metadata/_edit_use_anchors_ = true
+
+[node name="CreateButton" type="Button" parent="."]
+layout_mode = 2
+text = "Create Task"
+
+[node name="TaskNameLineEdit" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Task Name..."
+
+[node name="HSeparator" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="SearchBar" type="LineEdit" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "Search..."
+
+[node name="HSeparator2" type="HSeparator" parent="."]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+
+[node name="TaskList" type="VBoxContainer" parent="ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[connection signal="pressed" from="CreateButton" to="." method="_on_create_button_pressed"]

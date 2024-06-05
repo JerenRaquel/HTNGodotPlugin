@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="HTNReferenceFile" load_steps=2 format=3 uid="uid://dswj8t4o4y0l4"]
+
+[ext_resource type="Script" path="res://addons/HTNDomainManager/Data/ReferenceFiles/HTNReferenceFile.gd" id="1_yjvic"]
+
+[resource]
+script = ExtResource("1_yjvic")
+domains = {}
+graph_saves = {}
+tasks = {}
+scripts = {}
