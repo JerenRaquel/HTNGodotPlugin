@@ -19,7 +19,7 @@ data_*/
 mono_crash.*.json
 
 # Data Files
-addons/HTNDomainMAnager/HTNGameLibrary/Data/Domains/*
-addons/HTNDomainMAnager/HTNGameLibrary/Data/GraphSaves/*
-addons/HTNDomainMAnager/HTNGameLibrary/Data/Resources/*
-addons/HTNDomainMAnager/HTNGameLibrary/Data/Scripts/*
+addons/HTNDomainManager/HTNGameLibrary/Data/*
+addons/HTNDomainManager/HTNGameLibrary/Data/*
+addons/HTNDomainManager/HTNGameLibrary/Data/*
+addons/HTNDomainManager/HTNGameLibrary/Data/*
