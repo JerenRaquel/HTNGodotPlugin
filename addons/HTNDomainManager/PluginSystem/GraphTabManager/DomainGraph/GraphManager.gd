@@ -8,7 +8,6 @@ signal graph_altered
 
 var _manager: HTNDomainManager
 var _root_node: GraphNode
-var _selected_nodes: Array[GraphNode]
 var _current_ID: int = 0
 
 var nodes: Dictionary = {}
@@ -49,18 +48,9 @@ func register_node(node: GraphNode, reg_key: StringName="") -> void:
 	else:
 		node_key = generate_node_key()
 
-	#if node_key in nodes: return	# Is this needed (was bug node -> node)
 	nodes[node_key] = node
 	node.name = node_key
 	graph_altered.emit()
-
-func register_selected(node: GraphNode) -> void:
-	if node in _selected_nodes: return
-	_selected_nodes.push_back(node)
-
-func unregister_selected(node: GraphNode) -> void:
-	if node not in _selected_nodes: return
-	_selected_nodes.erase(node)
 
 func _on_connection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	connection_handler.load_connection(from_node, from_port, to_node, to_port)
@@ -77,10 +67,21 @@ func _on_disconnection_request(from_node: StringName, from_port: int, to_node: S
 	disconnect_node(from_node, from_port, to_node, to_port)
 	graph_altered.emit()
 
-func _on_copy_nodes_request() -> void:
-	pass # Replace with function body.
+func _on_delete_nodes_request(selected_nodes: Array[StringName]) -> void:
+	while not selected_nodes.is_empty():
+		var node_name: String = selected_nodes.pop_back()
+		# Can't remove the root node
+		var node = nodes[node_name]
+		if node is HTNRootNode:
+			continue
 
-func _on_delete_nodes_request(nodes: Array[StringName]) -> void:
+		connection_handler.remove_connections(node)
+		if not nodes.erase(node.name):
+			push_error(node.name + " did not exist and is trying to erase.")
+		node.free()
+	graph_altered.emit()
+
+func _on_copy_nodes_request() -> void:
 	pass # Replace with function body.
 
 func _on_paste_nodes_request() -> void:

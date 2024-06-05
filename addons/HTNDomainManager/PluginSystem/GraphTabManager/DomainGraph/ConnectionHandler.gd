@@ -4,13 +4,24 @@ extends Control
 
 @onready var domain_graph: HTNDomainGraph = $".."
 
+func remove_connections(node: GraphNode) -> void:
+	for connection in domain_graph.get_connection_list():
+		if connection.to_node == node.name or connection.from_node == node.name:
+			domain_graph.disconnect_node(
+				connection.from_node,
+				connection.from_port,
+				connection.to_node,
+				connection.to_port
+			)
+	domain_graph.graph_altered.emit()
+
 func get_output_port_type(node: StringName, port: int) -> int:
-	var graph_node := (domain_graph.nodes[node] as GraphNode)
+	var graph_node := (domain_graph.nodes[node] as HTNBaseNode)
 	var slot := graph_node.get_output_port_slot(port)
 	return graph_node.get_output_port_type(slot)
 
 func get_input_port_type(node: StringName, port: int) -> int:
-	var graph_node := (domain_graph.nodes[node] as GraphNode)
+	var graph_node := (domain_graph.nodes[node] as HTNBaseNode)
 	var slot := graph_node.get_input_port_slot(port)
 	return graph_node.get_input_port_type(slot)
 

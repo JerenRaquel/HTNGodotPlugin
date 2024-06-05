@@ -67,10 +67,10 @@ func enable(port_type: int=-1) -> void:
 	show()
 	global_position = get_global_mouse_position()
 
-func spawn_root() -> GraphNode:
+func spawn_root() -> HTNRootNode:
 	assert(_manager.current_graph != null, "Current Graph is NULL")
 
-	var root_instance: GraphNode = HTN_ROOT_NODE.instantiate()
+	var root_instance: HTNRootNode = HTN_ROOT_NODE.instantiate()
 	_manager.current_graph.add_child(root_instance)
 	_manager.current_graph.register_node(root_instance)
 	_set_node_position(
@@ -98,14 +98,14 @@ func _hide_all() -> void:
 	applicator.hide()
 	comment.hide()
 
-func _add_node(node: PackedScene) -> GraphNode:
+func _add_node(node: PackedScene) -> HTNBaseNode:
 	hide()
-	var node_instance: GraphNode = node.instantiate()
+	var node_instance: HTNBaseNode = node.instantiate()
 	_manager.current_graph.add_child(node_instance)
 	_manager.current_graph.register_node(node_instance)
 
 	if connect_node_data.is_empty():
-		var node_size := (node_instance as GraphNode).size
+		var node_size := (node_instance as HTNBaseNode).size
 		_set_node_position(
 			node_instance,
 			_mouse_local_position,
@@ -114,11 +114,9 @@ func _add_node(node: PackedScene) -> GraphNode:
 	else:
 		_place_and_connect(node_instance)
 
-	node_instance.node_selected.connect(func(): _manager.current_graph.register_selected.call(node_instance))
-	node_instance.node_deselected.connect(func(): _manager.current_graph.unregister_selected.call(node_instance))
 	return node_instance
 
-func _place_and_connect(node_instance: GraphNode) -> void:
+func _place_and_connect(node_instance: HTNBaseNode) -> void:
 	_set_node_position(
 		node_instance,
 		connect_node_data["release_position"],
@@ -137,7 +135,7 @@ func _place_and_connect(node_instance: GraphNode) -> void:
 			return
 	connect_node_data.clear()
 
-func _set_node_position(node: GraphNode, target_position: Vector2, offset: Vector2) -> void:
+func _set_node_position(node: HTNBaseNode, target_position: Vector2, offset: Vector2) -> void:
 	var scroll_offset := _manager.current_graph.scroll_offset
 	var zoom := _manager.current_graph.zoom
 	node.set_position_offset((target_position + scroll_offset) / zoom + offset)
