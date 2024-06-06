@@ -123,6 +123,20 @@ func delete_task(task_name: String) -> bool:
 		HTN_REFERENCE_FILE["tasks"].erase(task_name)
 	return delete_state
 
+func delete_domain(domain_name: String) -> bool:
+	if domain_name.is_empty(): return false
+
+	var graph_path: String = HTN_REFERENCE_FILE["graph_saves"][domain_name]
+	var domain_resource: Resource = HTN_REFERENCE_FILE["domains"][domain_name]
+	var delete_state := _delete_files(
+		"Graph Save", graph_path,
+		"Domain", domain_resource.resource_path
+	)
+	if delete_state:
+		HTN_REFERENCE_FILE["graph_saves"].erase(domain_name)
+		HTN_REFERENCE_FILE["domains"].erase(domain_name)
+	return delete_state
+
 func _check_if_domain_links_helper(closed_set: Array[StringName], current_domain_name: String,
 		domain_name_link: String) -> bool:
 	for cur_domain_name: StringName in HTN_REFERENCE_FILE["domains"][current_domain_name]["required_domains"]:
