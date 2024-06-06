@@ -19,7 +19,12 @@ data_*/
 mono_crash.*.json
 
 # Data Files
-addons/HTNDomainMAnager/HTNGameLibrary/Data/Domains/*
-addons/HTNDomainMAnager/HTNGameLibrary/Data/GraphSaves/*
-addons/HTNDomainMAnager/HTNGameLibrary/Data/Resources/*
-addons/HTNDomainMAnager/HTNGameLibrary/Data/Scripts/*
+addons/HTNDomainManager/Data/Domains/*.tres
+addons/HTNDomainManager/Data/GraphSaves/*.tres
+addons/HTNDomainManager/Data/Scripts/*.gd
+addons/HTNDomainManager/Data/Tasks/*.tres
+addons/HTNDomainManager/Data/ReferenceFiles/HTNReferenceFile.tres
+
+# Other Tools for plugin testing
+addons/*
+!addons/HTNDomainManager
