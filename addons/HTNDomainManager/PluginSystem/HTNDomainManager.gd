@@ -59,6 +59,7 @@ func _ready() -> void:
 func _update_toolbar_buttons() -> void:
 	if current_graph == null:
 		goto_panel_button.disabled = true
+		clear_graph_button.disabled = true
 		goto_panel_button.set_pressed_no_signal(false)
 		goto_panel.hide()
 	else:

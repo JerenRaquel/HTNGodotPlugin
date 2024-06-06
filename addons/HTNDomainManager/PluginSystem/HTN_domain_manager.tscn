@@ -97,6 +97,7 @@ text = "Task Panel"
 [node name="GotoPanelButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
 unique_name_in_owner = true
 layout_mode = 2
+disabled = true
 toggle_mode = true
 text = "Goto Panel"
 

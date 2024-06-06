@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bt445iqt61atd" path="res://addons/HTNDomainManager/PluginSystem/Nodes/BaseNode/htn_base_node.tscn" id="1_m2ojy"]
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/Nodes/DomainNode/HTNDomainNode.gd" id="2_7vu7l"]
-[ext_resource type="Texture2D" uid="uid://o5dlwdcrfau5" path="res://addons/HTNDomainManager/PluginSystem/Icons/Warning.svg" id="2_ahmyy"]
+[ext_resource type="Texture2D" uid="uid://o5dlwdcrfau5" path="res://addons/HTNDomainManager/PluginSystem/Icons/Warning.svg" id="3_vxc68"]
 
 [node name="HTNDomainNode" instance=ExtResource("1_m2ojy")]
 title = "Domain"
@@ -36,7 +36,7 @@ layout_mode = 2
 unique_name_in_owner = true
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
-texture = ExtResource("2_ahmyy")
+texture = ExtResource("3_vxc68")
 expand_mode = 1
 stretch_mode = 4
 

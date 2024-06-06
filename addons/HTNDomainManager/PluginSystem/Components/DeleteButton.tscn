@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://driybkq8qi0rh"]
 
 [ext_resource type="Theme" uid="uid://diu3ahrw1puva" path="res://addons/HTNDomainManager/PluginSystem/PluginTheme.tres" id="1_0krex"]
-[ext_resource type="Texture2D" uid="uid://cuyx54k6omnbv" path="res://addons/HTNDomainManager/PluginSystem/Icons/Trash.svg" id="2_xwb4y"]
+[ext_resource type="Texture2D" uid="uid://cuyx54k6omnbv" path="res://addons/HTNDomainManager/PluginSystem/Icons/Trash.svg" id="2_6ccws"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n0bxh"]
 content_margin_left = 4.0
@@ -19,4 +19,4 @@ offset_right = 8.0
 offset_bottom = 8.0
 theme = ExtResource("1_0krex")
 theme_override_styles/hover = SubResource("StyleBoxFlat_n0bxh")
-icon = ExtResource("2_xwb4y")
+icon = ExtResource("2_6ccws")
