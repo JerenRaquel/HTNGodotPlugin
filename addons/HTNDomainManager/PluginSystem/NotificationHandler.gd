@@ -44,7 +44,5 @@ func send_error(message: String, timer_length: float = 0.0) -> void:
 		timer.wait_time = timer_length
 		timer.start()
 
-
-
 func _on_timer_timeout() -> void:
 	clear()

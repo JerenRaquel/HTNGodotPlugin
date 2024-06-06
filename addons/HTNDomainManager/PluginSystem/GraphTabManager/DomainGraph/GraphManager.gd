@@ -21,6 +21,7 @@ var nodes: Dictionary = {}
 
 func initialize(manager: HTNDomainManager, graph_tab: HTNGraphTab, domain_tab_name: String) -> void:
 	_manager = manager
+	_graph_tab = graph_tab
 	domain_name = domain_tab_name
 
 	add_valid_connection_type(1, 1)
@@ -107,6 +108,20 @@ func get_node_keys_with_meta() -> Dictionary:
 			"type": type
 		}
 	return data
+
+func get_task_keys() -> Array[StringName]:
+	var keys: Array[StringName] = []
+	for node_key: StringName in nodes:
+		if nodes[node_key] is HTNTaskNode:
+			keys.push_back(node_key)
+	return keys
+
+func get_domain_links() -> Array[StringName]:
+	var keys: Array[StringName] = []
+	for node_key: StringName in nodes:
+		if nodes[node_key] is HTNDomainNode:
+			keys.push_back(node_key)
+	return keys
 
 func _delete_node(node: HTNBaseNode) -> void:
 	connection_handler.remove_connections(node)

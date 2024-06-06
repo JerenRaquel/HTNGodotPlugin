@@ -19,6 +19,10 @@ extends VBoxContainer
 #5:	# Vector3
 #6:	# World State
 
+## Range Type IDs
+#0:	# Int
+#1:	# Float
+
 # Options
 @onready var compare_option: OptionButton = %CompareOption
 @onready var range_type_option: OptionButton = %RangeTypeOption

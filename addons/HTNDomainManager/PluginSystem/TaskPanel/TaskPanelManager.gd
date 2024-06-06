@@ -43,42 +43,6 @@ func _create_task_line(task_name: String) -> void:
 	task_list.add_child(task_line_instance)
 	task_line_instance.initialize(_manager, task_name)
 
-#func _sort_list() -> void:
-	#_primitives.sort()
-	#var child_count := _task_list.get_child_count()
-	#while _primitives.size() < child_count:
-		#var child := _task_list.get_child(0)
-		#child.queue_free()
-		#child_count -= 1
-	#await get_tree().process_frame
-#
-	#var idx := 0
-	#for task_line: HBoxContainer in _task_list.get_children():
-		#if task_line.is_queued_for_deletion(): continue
-#
-		#task_line.initialize(
-			#_manager,
-			#_manager.serializer.prettify_task_name(_primitives[idx]),
-			#func(file_name: String):
-				#var file := file_name + ".tres"
-				#if file in _primitives:
-					#_primitives.erase(file)
-				#_on_refresh_pressed()
-				#file_system_updated.emit()
-		#)
-		#idx += 1
-#
-#func _on_file_deleted(file_path: String) -> void:
-	## Dont fire on scripts, only the resources
-	## At least for now
-	#if file_path.ends_with(".gd"): return
-#
-	## On fail, the file wasn't recorded
-	#if not _remove_file_from_task_list(file_path): return
-#
-	#_on_refresh_pressed()
-	#file_system_updated.emit()
-
 func _on_create_button_pressed() -> void:
 	var task_name: String = task_name_line_edit.text
 	if not _manager.file_manager.check_if_valid_name(task_name): return

@@ -15,8 +15,7 @@ func _on_delete_button_pressed() -> void:
 		_manager.task_deleted.emit()
 		queue_free()
 	else:
-		# CRITICAL: Alert validator
-		pass
+		_manager.notification_handler.send_error("Couldn't delete task: '" + edit_button.text + "'. Aborting...")
 
 func _on_edit_button_pressed() -> void:
 	_manager.file_manager.edit_script(edit_button.text)

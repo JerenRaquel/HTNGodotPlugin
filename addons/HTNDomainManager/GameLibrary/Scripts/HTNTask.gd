@@ -8,10 +8,7 @@ extends Resource
 ## determins what tasks it should use for the plan, it will refer to the presented
 ## functions.
 
-## This signal is used to let the HTN Planner know the current operation is
-## finished running as required by the [member requires_awaiting]
-## member.
-signal finished_operation
+
 
 ## Tells the HTN Planner during plan execution to halt and pause at this task until
 ## [member finished_operation] signal is emited.[br][br]

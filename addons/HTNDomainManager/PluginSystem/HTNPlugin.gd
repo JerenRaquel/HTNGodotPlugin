@@ -12,9 +12,9 @@ func _enter_tree() -> void:
 	# -- HTNDatabase autoload should be included by runtime
 	if not Engine.is_editor_hint(): return
 
-	manager = HTN_DOMAIN_MANAGER.instantiate()
 	if not ProjectSettings.has_setting("autoload/HTNDatabase"):
 		add_autoload_singleton("HTNDatabase", HTN_DATABASE_SCRIPT)
+	manager = HTN_DOMAIN_MANAGER.instantiate()
 	print_rich(
 		"""The HTNDomainManager Plugin has added the autoload 'HTNDatabase' for plugin use.
 This is used for keeping track of files during editor and runtime use.

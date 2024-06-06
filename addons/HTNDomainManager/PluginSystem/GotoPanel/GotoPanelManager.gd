@@ -59,12 +59,12 @@ func _refresh() -> void:
 
 		var button_instance := Button.new()
 		button_instance.text = node_name
-		button_instance.pressed.connect( func() -> void: _center_on_node(node_key) )
+		button_instance.pressed.connect( func() -> void: center_on_node(node_key) )
 		goto_container.add_child(button_instance)
 
 	search_bar.editable = true
 
-func _center_on_node(node_key: StringName) -> void:
+func center_on_node(node_key: StringName) -> void:
 	var data: Dictionary = _manager.current_graph.get_node_offset_by_key(node_key)
 	if data.is_empty(): return
 
@@ -83,7 +83,7 @@ func _on_visibility_changed() -> void:
 		search_bar.clear()
 
 func _on_goto_root_button_pressed() -> void:
-	_center_on_node(_manager.current_graph.root_key)
+	center_on_node(_manager.current_graph.root_key)
 
 func _on_search_bar_text_changed(new_text: String) -> void:
 	var filter_santized := new_text.to_lower()
