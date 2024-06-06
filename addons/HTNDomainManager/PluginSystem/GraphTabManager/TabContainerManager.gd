@@ -16,19 +16,24 @@ func initialize(manager: HTNDomainManager) -> void:
 	_create_new_tab()
 
 func validate_tab_creation(domain_name: String) -> bool:
-	if domain_name[0].is_valid_int(): return false
+	if domain_name[0].is_valid_int():
+		_manager.notification_handler.send_error("Domain name can't start with a number.")
+		return false
 	var result = _regex.search(domain_name)
 	if result:
-		print("Alphanumeric characters only! Found: [", result.get_string(0), "]")
+		_manager.notification_handler.send_error("Alphanumeric characters only! Found: ["+result.get_string(0)+"]")
 		return false
 
 	if _manager.file_manager.check_if_domain_name_exists(domain_name):
+		_manager.notification_handler.send_error("Domain already exists.")
 		return false
 
 	for child: Control in get_children():
 		if child.name == domain_name:
+			_manager.notification_handler.send_error("There extists a tab with that domain name.")
 			return false
 
+	_manager.notification_handler.send_message("Tab created! Don't forget to save it!")
 	return true
 
 func _create_new_tab() -> void:

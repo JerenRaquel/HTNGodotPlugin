@@ -21,6 +21,7 @@ signal domain_deleted
 @onready var goto_panel: HTNGoToManager = %GotoPanel
 # Managers
 @onready var file_manager: HTNFileManager = %FileManager
+@onready var notification_handler: HTNNotificaionHandler = %NotificationHandler
 # Other
 @onready var node_spawn_menu: HTNNodeSpawnMenu = %NodeSpawnMenu
 @onready var condition_editor: HTNConditionEditor = %ConditionEditor
@@ -41,6 +42,7 @@ func _ready() -> void:
 	effect_editor.initialize(self)
 	task_panel.initialize(self)
 	goto_panel.initialize(self)
+	notification_handler.initialze(self)
 
 func _on_task_panel_button_toggled(toggled_on: bool) -> void:
 	if toggled_on:
