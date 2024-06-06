@@ -3,6 +3,7 @@ class_name HTNDomainGraph
 extends GraphEdit
 
 @onready var connection_handler: HTNConnectionHandler = $ConnectionHandler
+@onready var validator: HTNGraphValidator = $Validator
 
 var _manager: HTNDomainManager
 var _graph_tab: HTNGraphTab

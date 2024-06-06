@@ -115,11 +115,13 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_o5cyj")
 [node name="ClearGraphButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
 unique_name_in_owner = true
 layout_mode = 2
+disabled = true
 text = "Clear Graph"
 
-[node name="QuickBuildButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
+[node name="BuildDomainButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
+unique_name_in_owner = true
 layout_mode = 2
-text = "Quick Build"
+text = "Build Domain"
 
 [node name="DomainPanelButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
 unique_name_in_owner = true
@@ -184,4 +186,5 @@ layout_mode = 1
 [connection signal="toggled" from="ContainerRoot/PluginContainer/ContentContainer/ToolBox/TaskPanelButton" to="." method="_on_task_panel_button_toggled"]
 [connection signal="toggled" from="ContainerRoot/PluginContainer/ContentContainer/ToolBox/GotoPanelButton" to="." method="_on_goto_panel_button_toggled"]
 [connection signal="pressed" from="ContainerRoot/PluginContainer/ContentContainer/ToolBox/ClearGraphButton" to="." method="_on_clear_graph_button_pressed"]
+[connection signal="pressed" from="ContainerRoot/PluginContainer/ContentContainer/ToolBox/BuildDomainButton" to="." method="_on_build_domain_button_pressed"]
 [connection signal="toggled" from="ContainerRoot/PluginContainer/ContentContainer/ToolBox/DomainPanelButton" to="." method="_on_domain_panel_button_toggled"]

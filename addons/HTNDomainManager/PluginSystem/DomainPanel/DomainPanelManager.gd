@@ -4,7 +4,6 @@ extends VBoxContainer
 
 const DOMAIN_LINE = preload("res://addons/HTNDomainManager/PluginSystem/DomainPanel/DomainLine/domain_line.tscn")
 
-@onready var domain_name_line_edit: LineEdit = %DomainNameLineEdit
 @onready var searchbar: LineEdit = %Searchbar
 @onready var domain_container: VBoxContainer = %DomainContainer
 
@@ -34,5 +33,11 @@ func _refresh() -> void:
 		domain_line_instance.initialize(_manager)
 	searchbar.editable = true
 
-func _on_build_button_pressed() -> void:
-	pass # Replace with function body.
+func _on_searchbar_text_changed(new_text: String) -> void:
+	var filter_santized := new_text.to_lower()
+	for child: HTNDomainLine in domain_container.get_children():
+		var line_name: String = child.domain_button.text.to_lower()
+		if filter_santized.is_empty() or line_name.contains(filter_santized):
+			child.show()
+		else:
+			child.hide()

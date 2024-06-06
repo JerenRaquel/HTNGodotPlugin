@@ -16,6 +16,7 @@ signal domain_deleted
 @onready var goto_panel_button: Button = %GotoPanelButton
 @onready var graph_tools_toggle: CheckButton = %GraphToolsToggle
 @onready var clear_graph_button: Button = %ClearGraphButton
+@onready var build_domain_button: Button = %BuildDomainButton
 @onready var domain_panel_button: Button = %DomainPanelButton
 # Containers
 @onready var tab_container: HTNTabGraphManager = %TabContainer
@@ -58,11 +59,17 @@ func _ready() -> void:
 
 func _update_toolbar_buttons() -> void:
 	if current_graph == null:
+		build_domain_button.disabled = true
 		goto_panel_button.disabled = true
 		clear_graph_button.disabled = true
 		goto_panel_button.set_pressed_no_signal(false)
 		goto_panel.hide()
 	else:
+		if current_graph.is_saved:
+			build_domain_button.disabled = true
+		else:
+			build_domain_button.disabled = false
+
 		if current_graph.nodes.size() <= 1:
 			clear_graph_button.disabled = true
 		else:
@@ -101,4 +108,10 @@ func _on_clear_graph_button_pressed() -> void:
 	if not current_graph: return
 	current_graph.clear()
 
+func _on_build_domain_button_pressed() -> void:
+	if not current_graph.validator.validate():
+		build_domain_button.disabled = true
+		return
 
+	notification_handler.send_message("Build Complete! Graph Saved!")
+	current_graph.is_saved = true

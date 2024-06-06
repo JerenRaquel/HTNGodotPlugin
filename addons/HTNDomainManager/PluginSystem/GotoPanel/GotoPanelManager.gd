@@ -53,7 +53,7 @@ func _refresh() -> void:
 		var node_name: String = node_naming_data[node_key]["name"]
 		var node_type: String = node_naming_data[node_key]["type"]
 		if node_name.is_empty():
-			node_name = node_type + " - " + node_key.replace("Sandwich_", "Sandwich_ID_")
+			node_name = node_type + " - " + node_key
 		else:
 			node_name = node_type + " - " + node_name
 

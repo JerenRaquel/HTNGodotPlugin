@@ -37,3 +37,23 @@ func load_connection(from_node: StringName, from_port: int, to_node: StringName,
 	domain_graph.connect_node(from_node, from_port, to_node, to_port)
 	domain_graph._manager.graph_altered.emit()
 	domain_graph.is_saved = false
+
+func get_connected_nodes_from_output(node_key: StringName) -> Array[StringName]:
+	var node_connection_data: Array[StringName] = []
+	for connection: Dictionary in domain_graph.get_connection_list():
+		var from_node_key: StringName = connection["from_node"]
+		if from_node_key != node_key: continue
+
+		node_connection_data.push_back(connection["to_node"])
+
+	return node_connection_data
+
+func has_connections_from_input(node_key: StringName) -> bool:
+	for connection: Dictionary in domain_graph.get_connection_list():
+		if connection["to_node"] == node_key: return true
+	return false
+
+func has_connections_from_output(node_key: StringName) -> bool:
+	for connection: Dictionary in domain_graph.get_connection_list():
+		if connection["from_node"] == node_key: return true
+	return false
