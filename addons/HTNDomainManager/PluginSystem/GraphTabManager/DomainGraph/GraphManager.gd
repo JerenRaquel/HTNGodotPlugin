@@ -5,14 +5,20 @@ extends GraphEdit
 @onready var connection_handler: HTNConnectionHandler = $ConnectionHandler
 
 var _manager: HTNDomainManager
+var _graph_tab: HTNGraphTab
 var _root_node: GraphNode
 var _current_ID: int = 0
 var root_key: String
 var domain_name: String = ""
+var is_saved := false:
+	set(value):
+		is_saved = value
+		if not _graph_tab: return
+		_graph_tab.tab_save_state(is_saved)
 
 var nodes: Dictionary = {}
 
-func initialize(manager: HTNDomainManager, domain_tab_name: String) -> void:
+func initialize(manager: HTNDomainManager, graph_tab: HTNGraphTab, domain_tab_name: String) -> void:
 	_manager = manager
 	domain_name = domain_tab_name
 
@@ -54,6 +60,7 @@ func register_node(node: GraphNode, reg_key: StringName="") -> String:
 	nodes[node_key] = node
 	node.name = node_key
 	_manager.graph_altered.emit()
+	is_saved = false
 	return node_key
 
 func clear() -> void:
@@ -64,6 +71,7 @@ func clear() -> void:
 		_delete_node(node)
 	_current_ID = 1
 	_manager.graph_altered.emit()
+	is_saved = false
 
 func get_node_offset_by_key(node_key: StringName) -> Dictionary:
 	if node_key not in nodes: return {}
@@ -119,6 +127,7 @@ func _on_connection_to_empty(from_node: StringName, from_port: int, release_posi
 func _on_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	disconnect_node(from_node, from_port, to_node, to_port)
 	_manager.graph_altered.emit()
+	is_saved = false
 
 func _on_delete_nodes_request(selected_nodes: Array[StringName]) -> void:
 	while not selected_nodes.is_empty():
@@ -130,6 +139,7 @@ func _on_delete_nodes_request(selected_nodes: Array[StringName]) -> void:
 
 		_delete_node(node)
 	_manager.graph_altered.emit()
+	is_saved = false
 
 func _on_copy_nodes_request() -> void:
 	pass # Replace with function body.

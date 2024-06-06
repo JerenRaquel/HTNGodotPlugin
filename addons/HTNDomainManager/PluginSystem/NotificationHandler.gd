@@ -23,14 +23,14 @@ func clear() -> void:
 	notice_label.text = ""
 	notice_label.label_settings.font_color = DEFAULT_COLOR
 
-func send_message(message: String, timer_length: float = 1.0) -> void:
-	notice_label.text = message
+func send_message(message: String, timer_length: float = 2.5) -> void:
+	notice_label.text = message + " ﾉ◕ヮ◕)ﾉ*:･ﾟ✧"
 	notice_label.label_settings.font_color = OK_COLOR
 	if timer_length > 0:
 		timer.wait_time = timer_length
 		timer.start()
 
-func send_warning(message: String, timer_length: float = 2.5) -> void:
+func send_warning(message: String, timer_length: float = 5.0) -> void:
 	notice_label.text = message
 	notice_label.label_settings.font_color = WARNING_COLOR
 	if timer_length > 0:

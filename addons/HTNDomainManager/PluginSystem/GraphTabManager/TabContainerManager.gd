@@ -33,7 +33,6 @@ func validate_tab_creation(domain_name: String) -> bool:
 			_manager.notification_handler.send_error("There extists a tab with that domain name.")
 			return false
 
-	_manager.notification_handler.send_message("Tab created! Don't forget to save it!")
 	return true
 
 func _create_new_tab() -> void:
@@ -41,7 +40,7 @@ func _create_new_tab() -> void:
 	tab_instance.tab_created.connect(
 		func(graph: HTNDomainGraph) -> void:
 			_manager.current_graph = graph
-			graph.initialize(_manager, tab_instance.get_domain_name())
+			graph.initialize(_manager, tab_instance, tab_instance.get_domain_name())
 			_manager.graph_altered.emit()
 			set_tab_button_icon(current_tab, TRASH)
 			_create_new_tab()
