@@ -5,12 +5,12 @@ extends Control
 var HTN_REFERENCE_FILE = preload("res://addons/HTNDomainManager/Data/ReferenceFiles/HTNReferenceFile.tres")
 const TASK_PATH := "res://addons/HTNDomainManager/Data/Tasks/"
 const SCRIPT_PATH := "res://addons/HTNDomainManager/Data/Scripts/"
-#region Primitive Task Script Template
+#region Task Script Template
 const FILE_TEMPLATE := "
 extends HTNTask
 # IMPORTANT: For more information on what these functions do, refer to the
 # documentation by pressing F1 on your keyboard and searching
-# for `HTNPrimitiveTask`. Happy scripting! :D
+# for HTNTask`. Happy scripting! :D
 
 func run_operation(agent: Node, world_state: Dictionary) -> void:
 	pass # Replace with function body
@@ -33,8 +33,49 @@ func check_if_valid_name(task_name: String) -> bool:
 		return false
 	return true
 
+func check_if_domain_name_exists(domain_name: String) -> bool:
+	return domain_name in HTN_REFERENCE_FILE["domains"]
+
+# NOTE: Time Complexity: O(N) where N is every domain linked
+# Utilizes DFS for searching
+func check_if_domain_links(original_domain_name: String, domain_name_link: String) -> bool:
+	# Lazy Checks
+	# - Check if domain exists
+	if original_domain_name not in HTN_REFERENCE_FILE["domains"]: return false
+	# - Check if same
+	if original_domain_name == domain_name_link: return true
+	# - Check if there's no domains to check
+	if HTN_REFERENCE_FILE["domains"].is_empty(): return false
+	# - Check if current domain name has any domains linked
+	var domain_names: Array[StringName] = HTN_REFERENCE_FILE["domains"][original_domain_name]["required_domains"]
+	if domain_names.is_empty(): return false
+
+	# DFS Search
+	var closed_set: Array[StringName] = [original_domain_name]
+	for cur_domain_name: StringName in domain_names:
+		# Check if sub domain name is the same as the one wanting to link
+		if cur_domain_name == domain_name_link: return true
+		# Check if current domain name has any domains linked
+		var sub_domain_list: Array[StringName] = HTN_REFERENCE_FILE["domains"][cur_domain_name]["required_domains"]
+		if sub_domain_list.is_empty():
+			if cur_domain_name not in closed_set:
+				closed_set.push_back(cur_domain_name)
+			continue
+
+		# Dig deeper
+		if _check_if_domain_links_helper(closed_set, cur_domain_name, domain_name_link): return true
+		# Found nothing
+		if cur_domain_name not in closed_set:
+			closed_set.push_back(cur_domain_name)
+
+	# Does not link at any time
+	return false
+
 func get_all_task_names() -> Array:
 	return HTN_REFERENCE_FILE["tasks"].keys()
+
+func get_all_domain_names() -> Array:
+	return HTN_REFERENCE_FILE["domains"].keys()
 
 func get_awaiting_task_state(task_name: String) -> bool:
 	return HTN_REFERENCE_FILE["tasks"][task_name]["requires_awaiting"]
@@ -81,6 +122,31 @@ func delete_task(task_name: String) -> bool:
 		HTN_REFERENCE_FILE["scripts"].erase(task_name)
 		HTN_REFERENCE_FILE["tasks"].erase(task_name)
 	return delete_state
+
+func _check_if_domain_links_helper(closed_set: Array[StringName], current_domain_name: String,
+		domain_name_link: String) -> bool:
+	for cur_domain_name: StringName in HTN_REFERENCE_FILE["domains"][current_domain_name]["required_domains"]:
+		# Already Searched
+		if cur_domain_name in closed_set: continue
+
+		# Check if sub domain name is the same as the one wanting to link
+		if cur_domain_name == domain_name_link: return true
+
+		# Check if current domain name has any domains linked
+		var sub_domain_list: Array[StringName] = HTN_REFERENCE_FILE["domains"][cur_domain_name]["required_domains"]
+		if sub_domain_list.is_empty():
+			if cur_domain_name not in closed_set:
+				closed_set.push_back(cur_domain_name)
+			continue
+
+		# Dig deeper
+		if _check_if_domain_links_helper(closed_set, cur_domain_name, domain_name_link): return true
+		# Found nothing
+		if cur_domain_name not in closed_set:
+			closed_set.push_back(cur_domain_name)
+
+	# Does not link at any time
+	return false
 
 func _delete_files(file_type1: String, file_path1: String, file_type2: String, file_path2: String) -> bool:
 	var found_file1 := false

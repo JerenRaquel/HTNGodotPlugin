@@ -8,6 +8,8 @@ signal graph_tab_changed
 signal task_created
 signal task_deleted
 signal node_name_altered
+signal domain_created
+signal domain_deleted
 
 # Toolbar
 @onready var task_panel_button: Button = %TaskPanelButton

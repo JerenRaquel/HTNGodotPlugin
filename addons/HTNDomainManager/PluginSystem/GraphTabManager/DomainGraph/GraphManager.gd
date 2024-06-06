@@ -8,11 +8,13 @@ var _manager: HTNDomainManager
 var _root_node: GraphNode
 var _current_ID: int = 0
 var root_key: String
+var domain_name: String = ""
 
 var nodes: Dictionary = {}
 
-func initialize(manager: HTNDomainManager) -> void:
+func initialize(manager: HTNDomainManager, domain_tab_name: String) -> void:
 	_manager = manager
+	domain_name = domain_tab_name
 
 	add_valid_connection_type(1, 1)
 	add_valid_connection_type(2, 2)
