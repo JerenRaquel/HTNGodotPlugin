@@ -137,6 +137,7 @@ text = "Clear Graph"
 [node name="BuildDomainButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
 unique_name_in_owner = true
 layout_mode = 2
+disabled = true
 text = "Build Domain"
 
 [node name="DomainPanelButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]

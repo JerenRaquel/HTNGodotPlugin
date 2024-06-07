@@ -7,7 +7,8 @@ func load_data(domain_name: String) -> HTNDomainGraph:
 		func(state: bool) -> void:
 			domain_graph.show_menu = state
 	)
-	domain_graph = %DomainGraph
+	domain_graph = DOMAIN_GRAPH.instantiate()
+	add_child(domain_graph)
 	is_empty = false
 	name = domain_name
 	return domain_graph
