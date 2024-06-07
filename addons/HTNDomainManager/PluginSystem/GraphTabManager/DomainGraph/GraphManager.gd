@@ -161,6 +161,16 @@ func get_every_node_til_compound(node_key: String) -> Array[StringName]:
 
 	return task_chain
 
+func load_node(node: PackedScene, node_key: StringName, node_position: Vector2, node_data: Dictionary) -> void:
+	if node == _manager.node_spawn_menu.HTN_ROOT_NODE: return
+
+	var node_instance: GraphNode = node.instantiate()
+	add_child(node_instance)
+	register_node(node_instance, node_key)
+	node_instance.initialize(_manager)
+	node_instance.load_data(node_data)
+	node_instance.position_offset = node_position
+
 func _get_every_node_til_compound_helper(current_key: String, task_chain: Array[StringName]) -> void:
 	var connected_nodes: Array[StringName] = connection_handler.get_connected_nodes_from_output(current_key)
 	# We're done -- Stopped at dead end

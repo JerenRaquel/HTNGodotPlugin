@@ -6,16 +6,12 @@ const DOMAIN_GRAPH = preload("res://addons/HTNDomainManager/PluginSystem/GraphTa
 
 signal tab_created(graph: HTNDomainGraph)
 
-@onready var empty_fields_container: VBoxContainer = %EmptyFieldsContainer
-@onready var domain_line_edit: LineEdit = %DomainLineEdit
-@onready var create_button: Button = %CreateButton
-
 var domain_graph: HTNDomainGraph = null
 var is_empty := true
 
 func get_domain_name() -> String:
-	if domain_line_edit != null:
-		return domain_line_edit.text.to_pascal_case()
+	if %DomainLineEdit != null:
+		return %DomainLineEdit.text.to_pascal_case()
 	else:
 		return name.replace("*", "")
 
@@ -41,5 +37,5 @@ func _on_create_button_pressed() -> void:
 			domain_graph.show_menu = state
 	)
 	tab_created.emit(domain_graph)
-	empty_fields_container.queue_free()
+	%EmptyFieldsContainer.queue_free()
 	is_empty = false
