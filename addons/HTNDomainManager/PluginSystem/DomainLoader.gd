@@ -75,4 +75,5 @@ func load_domain(domain_name: String) -> bool:
 			connection["to_port"]
 		)
 
+	domain_graph.is_saved = true
 	return true

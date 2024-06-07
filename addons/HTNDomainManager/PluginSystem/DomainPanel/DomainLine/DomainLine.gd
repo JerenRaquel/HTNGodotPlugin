@@ -17,3 +17,4 @@ func _on_delete_button_pressed() -> void:
 
 func _on_domain_button_pressed() -> void:
 	_manager.domain_loader.load_domain(domain_button.text)
+	_manager._update_toolbar_buttons()
