@@ -12,6 +12,6 @@ func validate_self() -> String:
 func get_priority() -> int:
 	return -9223372036854775808
 
-func load_data(_data) -> void:
+func load_data(_data: Dictionary) -> void:
 	# WHO? IDC
 	pass

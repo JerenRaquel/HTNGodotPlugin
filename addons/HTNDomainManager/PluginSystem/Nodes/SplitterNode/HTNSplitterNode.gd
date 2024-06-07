@@ -13,8 +13,8 @@ func get_node_name() -> String:
 func validate_self() -> String:
 	return ""
 
-func load_data(data) -> void:
-	nick_name.text = (data as String)
+func load_data(data: Dictionary) -> void:
+	nick_name.text = data["nickname"]
 
 func _on_nick_name_text_submitted(new_text: String) -> void:
 	_manager.node_name_altered.emit()

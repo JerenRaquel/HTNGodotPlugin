@@ -33,8 +33,8 @@ func validate_self() -> String:
 		return ""
 
 func load_data(data) -> void:
-	_nick_name = data["nick_name"]
-	effect_data = data["data"]
+	_nick_name = data["nickname"]
+	effect_data = data["effect_data"]
 
 func _on_edit_button_pressed() -> void:
 	_manager.effect_editor.open(self, effect_data)

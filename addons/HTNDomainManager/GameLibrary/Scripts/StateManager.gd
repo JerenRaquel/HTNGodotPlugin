@@ -1,5 +1,6 @@
 class_name HTNStateManager
 extends Node
+## [color=red][b]This is only used by the HTN Planner. DO NOT USE.[/b][/color]
 
 enum PlanState { IDLE, SETUP, RUN, WAIT, EFFECT, FINISHED }
 
@@ -30,15 +31,12 @@ func update(domain_name: StringName) -> void:
 		PlanState.EFFECT: _effect(domain_name)
 		PlanState.FINISHED: _finished()
 
-func set_state(plan_state: PlanState) -> void:
-	_plan_state = plan_state
-
 func on_interrupt() -> void:
 	if _plan_state != PlanState.WAIT: return
 
 	_plan_state = PlanState.IDLE
 	_running_plan = false
-	htn_planner.is_planning = false
+	htn_planner._is_planning = false
 	htn_planner.finished.emit()
 
 func _setup() -> void:
@@ -48,7 +46,7 @@ func _setup() -> void:
 func _run() -> void:
 	if _current_task in HTNDatabase.tasks:
 		var task: HTNTask = HTNDatabase.tasks[_current_task]
-		task.run_operation(_agent, _world_state_copy)
+		task.run_operation(func() -> void: _plan_state = PlanState.EFFECT, _agent, _world_state_copy)
 		if task.requires_awaiting:
 			_plan_state = PlanState.WAIT
 			return
@@ -71,7 +69,7 @@ func _finished() -> void:
 		_world_state_copy.clear()
 		_agent = null
 		_running_plan = false
-		htn_planner.is_planning = false
+		htn_planner._is_planning = false
 		htn_planner.finished.emit()
 	else:
 		_plan_state = PlanState.SETUP

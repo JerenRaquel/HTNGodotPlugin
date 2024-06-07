@@ -1,4 +1,5 @@
 extends Node
+## [color=red][b]This is only used by the HTN Planner. DO NOT USE.[/b][/color]
 
 const HTN_REFERENCE_FILE = preload("res://addons/HTNDomainManager/Data/ReferenceFiles/HTNReferenceFile.tres")
 
@@ -27,7 +28,7 @@ func get_task_chain_from_valid_method(
 		failed_method_paths: Array[StringName],
 		world_state_data: Dictionary) -> Dictionary:	# {method_node_key: StringName, "task_chain": Array[StringName]}
 	var method_branches: Array\
-		= domains[current_domain_key]["splits"][compound_node_key]["method_branches"]
+		= domains[current_domain_key]["splits"][compound_node_key]
 
 	for method_key: StringName in method_branches:
 		if method_key in failed_method_paths: continue

@@ -26,6 +26,7 @@ signal domain_deleted
 # Managers
 @onready var file_manager: HTNFileManager = %FileManager
 @onready var notification_handler: HTNNotificaionHandler = %NotificationHandler
+@onready var domain_saver: HTNDomainSaver = %DomainSaver
 # Other
 @onready var node_spawn_menu: HTNNodeSpawnMenu = %NodeSpawnMenu
 @onready var condition_editor: HTNConditionEditor = %ConditionEditor
@@ -110,6 +111,9 @@ func _on_clear_graph_button_pressed() -> void:
 
 func _on_build_domain_button_pressed() -> void:
 	if not current_graph.validator.validate():
+		build_domain_button.disabled = true
+		return
+	if not domain_saver.save(current_graph):
 		build_domain_button.disabled = true
 		return
 

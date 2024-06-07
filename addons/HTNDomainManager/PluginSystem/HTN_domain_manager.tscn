@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://bxjws2hrnn63e"]
+[gd_scene load_steps=16 format=3 uid="uid://bxjws2hrnn63e"]
 
 [ext_resource type="Theme" uid="uid://diu3ahrw1puva" path="res://addons/HTNDomainManager/PluginSystem/PluginTheme.tres" id="1_4moif"]
 [ext_resource type="PackedScene" uid="uid://bel7aoiqishu0" path="res://addons/HTNDomainManager/PluginSystem/GraphTabManager/tab_graph_container.tscn" id="2_n8gmp"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/DomainSaver.gd" id="4_pnpls"]
 [ext_resource type="PackedScene" uid="uid://4rfd8im0s35y" path="res://addons/HTNDomainManager/PluginSystem/GotoPanel/goto_panel.tscn" id="5_arhpn"]
 [ext_resource type="PackedScene" uid="uid://d2k5i0p65qudy" path="res://addons/HTNDomainManager/PluginSystem/ConditionEditor/condition_editor.tscn" id="5_j8nky"]
+[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/DomainLoader.gd" id="5_jn8qg"]
 [ext_resource type="PackedScene" uid="uid://bt8e1tea2412b" path="res://addons/HTNDomainManager/PluginSystem/EffectEditor/effect_editor.tscn" id="6_kek1x"]
 [ext_resource type="PackedScene" uid="uid://b82i43crgrl08" path="res://addons/HTNDomainManager/PluginSystem/DomainPanel/domain_panel.tscn" id="8_jvc2b"]
 
@@ -51,6 +52,7 @@ unique_name_in_owner = true
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+script = ExtResource("5_jn8qg")
 
 [node name="NotificationHandler" type="Control" parent="."]
 unique_name_in_owner = true

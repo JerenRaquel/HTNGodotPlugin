@@ -13,5 +13,5 @@ func get_node_name() -> String:
 func validate_self() -> String:
 	return ""
 
-func load_data(data) -> void:
-	text_edit.text = data
+func load_data(data: Dictionary) -> void:
+	text_edit.text = data["comment_text"]

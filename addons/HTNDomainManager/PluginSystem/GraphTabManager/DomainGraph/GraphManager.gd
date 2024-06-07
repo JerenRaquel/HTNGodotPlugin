@@ -87,21 +87,8 @@ func get_node_offset_by_key(node_key: StringName) -> Dictionary:
 func get_node_keys_with_meta() -> Dictionary:
 	var data := {}
 	for node_key: StringName in nodes.keys():
-		var type: String
-		if nodes[node_key] is HTNRootNode:
-			type = "Root"
-		elif nodes[node_key] is HTNApplicatorNode:
-			type = "Applicator"
-		elif nodes[node_key] is HTNCommentNode:
-			type = "Comment"
-		elif nodes[node_key] is HTNMethodNodeAlwaysTrue:
-			type = "Always True Method"
-		elif nodes[node_key] is HTNMethodNode:
-			type = "Method"
-		elif nodes[node_key] is HTNSplitterNode:
-			type = "Splitter"
-		elif nodes[node_key] is HTNTaskNode:
-			type = "Task"
+		var type = get_node_type(node_key)
+		assert(type != "Unknown", "This shouldn't be unknown. This is a bug.")
 
 		data[node_key] = {
 			"name": (nodes[node_key] as HTNBaseNode).get_node_name(),
@@ -122,6 +109,77 @@ func get_domain_links() -> Array[StringName]:
 		if nodes[node_key] is HTNDomainNode:
 			keys.push_back(node_key)
 	return keys
+
+func get_node_type(node_key: StringName) -> String:
+	if nodes[node_key] is HTNRootNode:
+		return "Root"
+	elif nodes[node_key] is HTNApplicatorNode:
+		return "Applicator"
+	elif nodes[node_key] is HTNCommentNode:
+		return "Comment"
+	elif nodes[node_key] is HTNMethodNodeAlwaysTrue:
+		return "Always True Method"
+	elif nodes[node_key] is HTNMethodNode:
+		return "Method"
+	elif nodes[node_key] is HTNSplitterNode:
+		return "Splitter"
+	elif nodes[node_key] is HTNTaskNode:
+		return "Task"
+	else:
+		return "Unknown"
+
+func get_node_data(node_key: StringName) -> Dictionary:
+	var node: HTNBaseNode = nodes[node_key]
+	if node is HTNRootNode:
+		return {}
+	elif node is HTNApplicatorNode:
+		return {
+			"effect_data": node.effect_data,
+			"nickname": node._nick_name
+		}
+	elif node is HTNCommentNode:
+		return {"comment_text" : node.text_edit.text}
+	elif node is HTNMethodNodeAlwaysTrue:
+		return {}
+	elif node is HTNMethodNode:
+		return {
+			"condition_data": node.condition_data,
+			"nickname": node._nick_name,
+			"priority": node.get_priority()
+		}
+	elif node is HTNSplitterNode:
+		return {"nickname": node.get_node_name()}
+	elif node is HTNTaskNode:
+		return {"task": node.get_node_name()}
+	else:
+		assert(false, "This should never happen. This is a bug.")
+		return {}
+
+func get_every_node_til_compound(node_key: String) -> Array[StringName]:
+	var task_chain: Array[StringName] = []
+	_get_every_node_til_compound_helper(node_key, task_chain)
+
+	return task_chain
+
+func _get_every_node_til_compound_helper(current_key: String, task_chain: Array[StringName]) -> void:
+	var connected_nodes: Array[StringName] = connection_handler.get_connected_nodes_from_output(current_key)
+	# We're done -- Stopped at dead end
+	if connected_nodes.size() == 0:
+		return
+	assert(connected_nodes.size() == 1, "This should always be 1. This is a bug.")
+
+	var connected_node := connected_nodes[0]
+	# We're done -- Stopped at Splitter
+	if nodes[connected_node] is HTNSplitterNode:
+		task_chain.push_back(connected_node)
+		return
+
+	# We're done -- Stopped before recurion
+	if connected_node in task_chain: return
+
+	# We just keep on going
+	task_chain.push_back(connected_node)
+	_get_every_node_til_compound_helper(connected_node, task_chain)
 
 func _delete_node(node: HTNBaseNode) -> void:
 	connection_handler.remove_connections(node)

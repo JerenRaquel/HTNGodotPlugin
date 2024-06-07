@@ -7,7 +7,7 @@ extends Resource
 # [ (domain_key (StringName))... ]
 @export var required_domains: Array[StringName] = []
 
-# {splitter_node_key (StringName) : { "method_branches": [(method_node_key: StringName)...] }}
+# {splitter_node_key (StringName) : [(method_node_key: (StringName))...] *sorted high -> low }
 @export var splits: Dictionary
 
 #	{
@@ -18,7 +18,8 @@ extends Resource
 #				"SingleID": (int),
 #				"Value": any,
 #				"RangeInclusivity": [boolean, boolean]
-#			}, "task_chain": [(task_name: StringName)...]
+#			},
+#			"task_chain": [(task_name: StringName)...]
 #		}
 #	}
 @export var methods: Dictionary

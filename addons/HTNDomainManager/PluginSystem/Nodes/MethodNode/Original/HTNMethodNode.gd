@@ -33,10 +33,9 @@ func validate_self() -> String:
 			return "Missing WorldStateKey field for at least one condition."
 		return ""
 
-func load_data(data) -> void:
-	_nick_name = data["nick_name"]
+func load_data(data: Dictionary) -> void:
+	_nick_name = data["nickname"]
 	condition_data = data["condition_data"]
-
 	_priority = data["priority"]
 	%SpinBox.value = _priority
 

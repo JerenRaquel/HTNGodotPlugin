@@ -1,39 +1,83 @@
 class_name HTNPlanner
 extends Node
+## This is a script attached to the HTNPlanner node intended to be added as a child
+## of an [i]agent[/i].
+##
+## The purpose of this node is to function similar to a compiler/interpreter. After
+## given a [member domain_name] and the function [method handle_planning] called,
+## the planner will take over and determine based of the [param world_state] what
+## is the best course of action to take.
 
+## Emits on when the plan generated finishes completely.[br]
+## [b]IMPORTANT:[/b] You don't need to emit this signal. The planner will emit
+## this for you.
 signal finished	# Emits success state
+
+## Used to stop the HTN Planner from executing tasks.[br]
+## You can use this as a reactionary reponse by outside forces such as when your
+## agent get's hit and you must handle that.
 signal interrupt_plan	# Stops the current plan
 
-@export var domain_name: StringName
+## Used to select the HTN Domain from the HTN Database of Domain behaviors.
+@export var domain_name: StringName = ""
 @export_group("Debugging Options")
+## Used to enable debugging print statements in the console.
 @export var enable_debugging := false
-@export var suppress_warnings := true
 
-@onready var state_manager: HTNStateManager = %StateManager
+@onready var _state_manager: HTNStateManager = %StateManager
 
-var is_planning := false
+var _is_planning := false
 
 func _ready() -> void:
-	interrupt_plan.connect(state_manager.on_interrupt)
+	assert(not domain_name.is_empty(), "You forgot to select a domain silly. :D")
+	interrupt_plan.connect(_state_manager.on_interrupt)
 
 func _physics_process(_delta: float) -> void:
-	state_manager.update(domain_name)
+	_state_manager.update(domain_name)
 
-## This function is used to let the HTN Planner know the current operation is
-## finished running as required by the HTNTask's [member requires_awaiting]
-## member.
-func report_task_finished() -> void:
-	state_manager.set_state(state_manager.PlanState.EFFECT)
+## You can call this to check if the HTN Planner is currently generating and
+## excuting a plan for the agent.
+func is_running() -> bool:
+	return _is_planning
 
+## This is the core function. This tells the HTN Planner to begin planning and
+## execute the planned actions once finished if applicable.[br]
+## [color=yellow][b]Enable [member enable_debugging] to check if it failed planning.[/b][/color][br][br]
+##
+## [param agent]: This is a refrence to the node that you would consider as your
+## NPC, AI, Enemy, or a HTN controlled node. This is intended to be the parent of
+## [i]this[/i] node.[br][br]
+##
+## [param world_state]: This is a dictionary of all information you believe your
+## agent needs to complete its tasks/plan to complete.
+##
+## [codeblock]
+## @export var home: Marker2D
+## @onready var htn_planner: HTNPlanner = %HTNPlanner
+##
+## func _ready() -> void:
+##   var world_states: Dictionary = {
+##     "RNG" : randi_range(0, 100),
+##     "DistanceToPlayer": global_position.distance_to(GlobalAutoload.player.global_position),
+##     "PlayerLocation": GlobalAutoload.player.global_position,
+##     "HomeLocation": home.global_position
+##   }
+##
+##   htn_planner.handle_planning(self, world_states)
+## [/codeblock]
 func handle_planning(agent: Node, world_state: Dictionary) -> void:
-	is_planning = true
+	_is_planning = true
 	var plan := generate_plan(world_state)
 	if plan.is_empty():
-		is_planning = false
+		_is_planning = false
 		if enable_debugging: print("Failed plan generation")
 	else:
-		state_manager.start(agent, plan, world_state)
+		_state_manager.start(agent, plan, world_state)
 
+## [b]IMPORTANT:[/b] This is used internally for the planner, but also is available
+## for your use in the case of [b]debugging[/b] on why the HTN Planner could not
+## plan using your created HTN Domain.[br]
+## [color=red]This will NOT have the agent executing tasks.[/color]
 func generate_plan(world_states: Dictionary) -> Array[StringName]:
 	return _generate_plan_from_domain(domain_name, world_states)[0]
 

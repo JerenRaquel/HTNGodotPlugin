@@ -24,8 +24,12 @@ func get_node_name() -> String:
 func validate_self() -> String:
 	return ""
 
-func load_data(data) -> void:
-	pass
+func load_data(data: Dictionary) -> void:
+	for idx: int in task_option_button.item_count:
+		if task_option_button.get_item_text(idx) == data["task"]:
+			task_option_button.select(idx)
+			_on_task_option_button_item_selected(idx)
+			return
 
 func _refresh_list() -> void:
 	var task_names: Array = _manager.file_manager.get_all_task_names()
