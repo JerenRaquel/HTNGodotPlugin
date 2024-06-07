@@ -28,9 +28,9 @@ func _refresh() -> void:
 	domain_names.sort()
 
 	for domain_name: String in domain_names:
-		var domain_line_instance := DOMAIN_LINE.instantiate()
+		var domain_line_instance: HTNDomainLine = DOMAIN_LINE.instantiate()
 		domain_container.add_child(domain_line_instance)
-		domain_line_instance.initialize(_manager)
+		domain_line_instance.initialize(_manager, domain_name)
 	searchbar.editable = true
 
 func _on_searchbar_text_changed(new_text: String) -> void:

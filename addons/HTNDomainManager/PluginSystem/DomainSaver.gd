@@ -12,6 +12,7 @@ func save(domain_graph: HTNDomainGraph) -> bool:
 	var domain_file: HTNDomain = _save_to_domain_resource(domain_graph)
 	if not _save_to_graph_file(domain_graph, domain_file):
 		return false
+	print(file_manager.HTN_REFERENCE_FILE["domains"])
 	return true
 
 func _save_to_domain_resource(domain_graph: HTNDomainGraph) -> HTNDomain:
@@ -35,7 +36,7 @@ func _save_to_domain_resource(domain_graph: HTNDomainGraph) -> HTNDomain:
 
 func _save_to_graph_file(domain_graph: HTNDomainGraph, domain_resource: HTNDomain) -> bool:
 	var graph_save: HTNGraphSave
-	if domain_resource != null:
+	if domain_resource == null:
 		graph_save = ResourceLoader.load(file_manager.HTN_REFERENCE_FILE["graph_saves"][domain_graph.domain_name])
 		if graph_save == null:
 			notification_handler.send_error("Could not load domain save: '"+domain_graph.domain_name+"'")
@@ -50,7 +51,7 @@ func _save_to_graph_file(domain_graph: HTNDomainGraph, domain_resource: HTNDomai
 		graph_save["node_positions"][node_key] = (domain_graph.nodes[node_key] as HTNBaseNode).position_offset
 		graph_save["node_data"][node_key] = domain_graph.get_node_data(node_key)
 
-	if domain_resource == null:
+	if domain_resource != null:
 		var domain_path: String = DOMAIN_PATH + domain_graph.domain_name + ".tres"
 		var result = ResourceSaver.save(domain_resource, domain_path)
 		if result != OK:
@@ -83,7 +84,7 @@ func _gather_split_data(domain_graph: HTNDomainGraph) -> Dictionary:
 		var node: HTNBaseNode = domain_graph.nodes[node_key]
 		if node is HTNSplitterNode or node is HTNRootNode:
 			var connected_node_keys: Array[StringName]\
-				= domain_graph.connection_handler.get_connected_nodes_from_output()
+				= domain_graph.connection_handler.get_connected_nodes_from_output(node_key)
 
 			connected_node_keys.sort_custom(
 				func(lhs: StringName, rhs: StringName) -> bool:

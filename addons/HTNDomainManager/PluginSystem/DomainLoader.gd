@@ -21,19 +21,19 @@ var _manager: HTNDomainManager
 func initialize(manager: HTNDomainManager) -> void:
 	_manager = manager
 
-func load(domain_name: String) -> bool:
+func load_domain(domain_name: String) -> bool:
 	var graph_save_file: HTNGraphSave = ResourceLoader.load(GRAPH_SAVE_PATH + domain_name + ".tres")
 	if graph_save_file == null:
 		return false
 
 	var new_graph: HTNPreloadedGraphTab = PRELOADED_GRAPH_TAB.instantiate()
 	tab_container.add_child(new_graph)
-	if tab_container.get_child_count() == 1:
-		tab_container.move_child(new_graph, 0)
-	else:
-		tab_container.move_child(new_graph, -2)
+	tab_container.move_child(new_graph, 0)
+	while tab_container.current_tab > 0:
+		tab_container.select_previous_available()
 
 	var domain_graph: HTNDomainGraph = new_graph.load_data(domain_name)
+	_manager.current_graph = domain_graph
 	domain_graph.initialize(_manager, new_graph, domain_name)
 
 	# Create nodes and load data

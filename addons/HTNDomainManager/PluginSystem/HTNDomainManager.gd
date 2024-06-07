@@ -27,6 +27,7 @@ signal domain_deleted
 @onready var file_manager: HTNFileManager = %FileManager
 @onready var notification_handler: HTNNotificaionHandler = %NotificationHandler
 @onready var domain_saver: HTNDomainSaver = %DomainSaver
+@onready var domain_loader: HTNDomainLoader = %DomainLoader
 # Other
 @onready var node_spawn_menu: HTNNodeSpawnMenu = %NodeSpawnMenu
 @onready var condition_editor: HTNConditionEditor = %ConditionEditor
@@ -57,6 +58,7 @@ func _ready() -> void:
 	goto_panel.initialize(self)
 	notification_handler.initialze(self)
 	domain_panel.initialize(self)
+	domain_loader.initialize(self)
 
 func _update_toolbar_buttons() -> void:
 	if current_graph == null:
@@ -110,12 +112,9 @@ func _on_clear_graph_button_pressed() -> void:
 	current_graph.clear()
 
 func _on_build_domain_button_pressed() -> void:
-	if not current_graph.validator.validate():
-		build_domain_button.disabled = true
-		return
-	if not domain_saver.save(current_graph):
-		build_domain_button.disabled = true
-		return
+	build_domain_button.disabled = true
+	if not current_graph.validator.validate(): return
+	if not domain_saver.save(current_graph): return
 
 	notification_handler.send_message("Build Complete! Graph Saved!")
 	current_graph.is_saved = true

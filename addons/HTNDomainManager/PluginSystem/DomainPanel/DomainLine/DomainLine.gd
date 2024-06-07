@@ -14,3 +14,6 @@ func _on_delete_button_pressed() -> void:
 	# CRITICAL: Add a "are you sure"
 
 	_manager.file_manager.delete_domain(domain_button.text)
+
+func _on_domain_button_pressed() -> void:
+	_manager.domain_loader.load_domain(domain_button.text)
