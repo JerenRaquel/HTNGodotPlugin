@@ -66,7 +66,7 @@ func _save_to_graph_file(domain_graph: HTNDomainGraph, domain_resource: HTNDomai
 			return false
 
 		file_manager.HTN_REFERENCE_FILE["domains"][domain_graph.domain_name] = domain_resource
-		file_manager.HTN_REFERENCE_FILE["graph_saves"][domain_graph.domain_name] = graph_save
+		file_manager.HTN_REFERENCE_FILE["graph_saves"][domain_graph.domain_name] = graph_save_path
 	return true
 
 func _gather_effect_data(domain_graph: HTNDomainGraph) -> Dictionary:

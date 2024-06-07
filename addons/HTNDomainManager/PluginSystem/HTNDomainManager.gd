@@ -118,3 +118,4 @@ func _on_build_domain_button_pressed() -> void:
 
 	notification_handler.send_message("Build Complete! Graph Saved!")
 	current_graph.is_saved = true
+	domain_panel._refresh()
