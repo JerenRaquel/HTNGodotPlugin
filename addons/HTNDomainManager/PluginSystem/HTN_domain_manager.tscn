@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://bxjws2hrnn63e"]
+[gd_scene load_steps=17 format=3 uid="uid://bxjws2hrnn63e"]
 
 [ext_resource type="Theme" uid="uid://diu3ahrw1puva" path="res://addons/HTNDomainManager/PluginSystem/PluginTheme.tres" id="1_4moif"]
 [ext_resource type="PackedScene" uid="uid://bel7aoiqishu0" path="res://addons/HTNDomainManager/PluginSystem/GraphTabManager/tab_graph_container.tscn" id="2_n8gmp"]
@@ -13,6 +13,7 @@
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/DomainLoader.gd" id="5_jn8qg"]
 [ext_resource type="PackedScene" uid="uid://bt8e1tea2412b" path="res://addons/HTNDomainManager/PluginSystem/EffectEditor/effect_editor.tscn" id="6_kek1x"]
 [ext_resource type="PackedScene" uid="uid://b82i43crgrl08" path="res://addons/HTNDomainManager/PluginSystem/DomainPanel/domain_panel.tscn" id="8_jvc2b"]
+[ext_resource type="PackedScene" uid="uid://ds1u2m48u03x8" path="res://addons/HTNDomainManager/PluginSystem/WarningBox/warning_box.tscn" id="14_lspda"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_icatj"]
 font_color = Color(0.878431, 0.878431, 0.878431, 1)
@@ -195,6 +196,11 @@ visible = false
 layout_mode = 1
 
 [node name="EffectEditor" parent="." instance=ExtResource("6_kek1x")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+
+[node name="WarningBox" parent="." instance=ExtResource("14_lspda")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 1

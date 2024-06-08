@@ -35,6 +35,14 @@ func validate_tab_creation(domain_name: String) -> bool:
 
 	return true
 
+func delete_tab_if_open(domain_name: String) -> void:
+	for i in get_tab_count():
+		var tab_ctx: HTNGraphTab = get_tab_control(i)
+		var tab_name: String = tab_ctx.name.replace("*", "")
+		if tab_name == domain_name:
+			tab_ctx.queue_free()
+			return
+
 func _create_new_tab() -> void:
 	var tab_instance := GRAPH_TAB.instantiate()
 	tab_instance.tab_created.connect(
@@ -54,5 +62,15 @@ func _on_tab_changed(tab: int) -> void:
 	_manager.graph_tab_changed.emit()
 
 func _on_tab_button_pressed(tab: int) -> void:
+	var tab_control: HTNGraphTab = get_current_tab_control()
+	if tab_control.domain_graph.is_saved:
+		tab_control.queue_free()
+	else:
+		_manager.warning_box.open(
+			"""You are about to delete an unsaved tab.
+			Continue?""",
+			func() -> void:
+				tab_control.queue_free(),
+			Callable()
+		)
 	_manager.graph_altered.emit()
-	# CRITICAL: Add tab deletion

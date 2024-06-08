@@ -28,6 +28,7 @@ signal domain_deleted
 @onready var notification_handler: HTNNotificaionHandler = %NotificationHandler
 @onready var domain_saver: HTNDomainSaver = %DomainSaver
 @onready var domain_loader: HTNDomainLoader = %DomainLoader
+@onready var warning_box: HTNWarningBox = %WarningBox
 # Other
 @onready var node_spawn_menu: HTNNodeSpawnMenu = %NodeSpawnMenu
 @onready var condition_editor: HTNConditionEditor = %ConditionEditor
@@ -59,6 +60,7 @@ func _ready() -> void:
 	notification_handler.initialze(self)
 	domain_panel.initialize(self)
 	domain_loader.initialize(self)
+	warning_box.initialize(self)
 
 func _update_toolbar_buttons() -> void:
 	if current_graph == null:
@@ -109,7 +111,11 @@ func _on_domain_panel_button_toggled(toggled_on: bool) -> void:
 
 func _on_clear_graph_button_pressed() -> void:
 	if not current_graph: return
-	current_graph.clear()
+	warning_box.open(
+		"You are about to remove nodes for this graph.\nContinue?",
+		current_graph.clear,
+		Callable()
+	)
 
 func _on_build_domain_button_pressed() -> void:
 	build_domain_button.disabled = true
