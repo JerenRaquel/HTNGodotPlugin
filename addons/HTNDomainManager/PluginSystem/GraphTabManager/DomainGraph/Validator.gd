@@ -15,6 +15,8 @@ const OVER_ONE_ALWAYS_TRUE_METHOD_CONNECTION := "There are more than one Method 
 @onready var domain_graph: HTNDomainGraph = $".."
 @onready var connection_handler: HTNConnectionHandler = $"../ConnectionHandler"
 
+var _error_node_key: StringName = ""
+
 func validate() -> bool:
 	# Validate that there are any connections....
 	# I know who you are. I put this in for you... ._.
@@ -164,4 +166,9 @@ func _send_error(node_name: String, node_key: StringName, preset_message: String
 	domain_graph._manager.notification_handler.send_error("'"+node_name+"' is invalid::"+preset_message)
 
 func _focus_error_node(node_key: StringName) -> void:
+	_highlight_error_node(node_key)
 	domain_graph._manager.goto_panel.center_on_node(node_key)
+
+func _highlight_error_node(node_key: StringName) -> void:
+	domain_graph.nodes[node_key].highlight()
+	_error_node_key = node_key

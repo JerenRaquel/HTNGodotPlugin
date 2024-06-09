@@ -74,6 +74,7 @@ func spawn_root() -> Array:
 
 	var root_instance: HTNRootNode = HTN_ROOT_NODE.instantiate()
 	_manager.current_graph.add_child(root_instance)
+	root_instance.initialize(_manager)
 	var root_key: String = _manager.current_graph.register_node(root_instance)
 	_set_node_position(
 		root_instance,

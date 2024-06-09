@@ -7,7 +7,7 @@ extends GraphEdit
 
 var _manager: HTNDomainManager
 var _graph_tab: HTNGraphTab
-var _root_node: GraphNode
+var _root_node: HTNRootNode
 var _current_ID: int = 0
 var root_key: String
 var domain_name: String = ""
@@ -27,6 +27,13 @@ func initialize(manager: HTNDomainManager, graph_tab: HTNGraphTab, domain_tab_na
 	_manager = manager
 	_graph_tab = graph_tab
 	domain_name = domain_tab_name
+	_manager.graph_altered.connect(
+		func() -> void:
+			if _manager.current_graph != self: return
+			if validator._error_node_key.is_empty(): return
+			nodes[validator._error_node_key].dehighlight()
+			validator._error_node_key = ""
+	)
 
 	add_valid_connection_type(1, 1)
 	add_valid_connection_type(2, 2)

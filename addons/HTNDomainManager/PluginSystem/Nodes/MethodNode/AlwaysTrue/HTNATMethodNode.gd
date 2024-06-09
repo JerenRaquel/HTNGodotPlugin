@@ -6,6 +6,9 @@ func initialize(manager: HTNDomainManager) -> void:
 	super(manager)
 	condition_data = { "AlwaysTrue": true }
 
+func get_node_name() -> String:
+	return ""
+
 func validate_self() -> String:
 	return ""
 

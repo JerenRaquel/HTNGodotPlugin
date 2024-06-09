@@ -15,8 +15,7 @@ TLDR: This may cause a stack overflow due to recursion."""
 func initialize(manager: HTNDomainManager) -> void:
 	super(manager)
 	warning_symbol.hide()
-	_manager.domain_created.connect(_refresh)
-	_manager.domain_deleted.connect(_refresh)
+	_manager.domains_updated.connect(_refresh)
 	_refresh()
 
 func get_node_name() -> String:

@@ -16,7 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://ds1u2m48u03x8" path="res://addons/HTNDomainManager/PluginSystem/WarningBox/warning_box.tscn" id="14_lspda"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_icatj"]
-font_color = Color(0.878431, 0.878431, 0.878431, 1)
+font_color = Color(1, 0.372549, 0.372549, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_o5cyj"]
 

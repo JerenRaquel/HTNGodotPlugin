@@ -61,6 +61,8 @@ corner_radius_bottom_left = 5
 content_margin_top = 5.0
 content_margin_bottom = 5.0
 bg_color = Color(0.136826, 0.136826, 0.136826, 1)
+border_color = Color(1, 0.160784, 0.160784, 1)
+border_blend = true
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 shadow_color = Color(0.0862745, 0.0862745, 0.0862745, 0.784314)
@@ -71,6 +73,8 @@ shadow_offset = Vector2(0, 5)
 content_margin_left = 4.0
 content_margin_right = 4.0
 bg_color = Color(0.0862745, 0.0862745, 0.0862745, 1)
+border_color = Color(1, 0.160784, 0.160784, 1)
+border_blend = true
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
