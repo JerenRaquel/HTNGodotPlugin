@@ -135,6 +135,8 @@ func _on_type_option_button_item_selected(index: int) -> void:
 	data_container.show()
 
 func _on_visibility_changed() -> void:
+	if not type_option_button: return
+
 	if visible:
 		_on_type_option_button_item_selected(type_option_button.selected)
 	else:

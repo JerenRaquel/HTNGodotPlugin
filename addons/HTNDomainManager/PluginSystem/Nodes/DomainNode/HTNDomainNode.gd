@@ -35,8 +35,16 @@ func validate_self() -> String:
 		return "Node created with no domains to link to..."
 	return ""
 
-func load_data(data) -> void:
-	pass
+func load_data(data: Dictionary) -> void:
+	for idx: int in domain_option_button.item_count:
+		if domain_option_button.get_item_text(idx) == data["domain"]:
+			domain_option_button.select(idx)
+			_on_domain_option_button_item_selected(idx)
+			return
+	domain_option_button.select(0)
+	_on_domain_option_button_item_selected(0)
+	warning_symbol.show()
+	warning_symbol.tooltip_text = "Domain: " + data["domain"] + " was not found,\nSelecting first input as default."
 
 func _refresh() -> void:
 	var domain_names: Array = _manager.file_manager.get_all_domain_names()
@@ -80,3 +88,4 @@ func _on_domain_option_button_item_selected(index: int) -> void:
 		warning_symbol.show()
 	else:
 		warning_symbol.hide()
+	_manager.graph_altered.emit()

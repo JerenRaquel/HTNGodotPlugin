@@ -77,3 +77,4 @@ func _on_task_option_button_item_selected(index: int) -> void:
 	requires_waiting_button\
 		.set_pressed_no_signal(_manager.file_manager.get_awaiting_task_state(get_node_name()))
 	_manager.node_name_altered.emit()
+	_manager.graph_altered.emit()

@@ -151,6 +151,8 @@ func get_node_data(node_key: StringName) -> Dictionary:
 		return {"nickname": node.get_node_name()}
 	elif node is HTNTaskNode:
 		return {"task": node.get_node_name()}
+	elif node is HTNDomainNode:
+		return {"domain": node.get_node_name()}
 	else:
 		assert(false, "This should never happen. This is a bug.")
 		return {}

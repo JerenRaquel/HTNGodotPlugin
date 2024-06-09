@@ -26,7 +26,7 @@ slot/1/draw_stylebox = true
 script = ExtResource("2_o501p")
 
 [node name="Input" parent="HBoxContainer" index="0"]
-text = "Task"
+text = "Task/Applicator"
 
 [node name="Output" parent="HBoxContainer" index="2"]
 text = "Methods"

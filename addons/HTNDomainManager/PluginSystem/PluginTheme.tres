@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=18 format=3 uid="uid://diu3ahrw1puva"]
+[gd_resource type="Theme" load_steps=20 format=3 uid="uid://diu3ahrw1puva"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ovtam"]
 
@@ -56,6 +56,23 @@ corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ctd3j"]
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color(0.136826, 0.136826, 0.136826, 1)
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+shadow_color = Color(0.0862745, 0.0862745, 0.0862745, 0.784314)
+shadow_size = 25
+shadow_offset = Vector2(0, 5)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_66nrl"]
+content_margin_left = 4.0
+content_margin_right = 4.0
+bg_color = Color(0.0862745, 0.0862745, 0.0862745, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rm61a"]
 
@@ -141,6 +158,9 @@ Button/styles/pressed = SubResource("StyleBoxFlat_5guy1")
 CheckButton/colors/font_hover_pressed_color = Color(0.427451, 0.701961, 0.941176, 1)
 CheckButton/styles/hover = SubResource("StyleBoxFlat_hmbkk")
 CheckButton/styles/hover_pressed = SubResource("StyleBoxFlat_xm567")
+GraphNode/colors/resizer_color = Color(0.337255, 0.619608, 1, 1)
+GraphNode/styles/panel = SubResource("StyleBoxFlat_ctd3j")
+GraphNode/styles/titlebar = SubResource("StyleBoxFlat_66nrl")
 LineEdit/styles/focus = SubResource("StyleBoxEmpty_rm61a")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_diisx")
 Panel/styles/panel = SubResource("StyleBoxFlat_qjv3a")

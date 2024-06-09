@@ -17,6 +17,7 @@ func _exit_tree() -> void:
 
 func initialze(manager: HTNDomainManager) -> void:
 	_manager = manager
+	_manager.graph_altered.connect(clear)
 	clear()
 
 func clear() -> void:

@@ -64,3 +64,4 @@ func _on_close_button_pressed() -> void:
 
 	for child: HTNEffectLine in line_container.get_children():
 		child.queue_free()
+	_manager.graph_altered.emit()

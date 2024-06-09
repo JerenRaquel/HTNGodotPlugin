@@ -63,6 +63,7 @@ func enable(port_type: int=-1) -> void:
 			splitter.show()
 			task.show()
 			applicator.show()
+			domain_link.show()
 		_:
 			_hide_all()
 	show()
