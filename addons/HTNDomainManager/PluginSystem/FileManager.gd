@@ -36,6 +36,9 @@ func check_if_valid_name(task_name: String) -> bool:
 func check_if_domain_name_exists(domain_name: String) -> bool:
 	return domain_name in HTN_REFERENCE_FILE["domains"]
 
+func check_if_no_domains() -> bool:
+	return HTN_REFERENCE_FILE["domains"].is_empty()
+
 # NOTE: Time Complexity: O(N) where N is every domain linked
 # Utilizes DFS for searching
 func check_if_domain_links(original_domain_name: String, domain_name_link: String) -> bool:

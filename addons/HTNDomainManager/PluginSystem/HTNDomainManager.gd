@@ -8,8 +8,7 @@ signal graph_tab_changed
 signal task_created
 signal task_deleted
 signal node_name_altered
-signal domain_created
-signal domain_deleted
+signal domains_updated
 
 # Toolbar
 @onready var task_panel_button: Button = %TaskPanelButton
@@ -46,9 +45,9 @@ func _ready() -> void:
 		func(state: bool) -> void: graph_tool_bar_toggled.emit(state)
 	)
 	graph_altered.connect(_update_toolbar_buttons)
+	domains_updated.connect(_update_domain_button)
 	left_v_separator.hide()
 	right_v_separator.hide()
-	_update_toolbar_buttons()
 
 	tab_container.initialize(self)
 	file_manager.initialize(self)
@@ -62,14 +61,19 @@ func _ready() -> void:
 	domain_loader.initialize(self)
 	warning_box.initialize(self)
 
+	_update_toolbar_buttons()
+	_update_domain_button()
+
 func _update_toolbar_buttons() -> void:
 	if current_graph == null:
+		graph_tools_toggle.disabled = true
 		build_domain_button.disabled = true
 		goto_panel_button.disabled = true
 		clear_graph_button.disabled = true
 		goto_panel_button.set_pressed_no_signal(false)
 		goto_panel.hide()
 	else:
+		graph_tools_toggle.disabled = false
 		if current_graph.is_saved:
 			build_domain_button.disabled = true
 		else:
@@ -80,6 +84,12 @@ func _update_toolbar_buttons() -> void:
 		else:
 			clear_graph_button.disabled = false
 		goto_panel_button.disabled = false
+
+func _update_domain_button() -> void:
+	if file_manager.check_if_no_domains():
+		domain_panel_button.disabled = true
+	else:
+		domain_panel_button.disabled = false
 
 func _on_task_panel_button_toggled(toggled_on: bool) -> void:
 	if toggled_on:
@@ -125,3 +135,4 @@ func _on_build_domain_button_pressed() -> void:
 	notification_handler.send_message("Build Complete! Graph Saved!")
 	current_graph.is_saved = true
 	domain_panel._refresh()
+	domains_updated.emit()

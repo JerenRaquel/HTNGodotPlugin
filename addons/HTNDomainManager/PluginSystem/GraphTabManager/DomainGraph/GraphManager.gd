@@ -19,6 +19,10 @@ var is_saved := false:
 
 var nodes: Dictionary = {}
 
+func _exit_tree() -> void:
+	if _manager and _manager.current_graph == self:
+		_manager.current_graph = null
+
 func initialize(manager: HTNDomainManager, graph_tab: HTNGraphTab, domain_tab_name: String) -> void:
 	_manager = manager
 	_graph_tab = graph_tab
@@ -30,6 +34,10 @@ func initialize(manager: HTNDomainManager, graph_tab: HTNGraphTab, domain_tab_na
 	var data: Array = _manager.node_spawn_menu.spawn_root()
 	_root_node = data[0]
 	root_key = data[1]
+	if _manager.graph_tools_toggle.button_pressed:
+		show_menu = true
+	else:
+		show_menu = false
 
 func generate_node_key() -> StringName:
 	var ID := _current_ID
