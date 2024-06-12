@@ -19,11 +19,7 @@ data_*/
 mono_crash.*.json
 
 # Data Files
-addons/HTNDomainManager/Data/Domains/*.tres
-addons/HTNDomainManager/Data/GraphSaves/*.tres
-addons/HTNDomainManager/Data/Scripts/*.gd
-addons/HTNDomainManager/Data/Tasks/*.tres
-addons/HTNDomainManager/Data/ReferenceFiles/HTNReferenceFile.tres
+addons/HTNDomainManager/Data/
 
 # Other Tools for plugin testing
 addons/*

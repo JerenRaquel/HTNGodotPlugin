@@ -2,7 +2,7 @@
 class_name HTNFileManager
 extends Control
 
-var HTN_REFERENCE_FILE = preload("res://addons/HTNDomainManager/Data/ReferenceFiles/HTNReferenceFile.tres")
+var HTN_REFERENCE_FILE = preload("res://addons/HTNDomainManager/Data/HTNReferenceFile.tres")
 const TASK_PATH := "res://addons/HTNDomainManager/Data/Tasks/"
 const SCRIPT_PATH := "res://addons/HTNDomainManager/Data/Scripts/"
 #region Task Script Template

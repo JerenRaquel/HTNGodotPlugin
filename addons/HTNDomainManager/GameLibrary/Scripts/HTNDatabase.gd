@@ -1,7 +1,7 @@
 extends Node
 ## [color=red][b]This is only used by the HTN Planner. DO NOT USE.[/b][/color]
 
-const HTN_REFERENCE_FILE = preload("res://addons/HTNDomainManager/Data/ReferenceFiles/HTNReferenceFile.tres")
+const HTN_REFERENCE_FILE = preload("res://addons/HTNDomainManager/Data/HTNReferenceFile.tres")
 
 # { domain_key : domain_resource (HTNDomain) }
 @onready var domains: Dictionary = HTN_REFERENCE_FILE["domains"]

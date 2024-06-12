@@ -6,6 +6,7 @@ const TASK_LINE = preload("res://addons/HTNDomainManager/PluginSystem/TaskPanel/
 
 @onready var task_name_line_edit: LineEdit = %TaskNameLineEdit
 @onready var task_list: VBoxContainer = %TaskList
+@onready var search_bar: LineEdit = %SearchBar
 
 var _manager: HTNDomainManager
 var _avoid_refresh := false
@@ -25,6 +26,14 @@ func _refresh_list() -> void:
 		if child.is_queued_for_deletion(): continue
 		child.queue_free()
 	var data: Array = _manager.file_manager.get_all_task_names()
+	if data.is_empty():
+		search_bar.editable = false
+		search_bar.placeholder_text = "Create a task..."
+		return
+	else:
+		search_bar.editable = true
+		search_bar.placeholder_text = "Search..."
+
 	data.sort()
 	for task_name: String in data:
 		_create_task_line(task_name)
