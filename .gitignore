@@ -24,3 +24,4 @@ addons/HTNDomainManager/Data/
 # Other Tools for plugin testing
 addons/*
 !addons/HTNDomainManager
+TestBench/*
