@@ -15,7 +15,7 @@ TLDR: This may cause a stack overflow due to recursion."""
 func initialize(manager: HTNDomainManager) -> void:
 	super(manager)
 	warning_symbol.hide()
-	_manager.domains_updated.connect(_refresh)
+	manager.domains_updated.connect(_refresh)
 	_refresh()
 
 func get_node_name() -> String:
@@ -87,4 +87,4 @@ func _on_domain_option_button_item_selected(index: int) -> void:
 		warning_symbol.show()
 	else:
 		warning_symbol.hide()
-	_manager.graph_altered.emit()
+	HTNGlobals.graph_altered.emit()

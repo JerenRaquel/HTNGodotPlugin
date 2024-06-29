@@ -5,6 +5,8 @@ extends TabContainer
 const GRAPH_TAB = preload("res://addons/HTNDomainManager/PluginSystem/GraphTabManager/GraphTab/graph_tab.tscn")
 const TRASH = preload("res://addons/HTNDomainManager/PluginSystem/Icons/Trash.svg")
 
+@export var node_spawn_menu: HTNNodeSpawnMenu
+
 var _manager: HTNDomainManager
 var _regex: RegEx
 var _empty_tab_idx: int
@@ -48,8 +50,19 @@ func _create_new_tab() -> void:
 	tab_instance.tab_created.connect(
 		func(graph: HTNDomainGraph) -> void:
 			_manager.current_graph = graph
-			graph.initialize(_manager, tab_instance, tab_instance.get_domain_name())
-			_manager.graph_altered.emit()
+
+			HTNGlobals.graph_altered.connect(
+				func() -> void:
+					if _manager.current_graph != graph: return
+					graph.on_graph_altered()
+			)
+			graph.tree_exiting.connect(
+				func() -> void:
+					if _manager and _manager.current_graph == graph:
+						_manager.current_graph = null
+			)
+			graph.initialize(_manager, node_spawn_menu, tab_instance, tab_instance.get_domain_name())
+			HTNGlobals.graph_altered.emit()
 			set_tab_button_icon(current_tab, TRASH)
 			_create_new_tab()
 	)
@@ -73,4 +86,4 @@ func _on_tab_button_pressed(tab: int) -> void:
 				tab_control.queue_free(),
 			Callable()
 		)
-	_manager.graph_altered.emit()
+	HTNGlobals.graph_altered.emit()

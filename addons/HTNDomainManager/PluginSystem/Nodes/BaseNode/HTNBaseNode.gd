@@ -21,7 +21,7 @@ func get_node_name() -> String:
 func validate_self() -> String:
 	return "HTN Base Node Default Error Message"
 
-func load_data(data: Dictionary) -> void:
+func load_data(_data: Dictionary) -> void:
 	pass
 
 func highlight() -> void:

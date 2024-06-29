@@ -3,7 +3,6 @@ class_name HTNDomainManager
 extends Control
 
 signal graph_tool_bar_toggled(state: bool)
-signal graph_altered
 signal graph_tab_changed
 signal task_created
 signal task_deleted
@@ -26,10 +25,8 @@ signal domains_updated
 @onready var file_manager: HTNFileManager = %FileManager
 @onready var notification_handler: HTNNotificaionHandler = %NotificationHandler
 @onready var domain_saver: HTNDomainSaver = %DomainSaver
-@onready var domain_loader: HTNDomainLoader = %DomainLoader
 @onready var warning_box: HTNWarningBox = %WarningBox
 # Other
-@onready var node_spawn_menu: HTNNodeSpawnMenu = %NodeSpawnMenu
 @onready var condition_editor: HTNConditionEditor = %ConditionEditor
 @onready var effect_editor: HTNEffectEditor = %EffectEditor
 @onready var left_v_separator: VSeparator = %LeftVSeparator
@@ -44,25 +41,27 @@ func _ready() -> void:
 	graph_tools_toggle.toggled.connect(
 		func(state: bool) -> void: graph_tool_bar_toggled.emit(state)
 	)
-	graph_altered.connect(_update_toolbar_buttons)
+	HTNGlobals.graph_altered.connect(_update_toolbar_buttons)
 	domains_updated.connect(_update_domain_button)
 	left_v_separator.hide()
 	right_v_separator.hide()
 
 	tab_container.initialize(self)
 	file_manager.initialize(self)
-	node_spawn_menu.initialize(self)
 	condition_editor.initialize(self)
 	effect_editor.initialize(self)
 	task_panel.initialize(self)
 	goto_panel.initialize(self)
-	notification_handler.initialze(self)
 	domain_panel.initialize(self)
-	domain_loader.initialize(self)
 	warning_box.initialize(self)
+	notification_handler.initialize()
 
 	_update_toolbar_buttons()
 	_update_domain_button()
+
+func load_domain(domain_name: String) -> void:
+	%DomainLoader.load_domain(domain_name)
+	_update_toolbar_buttons()
 
 func _update_toolbar_buttons() -> void:
 	if current_graph == null:

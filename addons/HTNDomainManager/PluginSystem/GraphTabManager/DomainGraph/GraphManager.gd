@@ -5,7 +5,7 @@ extends GraphEdit
 @onready var connection_handler: HTNConnectionHandler = $ConnectionHandler
 @onready var validator: HTNGraphValidator = $Validator
 
-var _manager: HTNDomainManager
+var _node_spawn_menu: HTNNodeSpawnMenu
 var _graph_tab: HTNGraphTab
 var _root_node: HTNRootNode
 var _current_ID: int = 0
@@ -19,29 +19,19 @@ var is_saved := false:
 
 var nodes: Dictionary = {}
 
-func _exit_tree() -> void:
-	if _manager and _manager.current_graph == self:
-		_manager.current_graph = null
-
-func initialize(manager: HTNDomainManager, graph_tab: HTNGraphTab, domain_tab_name: String) -> void:
-	_manager = manager
+func initialize(manager: HTNDomainManager, node_spawn_menu: HTNNodeSpawnMenu,
+		graph_tab: HTNGraphTab, domain_tab_name: String) -> void:
+	_node_spawn_menu = node_spawn_menu
 	_graph_tab = graph_tab
 	domain_name = domain_tab_name
-	_manager.graph_altered.connect(
-		func() -> void:
-			if _manager.current_graph != self: return
-			if validator._error_node_key.is_empty(): return
-			nodes[validator._error_node_key].dehighlight()
-			validator._error_node_key = ""
-	)
 
 	add_valid_connection_type(1, 1)
 	add_valid_connection_type(2, 2)
 
-	var data: Array = _manager.node_spawn_menu.spawn_root()
+	var data: Array = _node_spawn_menu.spawn_root(manager)
 	_root_node = data[0]
 	root_key = data[1]
-	if _manager.graph_tools_toggle.button_pressed:
+	if manager.graph_tools_toggle.button_pressed:
 		show_menu = true
 	else:
 		show_menu = false
@@ -76,7 +66,7 @@ func register_node(node: GraphNode, reg_key: StringName="") -> String:
 
 	nodes[node_key] = node
 	node.name = node_key
-	_manager.graph_altered.emit()
+	HTNGlobals.graph_altered.emit()
 	is_saved = false
 	return node_key
 
@@ -87,7 +77,7 @@ func clear() -> void:
 		if node is HTNRootNode: continue
 		_delete_node(node)
 	_current_ID = 1
-	_manager.graph_altered.emit()
+	HTNGlobals.graph_altered.emit()
 	is_saved = false
 
 func get_node_offset_by_key(node_key: StringName) -> Dictionary:
@@ -178,15 +168,21 @@ func get_every_node_til_compound(node_key: String) -> Array[StringName]:
 
 	return task_chain
 
-func load_node(node: PackedScene, node_key: StringName, node_position: Vector2, node_data: Dictionary) -> void:
-	if node == _manager.node_spawn_menu.HTN_ROOT_NODE: return
+func load_node(manager: HTNDomainManager, node: PackedScene, node_key: StringName,
+		node_position: Vector2, node_data: Dictionary) -> void:
+	if node == _node_spawn_menu.HTN_ROOT_NODE: return
 
 	var node_instance: GraphNode = node.instantiate()
 	add_child(node_instance)
 	register_node(node_instance, node_key)
-	node_instance.initialize(_manager)
+	node_instance.initialize(manager)
 	node_instance.load_data(node_data)
 	node_instance.position_offset = node_position
+
+func on_graph_altered() -> void:
+	if validator._error_node_key.is_empty(): return
+	nodes[validator._error_node_key].dehighlight()
+	validator._error_node_key = ""
 
 func _get_every_node_til_compound_helper(current_key: String, task_chain: Array[StringName]) -> void:
 	var connected_nodes: Array[StringName] = connection_handler.get_connected_nodes_from_output(current_key)
@@ -218,16 +214,16 @@ func _on_connection_request(from_node: StringName, from_port: int, to_node: Stri
 	connection_handler.load_connection(from_node, from_port, to_node, to_port)
 
 func _on_connection_to_empty(from_node: StringName, from_port: int, release_position: Vector2) -> void:
-	_manager.node_spawn_menu.connect_node_data = {
+	_node_spawn_menu.connect_node_data = {
 		"from_node": from_node,
 		"from_port": from_port,
 		"release_position": release_position
 	}
-	_manager.node_spawn_menu.enable(connection_handler.get_output_port_type(from_node, from_port))
+	_node_spawn_menu.enable(connection_handler.get_output_port_type(from_node, from_port))
 
 func _on_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	disconnect_node(from_node, from_port, to_node, to_port)
-	_manager.graph_altered.emit()
+	HTNGlobals.graph_altered.emit()
 	is_saved = false
 
 func _on_delete_nodes_request(selected_nodes: Array[StringName]) -> void:
@@ -239,7 +235,7 @@ func _on_delete_nodes_request(selected_nodes: Array[StringName]) -> void:
 			continue
 
 		_delete_node(node)
-	_manager.graph_altered.emit()
+	HTNGlobals.graph_altered.emit()
 	is_saved = false
 
 func _on_copy_nodes_request() -> void:
@@ -249,4 +245,4 @@ func _on_paste_nodes_request() -> void:
 	pass # Replace with function body.
 
 func _on_popup_request(_position: Vector2) -> void:
-	_manager.node_spawn_menu.enable()
+	_node_spawn_menu.enable()

@@ -22,20 +22,23 @@ func tab_save_state(state: bool) -> void:
 		name += "*"
 
 func _on_create_button_pressed() -> void:
+	var graph_tab_container: HTNTabGraphManager = get_parent_control()
+	if graph_tab_container == null: return
+
 	# No name given
 	if get_domain_name().is_empty(): return
 
 	# Check if tab was already created
-	if not get_parent().validate_tab_creation(get_domain_name()):
+	if not graph_tab_container.validate_tab_creation(get_domain_name()):
 		return
 
 	name = get_domain_name() + "*"
 	domain_graph = DOMAIN_GRAPH.instantiate()
 	add_child(domain_graph)
-	get_parent()._manager.graph_tool_bar_toggled.connect(
+	graph_tab_container._manager.graph_tool_bar_toggled.connect(
 		func(state: bool) -> void:
 			domain_graph.show_menu = state
 	)
 	tab_created.emit(domain_graph)
-	%EmptyFieldsContainer.queue_free()
 	is_empty = false
+	%EmptyFieldsContainer.queue_free()

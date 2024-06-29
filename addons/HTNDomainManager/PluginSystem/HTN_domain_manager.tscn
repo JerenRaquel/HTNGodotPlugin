@@ -172,9 +172,11 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="TabContainer" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer" instance=ExtResource("2_n8gmp")]
+[node name="TabContainer" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer" node_paths=PackedStringArray("node_spawn_menu") instance=ExtResource("2_n8gmp")]
 unique_name_in_owner = true
 layout_mode = 2
+current_tab = 0
+node_spawn_menu = NodePath("../../../../../NodeSpawnMenu")
 
 [node name="RightVSeparator" type="VSeparator" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer"]
 unique_name_in_owner = true
@@ -189,8 +191,9 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="NodeSpawnMenu" parent="." instance=ExtResource("4_2r86d")]
+[node name="NodeSpawnMenu" parent="." node_paths=PackedStringArray("_manager") instance=ExtResource("4_2r86d")]
 unique_name_in_owner = true
+_manager = NodePath("..")
 
 [node name="ConditionEditor" parent="." instance=ExtResource("5_j8nky")]
 unique_name_in_owner = true

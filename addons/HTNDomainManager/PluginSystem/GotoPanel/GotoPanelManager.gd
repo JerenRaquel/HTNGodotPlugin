@@ -10,7 +10,7 @@ var _manager: HTNDomainManager
 
 func initialize(manager: HTNDomainManager) -> void:
 	_manager = manager
-	_manager.graph_altered.connect(_refresh)
+	HTNGlobals.graph_altered.connect(_refresh)
 	_manager.graph_tab_changed.connect(_refresh)
 	_manager.node_name_altered.connect(_refresh)
 	hide()

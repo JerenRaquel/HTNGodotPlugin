@@ -77,7 +77,7 @@ func _on_close_button_pressed() -> void:
 	for child: HTNConditionLine in condition_line_container.get_children():
 		child.queue_free()
 
-	_manager.graph_altered.emit()
+	HTNGlobals.graph_altered.emit()
 
 func _on_search_bar_text_changed(new_text: String) -> void:
 	_filter_children(new_text)

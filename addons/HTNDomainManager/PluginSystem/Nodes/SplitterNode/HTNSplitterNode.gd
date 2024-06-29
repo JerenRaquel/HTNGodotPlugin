@@ -4,9 +4,6 @@ extends HTNBaseNode
 
 @onready var nick_name: LineEdit = $NickName
 
-func initialize(manager: HTNDomainManager) -> void:
-	super(manager)
-
 func get_node_name() -> String:
 	return nick_name.text
 

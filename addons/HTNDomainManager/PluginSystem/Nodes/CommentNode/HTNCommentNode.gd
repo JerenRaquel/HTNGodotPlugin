@@ -4,9 +4,6 @@ extends HTNBaseNode
 
 @onready var text_edit: TextEdit = $TextEdit
 
-func initialize(manager: HTNDomainManager) -> void:
-	super(manager)
-
 func get_node_name() -> String:
 	return ""
 

@@ -20,6 +20,8 @@ const HTN_APPLICATOR_NODE = preload("res://addons/HTNDomainManager/PluginSystem/
 const HTN_TASK_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/TaskNode/htn_task_node.tscn")
 const HTN_DOMAIN_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/DomainNode/htn_domain_node.tscn")
 
+@export var _manager: HTNDomainManager
+
 @onready var splitter: Button = %Splitter
 @onready var domain_link: Button = %DomainLink
 @onready var method: Button = %Method
@@ -28,7 +30,6 @@ const HTN_DOMAIN_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Node
 @onready var applicator: Button = %Applicator
 @onready var comment: Button = %Comment
 
-var _manager: HTNDomainManager
 var _mouse_local_position: Vector2
 var can_be_opened := false
 var connect_node_data: Dictionary = {}
@@ -36,10 +37,8 @@ var connect_node_data: Dictionary = {}
 func _ready() -> void:
 	if not Engine.is_editor_hint():
 		set_process_unhandled_input(false)
-
-func initialize(manager: HTNDomainManager) -> void:
-	_manager = manager
-	hide()
+		return
+	#hide()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventAction or event is InputEventKey:
@@ -69,13 +68,13 @@ func enable(port_type: int=-1) -> void:
 	show()
 	global_position = get_global_mouse_position()
 
-func spawn_root() -> Array:
-	assert(_manager.current_graph != null, "Current Graph is NULL")
+func spawn_root(manager: HTNDomainManager) -> Array:
+	assert(manager.current_graph != null, "Current Graph is NULL")
 
 	var root_instance: HTNRootNode = HTN_ROOT_NODE.instantiate()
-	_manager.current_graph.add_child(root_instance)
-	root_instance.initialize(_manager)
-	var root_key: String = _manager.current_graph.register_node(root_instance)
+	manager.current_graph.add_child(root_instance)
+	root_instance.initialize(manager)
+	var root_key: String = manager.current_graph.register_node(root_instance)
 	_set_node_position(
 		root_instance,
 		Vector2.ZERO,
@@ -117,6 +116,7 @@ func _add_node(node: PackedScene) -> HTNBaseNode:
 	else:
 		_place_and_connect(node_instance)
 
+	node_instance.initialize(_manager)
 	return node_instance
 
 func _place_and_connect(node_instance: HTNBaseNode) -> void:
@@ -144,25 +144,25 @@ func _set_node_position(node: HTNBaseNode, target_position: Vector2, offset: Vec
 	node.set_position_offset((target_position + scroll_offset) / zoom + offset)
 
 func _on_splitter_pressed() -> void:
-	_add_node(HTN_SPLITTER_NODE).initialize(_manager)
+	_add_node(HTN_SPLITTER_NODE)
 
 func _on_domain_link_pressed() -> void:
-	_add_node(HTN_DOMAIN_NODE).initialize(_manager)
+	_add_node(HTN_DOMAIN_NODE)
 
 func _on_method_pressed() -> void:
-	_add_node(HTN_METHOD_NODE).initialize(_manager)
+	_add_node(HTN_METHOD_NODE)
 
 func _on_at_method_pressed() -> void:
-	_add_node(HTN_ALWAYS_TRUE_METHOD_NODE).initialize(_manager)
+	_add_node(HTN_ALWAYS_TRUE_METHOD_NODE)
 
 func _on_task_pressed() -> void:
-	_add_node(HTN_TASK_NODE).initialize(_manager)
+	_add_node(HTN_TASK_NODE)
 
 func _on_applicator_pressed() -> void:
-	_add_node(HTN_APPLICATOR_NODE).initialize(_manager)
+	_add_node(HTN_APPLICATOR_NODE)
 
 func _on_comment_pressed() -> void:
-	_add_node(HTN_COMMENT_NODE).initialize(_manager)
+	_add_node(HTN_COMMENT_NODE)
 
 func _on_visibility_changed() -> void:
 	if _manager == null or _manager.current_graph == null:

@@ -10,14 +10,12 @@ const ERROR_COLOR := Color("ff5f5f")
 @onready var notice_label: Label = %NoticeLabel
 @onready var timer: Timer = %Timer
 
-var _manager: HTNDomainManager
-
 func _exit_tree() -> void:
 	clear()
 
-func initialze(manager: HTNDomainManager) -> void:
-	_manager = manager
-	_manager.graph_altered.connect(clear)
+func initialize() -> void:
+	if not Engine.is_editor_hint(): return
+	HTNGlobals.graph_altered.connect(clear)
 	clear()
 
 func clear() -> void:

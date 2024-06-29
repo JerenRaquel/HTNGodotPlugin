@@ -16,9 +16,6 @@ var _nick_name: String:
 
 var condition_data: Dictionary = {}
 
-func initialize(manager: HTNDomainManager) -> void:
-	super(manager)
-
 func get_node_name() -> String:
 	if not _nick_name.is_empty():
 		return _nick_name

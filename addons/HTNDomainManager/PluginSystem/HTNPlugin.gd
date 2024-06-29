@@ -3,7 +3,8 @@ extends EditorPlugin
 
 const HTN_DOMAIN_MANAGER = preload("res://addons/HTNDomainManager/PluginSystem/HTN_domain_manager.tscn")
 const PLUGIN_NAME := "HTNDomainManager"
-const HTN_DATABASE_SCRIPT = "res://addons/HTNDomainManager/GameLibrary/Scripts/HTNDatabase.gd"
+const HTN_DATABASE_SCRIPT := "res://addons/HTNDomainManager/GameLibrary/Scripts/HTNDatabase.gd"
+const HTN_GLOBALS := "res://addons/HTNDomainManager/PluginSystem/HTNGlobals.gd"
 
 var manager: Control
 
@@ -18,9 +19,12 @@ func _enter_tree() -> void:
 
 	if not ProjectSettings.has_setting("autoload/HTNDatabase"):
 		add_autoload_singleton("HTNDatabase", HTN_DATABASE_SCRIPT)
+	if not ProjectSettings.has_setting("autoload/HTNGlobals"):
+		add_autoload_singleton("HTNGlobals", HTN_GLOBALS)
+
 	manager = HTN_DOMAIN_MANAGER.instantiate()
 	print_rich(
-		"""The HTNDomainManager Plugin has added the autoload 'HTNDatabase' for plugin use.
+		"""The HTNDomainManager Plugin has added the autoload 'HTNDatabase' and 'HTNGlobals' for plugin use.
 This is used for keeping track of files during editor and runtime use.
 Please remove when uninstalling this plugin.
 Thank you for using this! [rainbow freq=1.0 sat=0.8 val=0.8]:D[/rainbow]
