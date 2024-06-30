@@ -6,34 +6,31 @@ extends VBoxContainer
 @onready var search_bar: LineEdit = %SearchBar
 @onready var goto_container: VBoxContainer = %GotoContainer
 
-var _manager: HTNDomainManager
-
-func initialize(manager: HTNDomainManager) -> void:
-	_manager = manager
+func initialize() -> void:
 	HTNGlobals.graph_altered.connect(_refresh)
-	_manager.graph_tab_changed.connect(_refresh)
-	_manager.node_name_altered.connect(_refresh)
+	HTNGlobals.graph_tab_changed.connect(_refresh)
+	HTNGlobals.node_name_altered.connect(_refresh)
 	hide()
 
 func _refresh() -> void:
-	if not visible: return
+	if not visible or not search_bar: return
 
 	search_bar.clear()
-	goto_root_button.disabled = (_manager.current_graph == null)
+	goto_root_button.disabled = (HTNGlobals.current_graph == null)
 
 	# Clear container
 	for child: Button in goto_container.get_children():
 		if child.is_queued_for_deletion(): continue
 		child.queue_free()
 
-	if not _manager.current_graph:
+	if not HTNGlobals.current_graph:
 		search_bar.editable = false
 		return
 
-	var node_naming_data: Dictionary = _manager.current_graph.get_node_keys_with_meta()
+	var node_naming_data: Dictionary = HTNGlobals.current_graph.get_node_keys_with_meta()
 	var node_keys: Array[StringName] = []
 	for node_key: StringName in node_naming_data.keys():
-		if node_key == _manager.current_graph.root_key: continue
+		if node_key == HTNGlobals.current_graph.root_key: continue
 		node_keys.push_back(node_key)
 
 	if node_keys.is_empty():
@@ -65,25 +62,22 @@ func _refresh() -> void:
 	search_bar.editable = true
 
 func center_on_node(node_key: StringName) -> void:
-	var data: Dictionary = _manager.current_graph.get_node_offset_by_key(node_key)
+	var data: Dictionary = HTNGlobals.current_graph.get_node_offset_by_key(node_key)
 	if data.is_empty(): return
 
-	_manager.current_graph.zoom = 1.0
-	var center := _manager.current_graph.size / 2
+	HTNGlobals.current_graph.zoom = 1.0
+	var center := HTNGlobals.current_graph.size / 2
 	var offset: Vector2 = data["offset"] + data["size"] * Vector2(0.5, 1.0) - center
-	_manager.current_graph.scroll_offset = offset / _manager.current_graph.zoom
+	HTNGlobals.current_graph.scroll_offset = offset / HTNGlobals.current_graph.zoom
 
 func _on_visibility_changed() -> void:
-	if not _manager: return
-
+	if search_bar:
+		search_bar.clear()
 	if visible:
-		search_bar.clear()
 		_refresh()
-	else:
-		search_bar.clear()
 
 func _on_goto_root_button_pressed() -> void:
-	center_on_node(_manager.current_graph.root_key)
+	center_on_node(HTNGlobals.current_graph.root_key)
 
 func _on_search_bar_text_changed(new_text: String) -> void:
 	var filter_santized := new_text.to_lower()

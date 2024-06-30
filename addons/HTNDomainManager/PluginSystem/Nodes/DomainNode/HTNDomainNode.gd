@@ -12,10 +12,9 @@ TLDR: This may cause a stack overflow due to recursion."""
 @onready var warning_symbol: TextureRect = %WarningSymbol
 @onready var domain_option_button: OptionButton = %DomainOptionButton
 
-func initialize(manager: HTNDomainManager) -> void:
-	super(manager)
+func initialize() -> void:
 	warning_symbol.hide()
-	manager.domains_updated.connect(_refresh)
+	HTNGlobals.domains_updated.connect(_refresh)
 	_refresh()
 
 func get_node_name() -> String:
@@ -48,8 +47,13 @@ func load_data(data: Dictionary) -> void:
 	warning_symbol.show()
 	warning_symbol.tooltip_text = "Domain: " + data["domain"] + " was not found,\nSelecting first input as default."
 
+func get_data() -> Dictionary:
+	return {
+		"domain": get_node_name()
+	}
+
 func _refresh() -> void:
-	var domain_names: Array = _manager.file_manager.get_all_domain_names()
+	var domain_names: Array = HTNGlobals.file_manager.get_all_domain_names()
 	if domain_names.is_empty():
 		warning_symbol.tooltip_text = NO_DOMAINS_TO_LINK
 		warning_symbol.show()
@@ -85,7 +89,7 @@ func _on_domain_option_button_item_selected(index: int) -> void:
 	if get_node_name().is_empty(): return
 
 	# Check if domain links to itself
-	if _manager.file_manager.check_if_domain_links(_manager.current_graph.domain_name, get_node_name()):
+	if HTNGlobals.file_manager.check_if_domain_links(HTNGlobals.current_graph.domain_name, get_node_name()):
 		warning_symbol.tooltip_text = SELF_LINK
 		warning_symbol.show()
 	else:

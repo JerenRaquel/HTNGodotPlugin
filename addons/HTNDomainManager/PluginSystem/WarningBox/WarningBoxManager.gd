@@ -4,12 +4,10 @@ extends Panel
 
 @onready var message_label: Label = %MessageLabel
 
-var _manager: HTNDomainManager
 var _accept_callback: Callable
 var _decline_callback: Callable
 
-func initialize(manager: HTNDomainManager) -> void:
-	_manager = manager
+func _ready() -> void:
 	hide()
 
 func open(message: String, accept_callable: Callable, decline_callable: Callable) -> void:

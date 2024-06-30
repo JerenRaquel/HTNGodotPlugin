@@ -35,10 +35,11 @@ func _on_create_button_pressed() -> void:
 	name = get_domain_name() + "*"
 	domain_graph = DOMAIN_GRAPH.instantiate()
 	add_child(domain_graph)
-	graph_tab_container._manager.graph_tool_bar_toggled.connect(
+	HTNGlobals.graph_tool_bar_toggled.connect(
 		func(state: bool) -> void:
 			domain_graph.show_menu = state
 	)
 	tab_created.emit(domain_graph)
 	is_empty = false
+
 	%EmptyFieldsContainer.queue_free()

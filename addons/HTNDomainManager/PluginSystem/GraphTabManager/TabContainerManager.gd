@@ -6,33 +6,32 @@ const GRAPH_TAB = preload("res://addons/HTNDomainManager/PluginSystem/GraphTabMa
 const TRASH = preload("res://addons/HTNDomainManager/PluginSystem/Icons/Trash.svg")
 
 @export var node_spawn_menu: HTNNodeSpawnMenu
+@export var graph_tools_toggle: CheckButton
 
-var _manager: HTNDomainManager
 var _regex: RegEx
 var _empty_tab_idx: int
 
-func initialize(manager: HTNDomainManager) -> void:
-	_manager = manager
+func initialize() -> void:
 	_regex = RegEx.new()
 	_regex.compile("[^A-Za-z0-9]")
 	_create_new_tab()
 
 func validate_tab_creation(domain_name: String) -> bool:
 	if domain_name[0].is_valid_int():
-		_manager.notification_handler.send_error("Domain name can't start with a number.")
+		HTNGlobals.notification_handler.send_error("Domain name can't start with a number.")
 		return false
 	var result = _regex.search(domain_name)
 	if result:
-		_manager.notification_handler.send_error("Alphanumeric characters only! Found: ["+result.get_string(0)+"]")
+		HTNGlobals.notification_handler.send_error("Alphanumeric characters only! Found: ["+result.get_string(0)+"]")
 		return false
 
-	if _manager.file_manager.check_if_domain_name_exists(domain_name):
-		_manager.notification_handler.send_error("Domain already exists.")
+	if HTNGlobals.file_manager.check_if_domain_name_exists(domain_name):
+		HTNGlobals.notification_handler.send_error("Domain already exists.")
 		return false
 
 	for child: Control in get_children():
 		if child.name == domain_name:
-			_manager.notification_handler.send_error("There extists a tab with that domain name.")
+			HTNGlobals.notification_handler.send_error("There extists a tab with that domain name.")
 			return false
 
 	return true
@@ -47,39 +46,28 @@ func delete_tab_if_open(domain_name: String) -> void:
 
 func _create_new_tab() -> void:
 	var tab_instance := GRAPH_TAB.instantiate()
-	tab_instance.tab_created.connect(
-		func(graph: HTNDomainGraph) -> void:
-			_manager.current_graph = graph
-
-			HTNGlobals.graph_altered.connect(
-				func() -> void:
-					if _manager.current_graph != graph: return
-					graph.on_graph_altered()
-			)
-			graph.tree_exiting.connect(
-				func() -> void:
-					if _manager and _manager.current_graph == graph:
-						_manager.current_graph = null
-			)
-			graph.initialize(_manager, node_spawn_menu, tab_instance, tab_instance.get_domain_name())
-			HTNGlobals.graph_altered.emit()
-			set_tab_button_icon(current_tab, TRASH)
-			_create_new_tab()
-	)
+	tab_instance.tab_created.connect(_on_tab_created.bind(tab_instance))
 	add_child(tab_instance)
 	_empty_tab_idx += 1
 
+func _on_tab_created(graph: HTNDomainGraph, tab_instance: HTNGraphTab) -> void:
+	HTNGlobals.current_graph = graph
+	graph.initialize(node_spawn_menu, tab_instance, graph_tools_toggle.button_pressed)
+	HTNGlobals.graph_altered.emit()
+	set_tab_button_icon(current_tab, TRASH)
+	_create_new_tab()
+
 func _on_tab_changed(tab: int) -> void:
 	var tab_ctx: HTNGraphTab = get_tab_control(tab)
-	_manager.current_graph = tab_ctx.domain_graph
-	_manager.graph_tab_changed.emit()
+	HTNGlobals.current_graph = tab_ctx.domain_graph
+	HTNGlobals.graph_tab_changed.emit()
 
 func _on_tab_button_pressed(tab: int) -> void:
 	var tab_control: HTNGraphTab = get_current_tab_control()
 	if tab_control.domain_graph.is_saved:
 		tab_control.queue_free()
 	else:
-		_manager.warning_box.open(
+		HTNGlobals.warning_box.open(
 			"""You are about to delete an unsaved tab.
 			Continue?""",
 			func() -> void:

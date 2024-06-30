@@ -15,8 +15,6 @@ const TREE_DROP_BUTTON = preload("res://addons/HTNDomainManager/PluginSystem/Com
 const ON_PORT_BLUE: Array[String] = ["Method", "AlwaysTrueMethod"]
 const ON_PORT_GREEN: Array[String] = ["Task", "Domain", "Applicator", "Splitter"]
 
-@export var _manager: HTNDomainManager
-
 @onready var node_buttons: VBoxContainer = %NodeButtons
 
 var _mouse_local_position: Vector2
@@ -55,19 +53,19 @@ func enable(port_type: int=-1) -> void:
 	show()
 	global_position = get_global_mouse_position()
 
-func spawn_root(manager: HTNDomainManager) -> Array:
-	assert(manager.current_graph != null, "Current Graph is NULL")
+func spawn_root() -> String:
+	assert(HTNGlobals.current_graph != null, "Current Graph is NULL")
 
 	var root_instance: HTNRootNode = HTNGlobals.NODES["Root"].instantiate()
-	manager.current_graph.add_child(root_instance)
-	root_instance.initialize(manager)
-	var root_key: String = manager.current_graph.register_node(root_instance)
+	HTNGlobals.current_graph.add_child(root_instance)
+	root_instance.initialize()
+	var root_key: String = HTNGlobals.current_graph.register_node(root_instance)
 	_set_node_position(
 		root_instance,
 		Vector2.ZERO,
 		root_instance.size * Vector2(0.5, 1.0)
 	)
-	return [root_instance, root_key]
+	return root_key
 
 func _add_nodes_to_menu() -> void:
 	for child: Control in node_buttons.get_children():
@@ -103,8 +101,8 @@ func _hide_all() -> void:
 func _add_node(node: PackedScene) -> HTNBaseNode:
 	hide()
 	var node_instance: HTNBaseNode = node.instantiate()
-	_manager.current_graph.add_child(node_instance)
-	_manager.current_graph.register_node(node_instance)
+	HTNGlobals.current_graph.add_child(node_instance)
+	HTNGlobals.current_graph.register_node(node_instance)
 
 	if connect_node_data.is_empty():
 		var node_size := (node_instance as HTNBaseNode).size
@@ -116,7 +114,7 @@ func _add_node(node: PackedScene) -> HTNBaseNode:
 	else:
 		_place_and_connect(node_instance)
 
-	node_instance.initialize(_manager)
+	node_instance.initialize()
 	return node_instance
 
 func _place_and_connect(node_instance: HTNBaseNode) -> void:
@@ -132,22 +130,22 @@ func _place_and_connect(node_instance: HTNBaseNode) -> void:
 		var to_node := node_instance.name
 		var to_port := node_instance.get_input_port_slot(idx)
 
-		if _manager.current_graph.connection_handler.is_connection_valid(from_node, from_port, to_node, to_port):
-			_manager.current_graph.connect_node(from_node, from_port, to_node, to_port)
+		if HTNGlobals.current_graph.connection_handler.is_connection_valid(
+				HTNGlobals.current_graph, from_node, from_port, to_node, to_port):
+			HTNGlobals.current_graph.connect_node(from_node, from_port, to_node, to_port)
 			connect_node_data.clear()
 			return
 	connect_node_data.clear()
 
 func _set_node_position(node: HTNBaseNode, target_position: Vector2, offset: Vector2) -> void:
-	var scroll_offset := _manager.current_graph.scroll_offset
-	var zoom := _manager.current_graph.zoom
+	var scroll_offset: Vector2 = HTNGlobals.current_graph.scroll_offset
+	var zoom: float = HTNGlobals.current_graph.zoom
 	node.set_position_offset((target_position + scroll_offset) / zoom + offset)
 
 func _on_visibility_changed() -> void:
-	if not _manager: return
-
-	if _manager.current_graph == null:
+	if HTNGlobals.current_graph == null:
 		hide()
 		return
 
-	if visible: _mouse_local_position = _manager.current_graph.get_local_mouse_position()
+	if visible:
+		_mouse_local_position = HTNGlobals.current_graph.get_local_mouse_position()

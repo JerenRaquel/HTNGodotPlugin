@@ -11,12 +11,12 @@ func initialize(manager: HTNDomainManager, domain_name: String) -> void:
 	domain_button.text = domain_name
 
 func _on_delete_button_pressed() -> void:
-	_manager.warning_box.open(
+	HTNGlobals.warning_box.open(
 		"You are about to delete this domain.\nThis will affect all Domain Link nodes that use this.\nContinue?",
 		func() -> void:
-			_manager.file_manager.delete_domain(domain_button.text)
+			HTNGlobals.file_manager.delete_domain(domain_button.text)
 			_manager.tab_container.delete_tab_if_open(domain_button.text)
-			_manager.domains_updated.emit(),
+			HTNGlobals.domains_updated.emit(),
 		Callable()
 	)
 

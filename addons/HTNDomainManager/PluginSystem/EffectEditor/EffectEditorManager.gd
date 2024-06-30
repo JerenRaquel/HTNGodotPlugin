@@ -7,11 +7,9 @@ const EFFECT_LINE = preload("res://addons/HTNDomainManager/PluginSystem/EffectEd
 @onready var nickname_line_edit: LineEdit = %NicknameLineEdit
 @onready var line_container: VBoxContainer = %LineContainer
 
-var _manager: HTNDomainManager
 var _applicator_node: HTNApplicatorNode
 
-func initialize(manager: HTNDomainManager) -> void:
-	_manager = manager
+func _ready() -> void:
 	hide()
 
 func open(applicator_node: HTNApplicatorNode, data: Dictionary) -> void:

@@ -8,11 +8,9 @@ const CONDITION_LINE = preload("res://addons/HTNDomainManager/PluginSystem/Condi
 @onready var nickname_line_edit: LineEdit = %NicknameLineEdit
 @onready var search_bar: LineEdit = %SearchBar
 
-var _manager: HTNDomainManager
 var _method_node: HTNMethodNode
 
-func initialize(manager: HTNDomainManager) -> void:
-	_manager = manager
+func _ready() -> void:
 	hide()
 
 func open(node: HTNMethodNode, data: Dictionary) -> void:

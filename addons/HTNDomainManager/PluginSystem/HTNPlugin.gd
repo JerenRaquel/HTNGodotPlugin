@@ -40,7 +40,7 @@ Thank you for using this! [rainbow freq=1.0 sat=0.8 val=0.8]:D[/rainbow]
 
 func _exit_tree() -> void:
 	if manager:
-		manager.queue_free()
+		manager.free()
 
 func _has_main_screen() -> bool:
 	return true

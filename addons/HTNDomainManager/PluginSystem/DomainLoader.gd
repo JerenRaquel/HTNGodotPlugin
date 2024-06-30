@@ -4,17 +4,8 @@ extends Control
 
 const GRAPH_SAVE_PATH := "res://addons/HTNDomainManager/Data/GraphSaves/"
 const PRELOADED_GRAPH_TAB = preload("res://addons/HTNDomainManager/PluginSystem/GraphTabManager/PreloadedGraphTab/preloaded_graph_tab.tscn")
-# Nodes
-const HTN_COMMENT_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/CommentNode/htn_comment_node.tscn")
-const HTN_SPLITTER_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/SplitterNode/htn_splitter_node.tscn")
-const HTN_METHOD_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/MethodNode/Original/htn_method_node.tscn")
-const HTN_ALWAYS_TRUE_METHOD_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/MethodNode/AlwaysTrue/htn_always_true_method_node.tscn")
-const HTN_APPLICATOR_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/ApplicatorNode/htn_applicator_node.tscn")
-const HTN_TASK_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/TaskNode/htn_task_node.tscn")
-const HTN_DOMAIN_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/DomainNode/htn_domain_node.tscn")
 
 @onready var _manager: HTNDomainManager = $"../.."
-@onready var file_manager: HTNFileManager = %FileManager
 @onready var tab_container: HTNTabGraphManager = %TabContainer
 @onready var node_spawn_menu: HTNNodeSpawnMenu = %NodeSpawnMenu
 
@@ -36,9 +27,10 @@ func load_domain(domain_name: String) -> bool:
 	while tab_container.current_tab > 0:
 		tab_container.select_previous_available()
 
-	var domain_graph: HTNDomainGraph = new_graph.load_data(_manager, domain_name)
-	_manager.current_graph = domain_graph
-	domain_graph.initialize(_manager, node_spawn_menu, new_graph, domain_name)
+	var domain_graph: HTNDomainGraph = new_graph.load_data(domain_name)
+	print(domain_graph)
+	HTNGlobals.current_graph = domain_graph
+	domain_graph.initialize(node_spawn_menu, new_graph, _manager.graph_tools_toggle.button_pressed)
 
 	# Create nodes and load data
 	for node_key: StringName in graph_save_file["node_positions"]:
@@ -49,12 +41,14 @@ func load_domain(domain_name: String) -> bool:
 
 		var node_data = graph_save_file["node_data"][node_key]
 		var node: PackedScene = HTNGlobals.get_packed_node_as_flat(node_type)
-		new_graph.domain_graph.load_node(_manager, node, node_key, node_position, node_data)
+		if node == HTNGlobals.NODES["Root"]: continue
+		new_graph.domain_graph.load_node(node, node_key, node_position, node_data)
 
 	# Connect nodes
 	for connection: Dictionary in graph_save_file["connections"]:
 		#{from_node: StringName, from_port: int, to_node: StringName, to_port: int}
 		new_graph.domain_graph.connection_handler.load_connection(
+			domain_graph,
 			connection["from_node"],
 			connection["from_port"],
 			connection["to_node"],

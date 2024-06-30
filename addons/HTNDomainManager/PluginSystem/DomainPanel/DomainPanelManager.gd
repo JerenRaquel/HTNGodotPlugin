@@ -4,14 +4,13 @@ extends VBoxContainer
 
 const DOMAIN_LINE = preload("res://addons/HTNDomainManager/PluginSystem/DomainPanel/DomainLine/domain_line.tscn")
 
+@export var manager: HTNDomainManager
+
 @onready var searchbar: LineEdit = %Searchbar
 @onready var domain_container: VBoxContainer = %DomainContainer
 
-var _manager: HTNDomainManager
-
-func initialize(manager: HTNDomainManager) -> void:
+func initialize() -> void:
 	hide()
-	_manager = manager
 	_refresh()
 
 func _refresh() -> void:
@@ -22,7 +21,7 @@ func _refresh() -> void:
 
 	searchbar.editable = false
 
-	var domain_names: Array = _manager.file_manager.get_all_domain_names()
+	var domain_names: Array = HTNGlobals.file_manager.get_all_domain_names()
 	if domain_names.is_empty(): return
 
 	domain_names.sort()
@@ -30,7 +29,7 @@ func _refresh() -> void:
 	for domain_name: String in domain_names:
 		var domain_line_instance: HTNDomainLine = DOMAIN_LINE.instantiate()
 		domain_container.add_child(domain_line_instance)
-		domain_line_instance.initialize(_manager, domain_name)
+		domain_line_instance.initialize(manager, domain_name)
 	searchbar.editable = true
 
 func _on_searchbar_text_changed(new_text: String) -> void:

@@ -23,11 +23,6 @@ func apply_expected_effects(world_state: Dictionary) -> void:
 "
 #endregion
 
-var _manager: HTNDomainManager
-
-func initialize(manager: HTNDomainManager) -> void:
-	_manager = manager
-
 func check_if_valid_name(task_name: String) -> bool:
 	if task_name in HTN_REFERENCE_FILE["tasks"]:
 		return false

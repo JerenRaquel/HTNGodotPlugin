@@ -2,6 +2,13 @@
 extends Node
 
 signal graph_altered
+signal graph_tab_changed
+signal current_graph_changed
+signal task_created
+signal task_deleted
+signal graph_tool_bar_toggled(button_state: bool)
+signal node_name_altered
+signal domains_updated
 
 const NODES: Dictionary = {
 	"Root": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/RootNode/htn_root_node.tscn"),
@@ -21,6 +28,18 @@ const NODES: Dictionary = {
 		"Comment": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/CommentNode/htn_comment_node.tscn"),
 	}
 }
+
+var file_manager: HTNFileManager
+var warning_box: HTNWarningBox
+var effect_editor: HTNEffectEditor
+var condition_editor: HTNConditionEditor
+var notification_handler: HTNNotificaionHandler
+var connection_handler: HTNConnectionHandler
+var validator: HTNGraphValidator
+var current_graph: HTNDomainGraph = null:
+	set(value):
+		current_graph = value
+		current_graph_changed.emit()
 
 func get_packed_node_as_flat(node_type: String) -> PackedScene:
 	if node_type == "Root": return NODES["Root"]

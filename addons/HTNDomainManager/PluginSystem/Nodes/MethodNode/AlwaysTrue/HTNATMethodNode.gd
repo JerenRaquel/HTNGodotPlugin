@@ -2,8 +2,7 @@
 class_name HTNMethodNodeAlwaysTrue
 extends HTNMethodNode
 
-func initialize(manager: HTNDomainManager) -> void:
-	super(manager)
+func initialize() -> void:
 	condition_data = { "AlwaysTrue": true }
 
 func get_node_name() -> String:

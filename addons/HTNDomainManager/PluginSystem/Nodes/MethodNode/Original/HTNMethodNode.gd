@@ -8,7 +8,7 @@ var _priority: int = 0
 var _nick_name: String:
 	set(value):
 		_nick_name = value
-		_manager.node_name_altered.emit()
+		HTNGlobals.node_name_altered.emit()
 		if value == "":
 			title = "Method"
 		else:
@@ -39,11 +39,18 @@ func load_data(data: Dictionary) -> void:
 	_priority = data["priority"]
 	%SpinBox.value = _priority
 
+func get_data() -> Dictionary:
+	return {
+		"condition_data": condition_data,
+		"nickname": _nick_name,
+		"priority": get_priority()
+	}
+
 func get_priority() -> int:
 	return _priority
 
 func _on_conditions_pressed() -> void:
-	_manager.condition_editor.open(self, condition_data)
+	HTNGlobals.condition_editor.open(self, condition_data)
 
 func _on_spin_box_value_changed(value: float) -> void:
 	_priority = int(value)

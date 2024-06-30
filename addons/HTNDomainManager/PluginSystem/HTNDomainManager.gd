@@ -2,12 +2,6 @@
 class_name HTNDomainManager
 extends Control
 
-signal graph_tool_bar_toggled(state: bool)
-signal graph_tab_changed
-signal task_created
-signal task_deleted
-signal node_name_altered
-signal domains_updated
 
 # Toolbar
 @onready var task_panel_button: Button = %TaskPanelButton
@@ -22,44 +16,36 @@ signal domains_updated
 @onready var goto_panel: HTNGoToManager = %GotoPanel
 @onready var domain_panel: HTNDomainPanel = %DomainPanel
 # Managers
-@onready var file_manager: HTNFileManager = %FileManager
-@onready var notification_handler: HTNNotificaionHandler = %NotificationHandler
 @onready var domain_saver: HTNDomainSaver = %DomainSaver
-@onready var warning_box: HTNWarningBox = %WarningBox
 # Other
-@onready var condition_editor: HTNConditionEditor = %ConditionEditor
-@onready var effect_editor: HTNEffectEditor = %EffectEditor
 @onready var left_v_separator: VSeparator = %LeftVSeparator
 @onready var right_v_separator: VSeparator = %RightVSeparator
 
-var current_graph: HTNDomainGraph = null:
-	set(value):
-		current_graph = value
-		_update_toolbar_buttons()
-
 func _ready() -> void:
-	graph_tools_toggle.toggled.connect(
-		func(state: bool) -> void: graph_tool_bar_toggled.emit(state)
-	)
+	HTNGlobals.file_manager = %FileManager
+	HTNGlobals.warning_box = %WarningBox
+	HTNGlobals.effect_editor = %EffectEditor
+	HTNGlobals.condition_editor = %ConditionEditor
+	HTNGlobals.notification_handler = %NotificationHandler
+	HTNGlobals.connection_handler = %ConnectionHandler
+	HTNGlobals.validator = %Validator
+
+	graph_tools_toggle.toggled.connect(HTNGlobals.graph_tool_bar_toggled.emit)
 	HTNGlobals.graph_altered.connect(_update_toolbar_buttons)
-	graph_tab_changed.connect(
+	HTNGlobals.graph_tab_changed.connect(
 		func() -> void:
 			%NodeSpawnMenu.hide()
 	)
+	HTNGlobals.current_graph_changed.connect(_update_toolbar_buttons)
+	HTNGlobals.domains_updated.connect(_update_domain_button)
 
-	domains_updated.connect(_update_domain_button)
 	left_v_separator.hide()
 	right_v_separator.hide()
 
-	tab_container.initialize(self)
-	file_manager.initialize(self)
-	condition_editor.initialize(self)
-	effect_editor.initialize(self)
-	task_panel.initialize(self)
-	goto_panel.initialize(self)
-	domain_panel.initialize(self)
-	warning_box.initialize(self)
-	notification_handler.initialize()
+	tab_container.initialize()
+	task_panel.initialize()
+	goto_panel.initialize()
+	domain_panel.initialize()
 
 	_update_toolbar_buttons()
 	_update_domain_button()
@@ -69,7 +55,7 @@ func load_domain(domain_name: String) -> void:
 	_update_toolbar_buttons()
 
 func _update_toolbar_buttons() -> void:
-	if current_graph == null:
+	if HTNGlobals.current_graph == null:
 		graph_tools_toggle.disabled = true
 		build_domain_button.disabled = true
 		goto_panel_button.disabled = true
@@ -78,19 +64,20 @@ func _update_toolbar_buttons() -> void:
 		goto_panel.hide()
 	else:
 		graph_tools_toggle.disabled = false
-		if current_graph.is_saved:
+
+		if HTNGlobals.current_graph.is_saved:
 			build_domain_button.disabled = true
 		else:
 			build_domain_button.disabled = false
 
-		if current_graph.nodes.size() <= 1:
+		if HTNGlobals.current_graph.nodes.size() <= 1:
 			clear_graph_button.disabled = true
 		else:
 			clear_graph_button.disabled = false
 		goto_panel_button.disabled = false
 
 func _update_domain_button() -> void:
-	if file_manager.check_if_no_domains():
+	if HTNGlobals.file_manager.check_if_no_domains():
 		domain_panel_button.disabled = true
 	else:
 		domain_panel_button.disabled = false
@@ -124,19 +111,22 @@ func _on_domain_panel_button_toggled(toggled_on: bool) -> void:
 		right_v_separator.hide()
 
 func _on_clear_graph_button_pressed() -> void:
-	if not current_graph: return
-	warning_box.open(
+	if not HTNGlobals.current_graph: return
+	HTNGlobals.warning_box.open(
 		"You are about to remove nodes for this graph.\nContinue?",
-		current_graph.clear,
+		HTNGlobals.current_graph.clear,
 		Callable()
 	)
 
 func _on_build_domain_button_pressed() -> void:
 	build_domain_button.disabled = true
-	if not current_graph.validator.validate(): return
-	if not domain_saver.save(current_graph): return
+	if not HTNGlobals.current_graph.validator.validate(): return
+	if not domain_saver.save(HTNGlobals.current_graph): return
 
-	notification_handler.send_message("Build Complete! Graph Saved!")
-	current_graph.is_saved = true
+	HTNGlobals.notification_handler.send_message("Build Complete! Graph Saved!")
+	HTNGlobals.current_graph.is_saved = true
 	domain_panel._refresh()
-	domains_updated.emit()
+	HTNGlobals.domains_updated.emit()
+
+func _on_graph_tools_toggle_toggled(toggled_on: bool) -> void:
+	HTNGlobals.graph_tool_bar_toggled.emit(toggled_on)

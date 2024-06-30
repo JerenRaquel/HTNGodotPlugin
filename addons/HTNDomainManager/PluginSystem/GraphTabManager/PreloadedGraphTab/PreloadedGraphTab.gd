@@ -2,8 +2,8 @@
 class_name HTNPreloadedGraphTab
 extends HTNGraphTab
 
-func load_data(manager: HTNDomainManager, domain_name: String) -> HTNDomainGraph:
-	manager.graph_tool_bar_toggled.connect(
+func load_data(domain_name: String) -> HTNDomainGraph:
+	HTNGlobals.graph_tool_bar_toggled.connect(
 		func(state: bool) -> void:
 			domain_graph.show_menu = state
 	)

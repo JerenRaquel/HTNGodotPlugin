@@ -2,12 +2,10 @@
 class_name HTNBaseNode
 extends GraphNode
 
-var _manager: HTNDomainManager
 var _default_style_box_panel: StyleBoxFlat
 var _default_style_box_titlebar: StyleBoxFlat
 
-func initialize(manager: HTNDomainManager) -> void:
-	_manager = manager
+func initialize() -> void:
 	_default_style_box_panel = get_theme_stylebox("panel")
 	_default_style_box_titlebar = get_theme_stylebox("titlebar")
 	dehighlight()
@@ -27,6 +25,9 @@ func validate_self() -> String:
 
 func load_data(_data: Dictionary) -> void:
 	pass
+
+func get_data() -> Dictionary:
+	return {}
 
 func highlight() -> void:
 	var new_style_box_panel: StyleBoxFlat = _default_style_box_panel.duplicate()

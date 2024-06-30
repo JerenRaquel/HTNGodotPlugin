@@ -2,39 +2,40 @@
 class_name HTNDomainGraph
 extends GraphEdit
 
-@onready var connection_handler: HTNConnectionHandler = $ConnectionHandler
-@onready var validator: HTNGraphValidator = $Validator
-
 var _node_spawn_menu: HTNNodeSpawnMenu
 var _graph_tab: HTNGraphTab
-var _root_node: HTNRootNode
 var _current_ID: int = 0
 var root_key: String
 var domain_name: String = ""
 var is_saved := false:
+	get: return is_saved
 	set(value):
 		is_saved = value
-		if not _graph_tab: return
-		_graph_tab.tab_save_state(is_saved)
+		if _graph_tab:
+			_graph_tab.tab_save_state(value)
 
 var nodes: Dictionary = {}
 
-func initialize(manager: HTNDomainManager, node_spawn_menu: HTNNodeSpawnMenu,
-		graph_tab: HTNGraphTab, domain_tab_name: String) -> void:
+func initialize(node_spawn_menu: HTNNodeSpawnMenu, graph_tab: HTNGraphTab, graph_tools_button_state: bool) -> void:
 	_node_spawn_menu = node_spawn_menu
 	_graph_tab = graph_tab
-	domain_name = domain_tab_name
+	domain_name = graph_tab.get_domain_name()
+
+	HTNGlobals.graph_altered.connect(
+		func() -> void:
+			if HTNGlobals.current_graph != self: return
+			if HTNGlobals.validator._error_node_key.is_empty(): return
+
+			nodes[HTNGlobals.validator._error_node_key].dehighlight()
+			HTNGlobals.validator._error_node_key = ""
+	)
 
 	add_valid_connection_type(1, 1)
 	add_valid_connection_type(2, 2)
 
-	var data: Array = _node_spawn_menu.spawn_root(manager)
-	_root_node = data[0]
-	root_key = data[1]
-	if manager.graph_tools_toggle.button_pressed:
-		show_menu = true
-	else:
-		show_menu = false
+	root_key = _node_spawn_menu.spawn_root()
+	show_menu = graph_tools_button_state
+	print("Graph initialized")
 
 func generate_node_key() -> StringName:
 	var ID := _current_ID
@@ -119,33 +120,7 @@ func get_node_type(node_key: StringName) -> String:
 	return nodes[node_key].get_node_type()
 
 func get_node_data(node_key: StringName) -> Dictionary:
-	var node: HTNBaseNode = nodes[node_key]
-	if node is HTNRootNode:
-		return {}
-	elif node is HTNApplicatorNode:
-		return {
-			"effect_data": node.effect_data,
-			"nickname": node._nick_name
-		}
-	elif node is HTNCommentNode:
-		return {"comment_text" : node.text_edit.text}
-	elif node is HTNMethodNodeAlwaysTrue:
-		return {}
-	elif node is HTNMethodNode:
-		return {
-			"condition_data": node.condition_data,
-			"nickname": node._nick_name,
-			"priority": node.get_priority()
-		}
-	elif node is HTNSplitterNode:
-		return {"nickname": node.get_node_name()}
-	elif node is HTNTaskNode:
-		return {"task": node.get_node_name()}
-	elif node is HTNDomainNode:
-		return {"domain": node.get_node_name()}
-	else:
-		assert(false, "This should never happen. This is a bug.")
-		return {}
+	return nodes[node_key].get_data()
 
 func get_every_node_til_compound(node_key: String) -> Array[StringName]:
 	var task_chain: Array[StringName] = []
@@ -153,24 +128,18 @@ func get_every_node_til_compound(node_key: String) -> Array[StringName]:
 
 	return task_chain
 
-func load_node(manager: HTNDomainManager, node: PackedScene, node_key: StringName,
+func load_node(node: PackedScene, node_key: StringName,
 		node_position: Vector2, node_data: Dictionary) -> void:
-	if node == _node_spawn_menu.HTN_ROOT_NODE: return
-
 	var node_instance: GraphNode = node.instantiate()
 	add_child(node_instance)
 	register_node(node_instance, node_key)
-	node_instance.initialize(manager)
+	node_instance.initialize()
 	node_instance.load_data(node_data)
 	node_instance.position_offset = node_position
 
-func on_graph_altered() -> void:
-	if validator._error_node_key.is_empty(): return
-	nodes[validator._error_node_key].dehighlight()
-	validator._error_node_key = ""
-
 func _get_every_node_til_compound_helper(current_key: String, task_chain: Array[StringName]) -> void:
-	var connected_nodes: Array[StringName] = connection_handler.get_connected_nodes_from_output(current_key)
+	var connected_nodes: Array[StringName]\
+		= HTNGlobals.connection_handler.get_connected_nodes_from_output(self, current_key)
 	# We're done -- Stopped at dead end
 	if connected_nodes.size() == 0:
 		return
@@ -190,13 +159,13 @@ func _get_every_node_til_compound_helper(current_key: String, task_chain: Array[
 	_get_every_node_til_compound_helper(connected_node, task_chain)
 
 func _delete_node(node: HTNBaseNode) -> void:
-	connection_handler.remove_connections(node)
+	HTNGlobals.connection_handler.remove_connections(self, node)
 	if not nodes.erase(node.name):
 		push_error(node.name + " did not exist and is trying to erase.")
 	node.free()
 
 func _on_connection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
-	connection_handler.load_connection(from_node, from_port, to_node, to_port)
+	HTNGlobals.connection_handler.load_connection(self, from_node, from_port, to_node, to_port)
 
 func _on_connection_to_empty(from_node: StringName, from_port: int, release_position: Vector2) -> void:
 	_node_spawn_menu.connect_node_data = {
@@ -204,7 +173,7 @@ func _on_connection_to_empty(from_node: StringName, from_port: int, release_posi
 		"from_port": from_port,
 		"release_position": release_position
 	}
-	_node_spawn_menu.enable(connection_handler.get_output_port_type(from_node, from_port))
+	_node_spawn_menu.enable(HTNGlobals.connection_handler.get_output_port_type(self, from_node, from_port))
 
 func _on_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	disconnect_node(from_node, from_port, to_node, to_port)

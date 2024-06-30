@@ -84,7 +84,7 @@ func _gather_split_data(domain_graph: HTNDomainGraph) -> Dictionary:
 		var node: HTNBaseNode = domain_graph.nodes[node_key]
 		if node is HTNSplitterNode or node is HTNRootNode:
 			var connected_node_keys: Array[StringName]\
-				= domain_graph.connection_handler.get_connected_nodes_from_output(node_key)
+				= domain_graph.connection_handler.get_connected_nodes_from_output(domain_graph, node_key)
 
 			connected_node_keys.sort_custom(
 				func(lhs: StringName, rhs: StringName) -> bool:

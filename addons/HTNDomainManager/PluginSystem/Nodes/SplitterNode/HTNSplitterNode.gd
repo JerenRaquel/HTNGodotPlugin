@@ -16,5 +16,10 @@ func validate_self() -> String:
 func load_data(data: Dictionary) -> void:
 	nick_name.text = data["nickname"]
 
+func get_data() -> Dictionary:
+	return {
+		"nickname": get_node_name()
+	}
+
 func _on_nick_name_text_submitted(new_text: String) -> void:
-	_manager.node_name_altered.emit()
+	HTNGlobals.node_name_altered.emit()

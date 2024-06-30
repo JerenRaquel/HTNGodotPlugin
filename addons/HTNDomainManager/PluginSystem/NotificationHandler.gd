@@ -13,8 +13,7 @@ const ERROR_COLOR := Color("ff5f5f")
 func _exit_tree() -> void:
 	clear()
 
-func initialize() -> void:
-	if not Engine.is_editor_hint(): return
+func _ready() -> void:
 	HTNGlobals.graph_altered.connect(clear)
 	clear()
 
