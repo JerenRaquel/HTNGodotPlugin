@@ -116,22 +116,7 @@ func get_domain_links() -> Array[StringName]:
 	return keys
 
 func get_node_type(node_key: StringName) -> String:
-	if nodes[node_key] is HTNRootNode:
-		return "Root"
-	elif nodes[node_key] is HTNApplicatorNode:
-		return "Applicator"
-	elif nodes[node_key] is HTNCommentNode:
-		return "Comment"
-	elif nodes[node_key] is HTNMethodNodeAlwaysTrue:
-		return "Always True Method"
-	elif nodes[node_key] is HTNMethodNode:
-		return "Method"
-	elif nodes[node_key] is HTNSplitterNode:
-		return "Splitter"
-	elif nodes[node_key] is HTNTaskNode:
-		return "Task"
-	else:
-		return "Unknown"
+	return nodes[node_key].get_node_type()
 
 func get_node_data(node_key: StringName) -> Dictionary:
 	var node: HTNBaseNode = nodes[node_key]

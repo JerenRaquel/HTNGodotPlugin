@@ -42,6 +42,11 @@ func _ready() -> void:
 		func(state: bool) -> void: graph_tool_bar_toggled.emit(state)
 	)
 	HTNGlobals.graph_altered.connect(_update_toolbar_buttons)
+	graph_tab_changed.connect(
+		func() -> void:
+			%NodeSpawnMenu.hide()
+	)
+
 	domains_updated.connect(_update_domain_button)
 	left_v_separator.hide()
 	right_v_separator.hide()

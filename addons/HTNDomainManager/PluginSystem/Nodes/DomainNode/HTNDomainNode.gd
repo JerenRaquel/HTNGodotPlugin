@@ -26,6 +26,9 @@ func get_node_name() -> String:
 
 	return domain_name
 
+func get_node_type() -> String:
+	return "Domain"
+
 # Return value:
 #	On valid: return "" (and empty string)
 #	On invalid: return an error message string

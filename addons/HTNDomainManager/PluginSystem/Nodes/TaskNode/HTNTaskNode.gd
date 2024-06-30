@@ -21,6 +21,9 @@ func initialize(manager: HTNDomainManager) -> void:
 func get_node_name() -> String:
 	return task_option_button.get_item_text(task_option_button.selected)
 
+func get_node_type() -> String:
+	return "Task"
+
 func validate_self() -> String:
 	return ""
 

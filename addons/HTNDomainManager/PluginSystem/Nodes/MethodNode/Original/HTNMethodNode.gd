@@ -21,6 +21,9 @@ func get_node_name() -> String:
 		return _nick_name
 	return ""
 
+func get_node_type() -> String:
+	return "Method"
+
 func validate_self() -> String:
 	if condition_data.is_empty():
 		return "There are no conditions set."

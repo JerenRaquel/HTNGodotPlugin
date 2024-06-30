@@ -48,25 +48,7 @@ func load_domain(domain_name: String) -> bool:
 		var node_position: Vector2 = graph_save_file["node_positions"][node_key]
 
 		var node_data = graph_save_file["node_data"][node_key]
-		var node: PackedScene
-		match node_type:
-			"Task":
-				node = HTN_TASK_NODE
-			"Root":
-				continue	# Root already exists
-			"Splitter":
-				node = HTN_SPLITTER_NODE
-			"Domain":
-				node = HTN_DOMAIN_NODE
-			"Comment":
-				node = HTN_COMMENT_NODE
-			"Always True Method":
-				node = HTN_ALWAYS_TRUE_METHOD_NODE
-			"Method":
-				node = HTN_METHOD_NODE
-			"Applicator":
-				node = HTN_APPLICATOR_NODE
-			_: continue	# Don't know, don't care lmao
+		var node: PackedScene = HTNGlobals.get_packed_node_as_flat(node_type)
 		new_graph.domain_graph.load_node(_manager, node, node_key, node_position, node_data)
 
 	# Connect nodes

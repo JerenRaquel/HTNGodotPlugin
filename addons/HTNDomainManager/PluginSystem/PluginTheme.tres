@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=20 format=3 uid="uid://diu3ahrw1puva"]
+[gd_resource type="Theme" load_steps=28 format=3 uid="uid://diu3ahrw1puva"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ovtam"]
 
@@ -78,6 +78,16 @@ border_blend = true
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_h7bp4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8te26"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6yg55"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_d7go4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_eh4lq"]
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rm61a"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_diisx"]
@@ -131,6 +141,21 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_28gdw"]
+bg_color = Color(0.341176, 0.623529, 1, 1)
+expand_margin_left = 5.0
+expand_margin_right = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_t7np8"]
+bg_color = Color(0.427451, 0.701961, 0.941176, 1)
+expand_margin_left = 5.0
+expand_margin_right = 5.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k3p0a"]
+bg_color = Color(0.427451, 0.701961, 0.941176, 1)
+expand_margin_left = 5.0
+expand_margin_right = 5.0
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ea0n3"]
 bg_color = Color(0.145098, 0.168627, 0.203922, 1)
 corner_radius_top_left = 5
@@ -165,6 +190,11 @@ CheckButton/styles/hover_pressed = SubResource("StyleBoxFlat_xm567")
 GraphNode/colors/resizer_color = Color(0.337255, 0.619608, 1, 1)
 GraphNode/styles/panel = SubResource("StyleBoxFlat_ctd3j")
 GraphNode/styles/titlebar = SubResource("StyleBoxFlat_66nrl")
+HScrollBar/styles/grabber = SubResource("StyleBoxEmpty_h7bp4")
+HScrollBar/styles/grabber_highlight = SubResource("StyleBoxEmpty_8te26")
+HScrollBar/styles/grabber_pressed = SubResource("StyleBoxEmpty_6yg55")
+HScrollBar/styles/scroll = SubResource("StyleBoxEmpty_d7go4")
+HScrollBar/styles/scroll_focus = SubResource("StyleBoxEmpty_eh4lq")
 LineEdit/styles/focus = SubResource("StyleBoxEmpty_rm61a")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_diisx")
 Panel/styles/panel = SubResource("StyleBoxFlat_qjv3a")
@@ -175,5 +205,8 @@ TabContainer/styles/tab_hovered = SubResource("StyleBoxFlat_2oasg")
 TabContainer/styles/tab_unselected = SubResource("StyleBoxFlat_owcwy")
 TextEdit/styles/focus = SubResource("StyleBoxEmpty_l0q5x")
 TextEdit/styles/normal = SubResource("StyleBoxFlat_w6xnk")
+VScrollBar/styles/grabber = SubResource("StyleBoxFlat_28gdw")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_t7np8")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_k3p0a")
 VScrollBar/styles/scroll = SubResource("StyleBoxFlat_ea0n3")
 VScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_agdib")

@@ -20,6 +20,9 @@ func get_node_name() -> String:
 		return _nick_name
 	return ""
 
+func get_node_type() -> String:
+	return "Applicator"
+
 func validate_self() -> String:
 	if effect_data.is_empty():
 		return "There are no effects set."

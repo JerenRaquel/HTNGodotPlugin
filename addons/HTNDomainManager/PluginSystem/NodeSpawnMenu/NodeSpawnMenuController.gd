@@ -4,31 +4,20 @@ extends Control
 
 ## Node Data
 #Color Code:
-#- Compound/Root <-> Methods: 4f8fba
-#- Tasks <-> Tasks: 468232
+#- Compound/Root <-> Methods: 4f8fba - Blue
+#- Tasks <-> Tasks: 468232 - Green
 #
 #IDs:
 #- Compound/Root <-> Methods: 1
 #- Tasks <-> Tasks: 2
 
-const HTN_ROOT_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/RootNode/htn_root_node.tscn")
-const HTN_COMMENT_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/CommentNode/htn_comment_node.tscn")
-const HTN_SPLITTER_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/SplitterNode/htn_splitter_node.tscn")
-const HTN_METHOD_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/MethodNode/Original/htn_method_node.tscn")
-const HTN_ALWAYS_TRUE_METHOD_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/MethodNode/AlwaysTrue/htn_always_true_method_node.tscn")
-const HTN_APPLICATOR_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/ApplicatorNode/htn_applicator_node.tscn")
-const HTN_TASK_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/TaskNode/htn_task_node.tscn")
-const HTN_DOMAIN_NODE = preload("res://addons/HTNDomainManager/PluginSystem/Nodes/DomainNode/htn_domain_node.tscn")
+const TREE_DROP_BUTTON = preload("res://addons/HTNDomainManager/PluginSystem/Components/Tree/TreeDropButton/tree_drop_button.tscn")
+const ON_PORT_BLUE: Array[String] = ["Method", "AlwaysTrueMethod"]
+const ON_PORT_GREEN: Array[String] = ["Task", "Domain", "Applicator", "Splitter"]
 
 @export var _manager: HTNDomainManager
 
-@onready var splitter: Button = %Splitter
-@onready var domain_link: Button = %DomainLink
-@onready var method: Button = %Method
-@onready var at_method: Button = %ATMethod
-@onready var task: Button = %Task
-@onready var applicator: Button = %Applicator
-@onready var comment: Button = %Comment
+@onready var node_buttons: VBoxContainer = %NodeButtons
 
 var _mouse_local_position: Vector2
 var can_be_opened := false
@@ -38,7 +27,9 @@ func _ready() -> void:
 	if not Engine.is_editor_hint():
 		set_process_unhandled_input(false)
 		return
-	#hide()
+
+	_add_nodes_to_menu()
+	hide()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventAction or event is InputEventKey:
@@ -54,15 +45,11 @@ func enable(port_type: int=-1) -> void:
 		-1, 0:
 			_show_all()
 		1:
-			_hide_all()
-			method.show()
-			at_method.show()
+			for tree_drop: TreeDropButton in node_buttons.get_children():
+				tree_drop.filter(ON_PORT_BLUE)
 		2:
-			_hide_all()
-			splitter.show()
-			task.show()
-			applicator.show()
-			domain_link.show()
+			for tree_drop: TreeDropButton in node_buttons.get_children():
+				tree_drop.filter(ON_PORT_GREEN)
 		_:
 			_hide_all()
 	show()
@@ -71,7 +58,7 @@ func enable(port_type: int=-1) -> void:
 func spawn_root(manager: HTNDomainManager) -> Array:
 	assert(manager.current_graph != null, "Current Graph is NULL")
 
-	var root_instance: HTNRootNode = HTN_ROOT_NODE.instantiate()
+	var root_instance: HTNRootNode = HTNGlobals.NODES["Root"].instantiate()
 	manager.current_graph.add_child(root_instance)
 	root_instance.initialize(manager)
 	var root_key: String = manager.current_graph.register_node(root_instance)
@@ -82,23 +69,36 @@ func spawn_root(manager: HTNDomainManager) -> Array:
 	)
 	return [root_instance, root_key]
 
+func _add_nodes_to_menu() -> void:
+	for child: Control in node_buttons.get_children():
+		if child.is_queued_for_deletion(): continue
+		child.queue_free()
+
+	var categories: Array = HTNGlobals.NODES.keys()
+	categories.sort()
+	for category: String in categories:
+		if category == "Root": continue
+
+		var tree_drop_button_instance: TreeDropButton = TREE_DROP_BUTTON.instantiate()
+		node_buttons.add_child(tree_drop_button_instance)
+		tree_drop_button_instance.set_title(category)
+
+		var node_names: Array = HTNGlobals.NODES[category].keys()
+		node_names.sort()
+		for node_name: String in node_names:
+			tree_drop_button_instance.add_menu_item(
+				node_name,
+				func() -> void:
+					_add_node(HTNGlobals.NODES[category][node_name])
+			)
+
 func _show_all() -> void:
-	splitter.show()
-	domain_link.show()
-	method.show()
-	at_method.show()
-	task.show()
-	applicator.show()
-	comment.show()
+	for tree_drop_down: TreeDropButton in node_buttons.get_children():
+		tree_drop_down.show_all()
 
 func _hide_all() -> void:
-	splitter.hide()
-	domain_link.hide()
-	method.hide()
-	at_method.hide()
-	task.hide()
-	applicator.hide()
-	comment.hide()
+	for tree_drop_down: TreeDropButton in node_buttons.get_children():
+		tree_drop_down.hide()
 
 func _add_node(node: PackedScene) -> HTNBaseNode:
 	hide()
@@ -143,29 +143,10 @@ func _set_node_position(node: HTNBaseNode, target_position: Vector2, offset: Vec
 	var zoom := _manager.current_graph.zoom
 	node.set_position_offset((target_position + scroll_offset) / zoom + offset)
 
-func _on_splitter_pressed() -> void:
-	_add_node(HTN_SPLITTER_NODE)
-
-func _on_domain_link_pressed() -> void:
-	_add_node(HTN_DOMAIN_NODE)
-
-func _on_method_pressed() -> void:
-	_add_node(HTN_METHOD_NODE)
-
-func _on_at_method_pressed() -> void:
-	_add_node(HTN_ALWAYS_TRUE_METHOD_NODE)
-
-func _on_task_pressed() -> void:
-	_add_node(HTN_TASK_NODE)
-
-func _on_applicator_pressed() -> void:
-	_add_node(HTN_APPLICATOR_NODE)
-
-func _on_comment_pressed() -> void:
-	_add_node(HTN_COMMENT_NODE)
-
 func _on_visibility_changed() -> void:
-	if _manager == null or _manager.current_graph == null:
+	if not _manager: return
+
+	if _manager.current_graph == null:
 		hide()
 		return
 

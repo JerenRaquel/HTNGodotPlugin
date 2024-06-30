@@ -15,6 +15,10 @@ func initialize(manager: HTNDomainManager) -> void:
 func get_node_name() -> String:
 	return ""
 
+func get_node_type() -> String:
+	assert(false, "HTN Base Node Default Error Message")
+	return ""
+
 # Return value:
 #	On valid: return "" (and empty string)
 #	On invalid: return an error message string

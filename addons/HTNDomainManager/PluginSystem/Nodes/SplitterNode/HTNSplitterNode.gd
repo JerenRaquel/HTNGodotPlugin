@@ -7,6 +7,9 @@ extends HTNBaseNode
 func get_node_name() -> String:
 	return nick_name.text
 
+func get_node_type() -> String:
+	return "Splitter"
+
 func validate_self() -> String:
 	return ""
 

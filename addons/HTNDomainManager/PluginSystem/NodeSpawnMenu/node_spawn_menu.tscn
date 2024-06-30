@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://53r2l0aa47xe"]
+[gd_scene load_steps=4 format=3 uid="uid://53r2l0aa47xe"]
 
 [ext_resource type="Theme" uid="uid://diu3ahrw1puva" path="res://addons/HTNDomainManager/PluginSystem/PluginTheme.tres" id="1_1e8uj"]
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/NodeSpawnMenu/NodeSpawnMenuController.gd" id="2_x72ml"]
@@ -10,8 +10,6 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bqpnq"]
-
 [node name="NodeSpawnMenu" type="Control"]
 visible = false
 layout_mode = 3
@@ -19,93 +17,51 @@ anchors_preset = 0
 theme = ExtResource("1_1e8uj")
 script = ExtResource("2_x72ml")
 
-[node name="AutoShrinker" type="VBoxContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(175, 300)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -25.0
-offset_top = -61.5
-offset_right = 25.0
-offset_bottom = 61.5
+offset_left = -20.0
+offset_top = -150.0
+offset_right = 20.0
+offset_bottom = 150.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="PanelContainer" type="PanelContainer" parent="AutoShrinker"]
-layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_pvdyc")
 
-[node name="Buttons" type="VBoxContainer" parent="AutoShrinker/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
 
-[node name="HSeparator" type="HSeparator" parent="AutoShrinker/PanelContainer/Buttons"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxEmpty_bqpnq")
-
-[node name="Label" type="Label" parent="AutoShrinker/PanelContainer/Buttons"]
+[node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Nodes"
 horizontal_alignment = 1
-vertical_alignment = 1
 
-[node name="HSeparator2" type="HSeparator" parent="AutoShrinker/PanelContainer/Buttons"]
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxEmpty_bqpnq")
+placeholder_text = "Search..."
 
-[node name="HBoxContainer" type="MarginContainer" parent="AutoShrinker/PanelContainer/Buttons"]
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_constants/margin_left = 4
-theme_override_constants/margin_right = 4
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="AutoShrinker/PanelContainer/Buttons/HBoxContainer"]
-layout_mode = 2
-
-[node name="Splitter" type="Button" parent="AutoShrinker/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
+[node name="NodeButtons" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 230)
 layout_mode = 2
-text = "Splitter"
-
-[node name="DomainLink" type="Button" parent="AutoShrinker/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Domain Link"
-
-[node name="Method" type="Button" parent="AutoShrinker/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Method"
-
-[node name="ATMethod" type="Button" parent="AutoShrinker/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Always True Method"
-
-[node name="Task" type="Button" parent="AutoShrinker/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Task"
-
-[node name="Applicator" type="Button" parent="AutoShrinker/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Applicator"
-
-[node name="Comment" type="Button" parent="AutoShrinker/PanelContainer/Buttons/HBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Comment"
-
-[node name="HSeparator3" type="HSeparator" parent="AutoShrinker/PanelContainer/Buttons"]
-layout_mode = 2
-theme_override_styles/separator = SubResource("StyleBoxEmpty_bqpnq")
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
-[connection signal="pressed" from="AutoShrinker/PanelContainer/Buttons/HBoxContainer/VBoxContainer/Splitter" to="." method="_on_splitter_pressed"]
-[connection signal="pressed" from="AutoShrinker/PanelContainer/Buttons/HBoxContainer/VBoxContainer/DomainLink" to="." method="_on_domain_link_pressed"]
-[connection signal="pressed" from="AutoShrinker/PanelContainer/Buttons/HBoxContainer/VBoxContainer/Method" to="." method="_on_method_pressed"]
-[connection signal="pressed" from="AutoShrinker/PanelContainer/Buttons/HBoxContainer/VBoxContainer/ATMethod" to="." method="_on_at_method_pressed"]
-[connection signal="pressed" from="AutoShrinker/PanelContainer/Buttons/HBoxContainer/VBoxContainer/Task" to="." method="_on_task_pressed"]
-[connection signal="pressed" from="AutoShrinker/PanelContainer/Buttons/HBoxContainer/VBoxContainer/Applicator" to="." method="_on_applicator_pressed"]
-[connection signal="pressed" from="AutoShrinker/PanelContainer/Buttons/HBoxContainer/VBoxContainer/Comment" to="." method="_on_comment_pressed"]
