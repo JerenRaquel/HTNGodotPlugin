@@ -1,15 +1,12 @@
-[gd_scene load_steps=19 format=3 uid="uid://bxjws2hrnn63e"]
+[gd_scene load_steps=16 format=3 uid="uid://bxjws2hrnn63e"]
 
 [ext_resource type="Theme" uid="uid://diu3ahrw1puva" path="res://addons/HTNDomainManager/PluginSystem/PluginTheme.tres" id="1_4moif"]
 [ext_resource type="PackedScene" uid="uid://bel7aoiqishu0" path="res://addons/HTNDomainManager/PluginSystem/GraphTabManager/tab_graph_container.tscn" id="2_n8gmp"]
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/HTNDomainManager.gd" id="2_un2xf"]
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/Validator.gd" id="3_ajrvj"]
-[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/ConnectionHandler.gd" id="3_lihap"]
-[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/FileManager.gd" id="3_nt8yi"]
 [ext_resource type="PackedScene" uid="uid://53r2l0aa47xe" path="res://addons/HTNDomainManager/PluginSystem/NodeSpawnMenu/node_spawn_menu.tscn" id="4_2r86d"]
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/NotificationHandler.gd" id="4_45g3y"]
 [ext_resource type="PackedScene" uid="uid://bl31umnhdg1uw" path="res://addons/HTNDomainManager/PluginSystem/TaskPanel/task_panel.tscn" id="4_dcdp5"]
-[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/DomainSaver.gd" id="4_pnpls"]
 [ext_resource type="PackedScene" uid="uid://4rfd8im0s35y" path="res://addons/HTNDomainManager/PluginSystem/GotoPanel/goto_panel.tscn" id="5_arhpn"]
 [ext_resource type="PackedScene" uid="uid://d2k5i0p65qudy" path="res://addons/HTNDomainManager/PluginSystem/ConditionEditor/condition_editor.tscn" id="5_j8nky"]
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/DomainLoader.gd" id="5_jn8qg"]
@@ -36,13 +33,6 @@ theme = ExtResource("1_4moif")
 script = ExtResource("2_un2xf")
 metadata/_edit_lock_ = true
 
-[node name="ConnectionHandler" type="Control" parent="."]
-unique_name_in_owner = true
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("3_lihap")
-
 [node name="Validator" type="Control" parent="." node_paths=PackedStringArray("goto_panel")]
 unique_name_in_owner = true
 anchors_preset = 0
@@ -51,21 +41,7 @@ offset_bottom = 40.0
 script = ExtResource("3_ajrvj")
 goto_panel = NodePath("../ContainerRoot/PluginContainer/ContentContainer/EditorContainer/LeftSidePanelContainer/GotoPanel")
 
-[node name="FileManager" type="Control" parent="."]
-unique_name_in_owner = true
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("3_nt8yi")
-
-[node name="DomainSaver" type="Control" parent="FileManager"]
-unique_name_in_owner = true
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("4_pnpls")
-
-[node name="DomainLoader" type="Control" parent="FileManager"]
+[node name="DomainLoader" type="Control" parent="."]
 unique_name_in_owner = true
 anchors_preset = 0
 offset_right = 40.0
@@ -153,7 +129,6 @@ text = "Clear Graph"
 [node name="BuildDomainButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]
 unique_name_in_owner = true
 layout_mode = 2
-disabled = true
 text = "Build Domain"
 
 [node name="DomainPanelButton" type="Button" parent="ContainerRoot/PluginContainer/ContentContainer/ToolBox"]

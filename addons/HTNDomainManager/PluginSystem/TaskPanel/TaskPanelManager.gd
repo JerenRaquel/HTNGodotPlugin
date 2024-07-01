@@ -23,7 +23,7 @@ func _refresh_list() -> void:
 	for child: HTNTaskLine in task_list.get_children():
 		if child.is_queued_for_deletion(): continue
 		child.queue_free()
-	var data: Array = HTNGlobals.file_manager.get_all_task_names()
+	var data: Array = HTNFileManager.get_all_task_names()
 	if data.is_empty():
 		search_bar.editable = false
 		search_bar.placeholder_text = "Create a task..."
@@ -52,8 +52,8 @@ func _create_task_line(task_name: String) -> void:
 
 func _on_create_button_pressed() -> void:
 	var task_name: String = task_name_line_edit.text
-	if not HTNGlobals.file_manager.check_if_valid_name(task_name): return
-	if not HTNGlobals.file_manager.create_task(task_name): return
+	if not HTNFileManager.check_if_valid_name(task_name): return
+	if not HTNFileManager.create_task(task_name): return
 
 	_create_task_line(task_name)
 	_avoid_refresh = true

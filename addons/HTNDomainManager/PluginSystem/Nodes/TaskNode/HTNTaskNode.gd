@@ -42,7 +42,7 @@ func get_data() -> Dictionary:
 	}
 
 func _refresh_list() -> void:
-	var task_names: Array = HTNGlobals.file_manager.get_all_task_names()
+	var task_names: Array = HTNFileManager.get_all_task_names()
 	if task_names.size() == 0:
 		task_option_button.clear()
 		task_option_button.add_item(EMPTY_TASK_NAME)
@@ -76,18 +76,18 @@ func _refresh_list() -> void:
 func _on_edit_button_pressed() -> void:
 	var task_name := get_node_name()
 	if task_name == EMPTY_TASK_NAME: return
-	HTNGlobals.file_manager.edit_script(task_name)
+	HTNFileManager.edit_script(task_name)
 
 func _on_requires_waiting_button_toggled(toggled_on: bool) -> void:
 	var task_name := get_node_name()
 	if task_name == EMPTY_TASK_NAME: return
-	HTNGlobals.file_manager.toggle_awaiting_task_state(task_name, toggled_on)
+	HTNFileManager.toggle_awaiting_task_state(task_name, toggled_on)
 
 func _on_task_option_button_item_selected(index: int) -> void:
-	var task_names: Array = HTNGlobals.file_manager.get_all_task_names()
+	var task_names: Array = HTNFileManager.get_all_task_names()
 	if task_names.is_empty(): return
 
 	requires_waiting_button\
-		.set_pressed_no_signal(HTNGlobals.file_manager.get_awaiting_task_state(get_node_name()))
+		.set_pressed_no_signal(HTNFileManager.get_awaiting_task_state(get_node_name()))
 	HTNGlobals.node_name_altered.emit()
 	HTNGlobals.graph_altered.emit()

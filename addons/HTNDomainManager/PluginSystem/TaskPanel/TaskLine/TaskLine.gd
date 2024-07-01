@@ -8,7 +8,7 @@ func initialize(task_name: String) -> void:
 	edit_button.text = task_name
 
 func _on_delete_button_pressed() -> void:
-	if HTNGlobals.file_manager.delete_task(edit_button.text):
+	if HTNFileManager.delete_task(edit_button.text):
 		HTNGlobals.warning_box.open(
 			"You are about to delete this task for this graph and every graph that uses this.\nContinue?",
 			func() -> void:
@@ -20,4 +20,4 @@ func _on_delete_button_pressed() -> void:
 		HTNGlobals.notification_handler.send_error("Couldn't delete task: '" + edit_button.text + "'. Aborting...")
 
 func _on_edit_button_pressed() -> void:
-	HTNGlobals.file_manager.edit_script(edit_button.text)
+	HTNFileManager.edit_script(edit_button.text)

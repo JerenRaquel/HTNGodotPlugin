@@ -14,7 +14,7 @@ func _enter_tree() -> void:
 	if not Engine.is_editor_hint(): return
 
 	if not _setup_data():
-		push_error("Data Cache Could Not Be Made...\nExiting....")
+		push_error("Data Cache Could Not Be Made...\nPreventing Startup....")
 		return
 
 	if not ProjectSettings.has_setting("autoload/HTNDatabase"):

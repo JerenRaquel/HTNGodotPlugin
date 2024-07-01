@@ -25,7 +25,7 @@ func validate_tab_creation(domain_name: String) -> bool:
 		HTNGlobals.notification_handler.send_error("Alphanumeric characters only! Found: ["+result.get_string(0)+"]")
 		return false
 
-	if HTNGlobals.file_manager.check_if_domain_name_exists(domain_name):
+	if HTNFileManager.check_if_domain_name_exists(domain_name):
 		HTNGlobals.notification_handler.send_error("Domain already exists.")
 		return false
 

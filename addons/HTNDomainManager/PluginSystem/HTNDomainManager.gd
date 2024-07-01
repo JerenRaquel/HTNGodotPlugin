@@ -14,19 +14,15 @@ extends Control
 @onready var task_panel: HTNTaskPanelManager = %TaskPanel
 @onready var goto_panel: HTNGoToManager = %GotoPanel
 @onready var domain_panel: HTNDomainPanel = %DomainPanel
-# Managers
-@onready var domain_saver: HTNDomainSaver = %DomainSaver
 # Other
 @onready var left_v_separator: VSeparator = %LeftVSeparator
 @onready var right_v_separator: VSeparator = %RightVSeparator
 
 func _ready() -> void:
-	HTNGlobals.file_manager = %FileManager
 	HTNGlobals.warning_box = %WarningBox
 	HTNGlobals.effect_editor = %EffectEditor
 	HTNGlobals.condition_editor = %ConditionEditor
 	HTNGlobals.notification_handler = %NotificationHandler
-	HTNGlobals.connection_handler = %ConnectionHandler
 	HTNGlobals.validator = %Validator
 
 	graph_tools_toggle.toggled.connect(HTNGlobals.graph_tool_bar_toggled.emit)
@@ -76,7 +72,7 @@ func _update_toolbar_buttons() -> void:
 		goto_panel_button.disabled = false
 
 func _update_domain_button() -> void:
-	if HTNGlobals.file_manager.check_if_no_domains():
+	if HTNFileManager.check_if_no_domains():
 		domain_panel_button.disabled = true
 	else:
 		domain_panel_button.disabled = false
@@ -122,7 +118,7 @@ func _on_build_domain_button_pressed() -> void:
 	if HTNGlobals.current_graph == null: return
 
 	if not HTNGlobals.validator.validate(HTNGlobals.current_graph): return
-	if not domain_saver.save(HTNGlobals.current_graph): return
+	if not HTNDomainSaver.save(HTNGlobals.notification_handler, HTNGlobals.current_graph): return
 
 	HTNGlobals.notification_handler.send_message("Build Complete! Graph Saved!")
 	HTNGlobals.current_graph.is_saved = true

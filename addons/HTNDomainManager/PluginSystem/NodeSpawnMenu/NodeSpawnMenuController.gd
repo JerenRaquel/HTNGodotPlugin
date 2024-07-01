@@ -134,7 +134,7 @@ func _place_and_connect(node_instance: HTNBaseNode) -> void:
 		var to_node := node_instance.name
 		var to_port := node_instance.get_input_port_slot(idx)
 
-		if HTNGlobals.connection_handler.is_connection_valid(
+		if HTNConnectionHandler.is_connection_valid(
 				HTNGlobals.current_graph, from_node, from_port, to_node, to_port):
 			HTNGlobals.current_graph.connect_node(from_node, from_port, to_node, to_port)
 			connect_node_data.clear()

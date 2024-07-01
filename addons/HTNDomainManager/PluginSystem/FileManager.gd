@@ -1,10 +1,11 @@
 @tool
 class_name HTNFileManager
-extends Control
+extends Node
 
-var HTN_REFERENCE_FILE = preload("res://addons/HTNDomainManager/Data/HTNReferenceFile.tres")
+const HTN_REFERENCE_FILE_PATH := "res://addons/HTNDomainManager/Data/HTNReferenceFile.tres"
 const TASK_PATH := "res://addons/HTNDomainManager/Data/Tasks/"
 const SCRIPT_PATH := "res://addons/HTNDomainManager/Data/Scripts/"
+const DOMAIN_PATH := "res://addons/HTNDomainManager/Data/Domains/"
 #region Task Script Template
 const FILE_TEMPLATE := "
 extends HTNTask
@@ -23,29 +24,32 @@ func apply_expected_effects(world_state: Dictionary) -> void:
 "
 #endregion
 
-func check_if_valid_name(task_name: String) -> bool:
-	if task_name in HTN_REFERENCE_FILE["tasks"]:
+static func check_if_valid_name(task_name: String) -> bool:
+	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTN_REFERENCE_FILE_PATH)
+	if task_name in HTN_reference_file["tasks"]:
 		return false
 	return true
 
-func check_if_domain_name_exists(domain_name: String) -> bool:
-	return domain_name in HTN_REFERENCE_FILE["domains"]
+static func check_if_domain_name_exists(domain_name: String) -> HTNDomain:
+	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTN_REFERENCE_FILE_PATH)
+	return HTN_reference_file["domains"].get(domain_name, null)
 
-func check_if_no_domains() -> bool:
-	return HTN_REFERENCE_FILE["domains"].is_empty()
+static func check_if_no_domains() -> bool:
+	return DirAccess.get_files_at(DOMAIN_PATH).is_empty()
 
 # NOTE: Time Complexity: O(N) where N is every domain linked
 # Utilizes DFS for searching
-func check_if_domain_links(original_domain_name: String, domain_name_link: String) -> bool:
+static func check_if_domain_links(original_domain_name: String, domain_name_link: String) -> bool:
+	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTN_REFERENCE_FILE_PATH)
 	# Lazy Checks
 	# - Check if domain exists
-	if original_domain_name not in HTN_REFERENCE_FILE["domains"]: return false
+	if original_domain_name not in HTN_reference_file["domains"]: return false
 	# - Check if same
 	if original_domain_name == domain_name_link: return true
 	# - Check if there's no domains to check
-	if HTN_REFERENCE_FILE["domains"].is_empty(): return false
+	if HTN_reference_file["domains"].is_empty(): return false
 	# - Check if current domain name has any domains linked
-	var domain_names: Array[StringName] = HTN_REFERENCE_FILE["domains"][original_domain_name]["required_domains"]
+	var domain_names: Array[StringName] = HTN_reference_file["domains"][original_domain_name]["required_domains"]
 	if domain_names.is_empty(): return false
 
 	# DFS Search
@@ -54,14 +58,15 @@ func check_if_domain_links(original_domain_name: String, domain_name_link: Strin
 		# Check if sub domain name is the same as the one wanting to link
 		if cur_domain_name == domain_name_link: return true
 		# Check if current domain name has any domains linked
-		var sub_domain_list: Array[StringName] = HTN_REFERENCE_FILE["domains"][cur_domain_name]["required_domains"]
+		var sub_domain_list: Array[StringName] = HTN_reference_file["domains"][cur_domain_name]["required_domains"]
 		if sub_domain_list.is_empty():
 			if cur_domain_name not in closed_set:
 				closed_set.push_back(cur_domain_name)
 			continue
 
 		# Dig deeper
-		if _check_if_domain_links_helper(closed_set, cur_domain_name, domain_name_link): return true
+		if _check_if_domain_links_helper(HTN_reference_file, closed_set, cur_domain_name, domain_name_link):
+			return true
 		# Found nothing
 		if cur_domain_name not in closed_set:
 			closed_set.push_back(cur_domain_name)
@@ -69,21 +74,54 @@ func check_if_domain_links(original_domain_name: String, domain_name_link: Strin
 	# Does not link at any time
 	return false
 
-func get_all_task_names() -> Array:
-	return HTN_REFERENCE_FILE["tasks"].keys()
+static func _check_if_domain_links_helper(HTN_reference_file: HTNReferenceFile,
+			closed_set: Array[StringName], current_domain_name: String, domain_name_link: String) -> bool:
+	for cur_domain_name: StringName in HTN_reference_file["domains"][current_domain_name]["required_domains"]:
+		# Already Searched
+		if cur_domain_name in closed_set: continue
 
-func get_all_domain_names() -> Array:
-	return HTN_REFERENCE_FILE["domains"].keys()
+		# Check if sub domain name is the same as the one wanting to link
+		if cur_domain_name == domain_name_link: return true
 
-func get_awaiting_task_state(task_name: String) -> bool:
-	return HTN_REFERENCE_FILE["tasks"][task_name]["requires_awaiting"]
+		# Check if current domain name has any domains linked
+		var sub_domain_list: Array[StringName] = HTN_reference_file["domains"][cur_domain_name]["required_domains"]
+		if sub_domain_list.is_empty():
+			if cur_domain_name not in closed_set:
+				closed_set.push_back(cur_domain_name)
+			continue
 
-func toggle_awaiting_task_state(task_name: String, state: bool) -> void:
-	HTN_REFERENCE_FILE["tasks"][task_name]["requires_awaiting"] = state
+		# Dig deeper
+		if _check_if_domain_links_helper(HTN_reference_file, closed_set, cur_domain_name, domain_name_link): return true
+		# Found nothing
+		if cur_domain_name not in closed_set:
+			closed_set.push_back(cur_domain_name)
 
-func create_task(task_name: String) -> bool:
+	# Does not link at any time
+	return false
+
+static func get_all_task_names() -> Array:
+	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTN_REFERENCE_FILE_PATH)
+	return HTN_reference_file["tasks"].keys()
+
+static func get_all_domain_names() -> Array:
+	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTN_REFERENCE_FILE_PATH)
+	return HTN_reference_file["domains"].keys()
+
+static func get_awaiting_task_state(task_name: String) -> bool:
+	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTN_REFERENCE_FILE_PATH)
+	return HTN_reference_file["tasks"][task_name]["requires_awaiting"]
+
+static func toggle_awaiting_task_state(task_name: String, state: bool) -> void:
+	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTN_REFERENCE_FILE_PATH)
+	HTN_reference_file["tasks"][task_name]["requires_awaiting"] = state
+	if ResourceSaver.save(HTN_reference_file, HTN_REFERENCE_FILE_PATH) != OK:
+		push_error("Awaiting state was not able to be updated...")
+
+static func create_task(task_name: String) -> bool:
 	if task_name.is_empty(): return false
-	if not check_if_valid_name(task_name): return false
+
+	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTN_REFERENCE_FILE_PATH)
+	if task_name in HTN_reference_file["tasks"]: return false
 
 	var file_name: String = task_name.to_pascal_case()
 	var script_path := SCRIPT_PATH + task_name +".gd"
@@ -95,72 +133,55 @@ func create_task(task_name: String) -> bool:
 		DirAccess.remove_absolute(script_path)
 		return false
 
-	HTN_REFERENCE_FILE["scripts"][task_name] = script_path
-	HTN_REFERENCE_FILE["tasks"][task_name] = task_resource
-	return true
+	HTN_reference_file["scripts"][task_name] = script_path
+	HTN_reference_file["tasks"][task_name] = task_resource
+	return ResourceSaver.save(HTN_reference_file, HTN_REFERENCE_FILE_PATH) == OK
 
-func edit_script(task_name: String) -> void:
+static func edit_script(task_name: String) -> void:
 	if task_name.is_empty(): return
-	if task_name not in HTN_REFERENCE_FILE["scripts"]: return
 
-	var script := load(HTN_REFERENCE_FILE["scripts"][task_name])
+	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTN_REFERENCE_FILE_PATH)
+	if task_name not in HTN_reference_file["scripts"]: return
+
+	var script := load(HTN_reference_file["scripts"][task_name])
 	EditorInterface.edit_script(script)
 	EditorInterface.set_main_screen_editor("Script")
 
-func delete_task(task_name: String) -> bool:
+static func delete_task(task_name: String) -> bool:
 	if task_name.is_empty(): return false
 
-	var script_path:String = HTN_REFERENCE_FILE["scripts"][task_name]
-	var task_resource: Resource = HTN_REFERENCE_FILE["tasks"][task_name]
+	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTN_REFERENCE_FILE_PATH)
+	var script_path:String = HTN_reference_file["scripts"][task_name]
+	var task_resource: Resource = HTN_reference_file["tasks"][task_name]
 	var delete_state := _delete_files(
 		"Script", script_path,
 		"Task Resource File", task_resource.resource_path
 	)
 	if delete_state:
-		HTN_REFERENCE_FILE["scripts"].erase(task_name)
-		HTN_REFERENCE_FILE["tasks"].erase(task_name)
+		HTN_reference_file["scripts"].erase(task_name)
+		HTN_reference_file["tasks"].erase(task_name)
+	if ResourceSaver.save(HTN_reference_file, HTN_REFERENCE_FILE_PATH) != OK:
+		return false
 	return delete_state
 
-func delete_domain(domain_name: String) -> bool:
+static func delete_domain(domain_name: String) -> bool:
 	if domain_name.is_empty(): return false
 
-	var graph_path: String = HTN_REFERENCE_FILE["graph_saves"][domain_name]
-	var domain_resource: Resource = HTN_REFERENCE_FILE["domains"][domain_name]
+	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTN_REFERENCE_FILE_PATH)
+	var graph_path: String = HTN_reference_file["graph_saves"][domain_name]
+	var domain_resource: Resource = HTN_reference_file["domains"][domain_name]
 	var delete_state := _delete_files(
 		"Graph Save", graph_path,
 		"Domain", domain_resource.resource_path
 	)
 	if delete_state:
-		HTN_REFERENCE_FILE["graph_saves"].erase(domain_name)
-		HTN_REFERENCE_FILE["domains"].erase(domain_name)
+		HTN_reference_file["graph_saves"].erase(domain_name)
+		HTN_reference_file["domains"].erase(domain_name)
+	if ResourceSaver.save(HTN_reference_file, HTN_REFERENCE_FILE_PATH) != OK:
+		return false
 	return delete_state
 
-func _check_if_domain_links_helper(closed_set: Array[StringName], current_domain_name: String,
-		domain_name_link: String) -> bool:
-	for cur_domain_name: StringName in HTN_REFERENCE_FILE["domains"][current_domain_name]["required_domains"]:
-		# Already Searched
-		if cur_domain_name in closed_set: continue
-
-		# Check if sub domain name is the same as the one wanting to link
-		if cur_domain_name == domain_name_link: return true
-
-		# Check if current domain name has any domains linked
-		var sub_domain_list: Array[StringName] = HTN_REFERENCE_FILE["domains"][cur_domain_name]["required_domains"]
-		if sub_domain_list.is_empty():
-			if cur_domain_name not in closed_set:
-				closed_set.push_back(cur_domain_name)
-			continue
-
-		# Dig deeper
-		if _check_if_domain_links_helper(closed_set, cur_domain_name, domain_name_link): return true
-		# Found nothing
-		if cur_domain_name not in closed_set:
-			closed_set.push_back(cur_domain_name)
-
-	# Does not link at any time
-	return false
-
-func _delete_files(file_type1: String, file_path1: String, file_type2: String, file_path2: String) -> bool:
+static func _delete_files(file_type1: String, file_path1: String, file_type2: String, file_path2: String) -> bool:
 	var found_file1 := false
 	var found_file2 := false
 	if FileAccess.file_exists(file_path1):
@@ -182,24 +203,22 @@ func _delete_files(file_type1: String, file_path1: String, file_type2: String, f
 		if not found_file2:
 			error_message += file_type2 + " File"
 			push_error(file_path2)
-		HTNGlobals.notification_handler.send_error(error_message)
 		return false
 
-func _build_script(task_name: String, path: String) -> Script:
-	var data: String = "class_name HTN" + task_name + FILE_TEMPLATE
-	var write_data := data.split("\n")
-
+static func _build_script(task_name: String, path: String) -> Script:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if file == null:
 		return null
 
+	var data: String = FILE_TEMPLATE
+	var write_data := data.split("\n")
 	for line in write_data:
 		file.store_line(line)
 	file.close()
 
 	return load(path)
 
-func _build_resource(script: Script, file_name: String) -> Resource:
+static func _build_resource(script: Script, file_name: String) -> Resource:
 	var path: String = TASK_PATH + file_name + ".tres"
 	var resource_file: = Resource.new()
 	resource_file.set_script(script)

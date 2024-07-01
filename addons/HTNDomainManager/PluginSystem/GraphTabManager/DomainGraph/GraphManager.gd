@@ -13,6 +13,8 @@ var is_saved := false:
 		is_saved = value
 		if _graph_tab:
 			_graph_tab.tab_save_state(value)
+		if value == false:
+			HTNGlobals.graph_altered.emit()
 
 var nodes: Dictionary = {}
 
@@ -69,7 +71,6 @@ func register_node(node: GraphNode, reg_key: StringName="") -> String:
 	nodes[node_key] = node
 	node.name = node_key
 	is_saved = false
-	HTNGlobals.graph_altered.emit()
 	return node_key
 
 func clear() -> void:
@@ -80,7 +81,6 @@ func clear() -> void:
 		_delete_node(node)
 	_current_ID = 1
 	HTNGlobals.graph_altered.emit()
-	is_saved = false
 
 func get_node_offset_by_key(node_key: StringName) -> Dictionary:
 	if node_key not in nodes: return {}
@@ -143,7 +143,7 @@ func load_node(node: PackedScene, node_key: StringName,
 
 func _get_every_node_til_compound_helper(current_key: String, task_chain: Array[StringName]) -> void:
 	var connected_nodes: Array[StringName]\
-		= HTNGlobals.connection_handler.get_connected_nodes_from_output(self, current_key)
+		= HTNConnectionHandler.get_connected_nodes_from_output(self, current_key)
 	# We're done -- Stopped at dead end
 	if connected_nodes.size() == 0:
 		return
@@ -163,13 +163,13 @@ func _get_every_node_til_compound_helper(current_key: String, task_chain: Array[
 	_get_every_node_til_compound_helper(connected_node, task_chain)
 
 func _delete_node(node: HTNBaseNode) -> void:
-	HTNGlobals.connection_handler.remove_connections(self, node)
+	HTNConnectionHandler.remove_connections(self, node)
 	if not nodes.erase(node.name):
 		push_error(node.name + " did not exist and is trying to erase.")
 	node.free()
 
 func _on_connection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
-	HTNGlobals.connection_handler.load_connection(self, from_node, from_port, to_node, to_port)
+	HTNConnectionHandler.load_connection(self, from_node, from_port, to_node, to_port)
 
 func _on_connection_to_empty(from_node: StringName, from_port: int, release_position: Vector2) -> void:
 	_node_spawn_menu.connect_node_data = {
@@ -177,12 +177,11 @@ func _on_connection_to_empty(from_node: StringName, from_port: int, release_posi
 		"from_port": from_port,
 		"release_position": release_position
 	}
-	_node_spawn_menu.enable(HTNGlobals.connection_handler.get_output_port_type(self, from_node, from_port))
+	_node_spawn_menu.enable(HTNConnectionHandler.get_output_port_type(self, from_node, from_port))
 
 func _on_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	print("Disconnecting: ", from_node, " from ", to_node)
 	disconnect_node(from_node, from_port, to_node, to_port)
-	HTNGlobals.graph_altered.emit()
 	is_saved = false
 
 func _on_delete_nodes_request(selected_nodes: Array[StringName]) -> void:
@@ -195,7 +194,6 @@ func _on_delete_nodes_request(selected_nodes: Array[StringName]) -> void:
 
 		_delete_node(node)
 	is_saved = false
-	HTNGlobals.graph_altered.emit()
 
 func _on_copy_nodes_request() -> void:
 	pass # Replace with function body.
@@ -208,4 +206,3 @@ func _on_popup_request(_position: Vector2) -> void:
 
 func _on_end_node_move() -> void:
 	is_saved = false
-	HTNGlobals.graph_altered.emit()

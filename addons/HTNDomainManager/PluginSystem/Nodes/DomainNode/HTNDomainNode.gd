@@ -54,7 +54,7 @@ func get_data() -> Dictionary:
 	}
 
 func _refresh() -> void:
-	var domain_names: Array = HTNGlobals.file_manager.get_all_domain_names()
+	var domain_names: Array = HTNFileManager.get_all_domain_names()
 	if domain_names.is_empty():
 		warning_symbol.tooltip_text = NO_DOMAINS_TO_LINK
 		warning_symbol.show()
@@ -90,7 +90,7 @@ func _on_domain_option_button_item_selected(index: int) -> void:
 	if get_node_name().is_empty(): return
 
 	# Check if domain links to itself
-	if HTNGlobals.file_manager.check_if_domain_links(HTNGlobals.current_graph.domain_name, get_node_name()):
+	if HTNFileManager.check_if_domain_links(HTNGlobals.current_graph.domain_name, get_node_name()):
 		warning_symbol.tooltip_text = SELF_LINK
 		warning_symbol.show()
 	else:

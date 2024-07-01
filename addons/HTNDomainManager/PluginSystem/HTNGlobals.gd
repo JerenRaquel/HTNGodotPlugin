@@ -32,12 +32,10 @@ const NODES: Dictionary = {
 	}
 }
 
-var file_manager: HTNFileManager
 var warning_box: HTNWarningBox
 var effect_editor: HTNEffectEditor
 var condition_editor: HTNConditionEditor
 var notification_handler: HTNNotificaionHandler
-var connection_handler: HTNConnectionHandler
 var validator: HTNGraphValidator
 var current_graph: HTNDomainGraph = null:
 	set(value):

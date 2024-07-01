@@ -14,7 +14,7 @@ func _on_delete_button_pressed() -> void:
 	HTNGlobals.warning_box.open(
 		"You are about to delete this domain.\nThis will affect all Domain Link nodes that use this.\nContinue?",
 		func() -> void:
-			HTNGlobals.file_manager.delete_domain(domain_button.text)
+			HTNFileManager.delete_domain(domain_button.text)
 			_manager.tab_container.delete_tab_if_open(domain_button.text)
 			HTNGlobals.domains_updated.emit(),
 		Callable()

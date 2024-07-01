@@ -21,7 +21,7 @@ func _refresh() -> void:
 
 	searchbar.editable = false
 
-	var domain_names: Array = HTNGlobals.file_manager.get_all_domain_names()
+	var domain_names: Array = HTNFileManager.get_all_domain_names()
 	if domain_names.is_empty(): return
 
 	domain_names.sort()

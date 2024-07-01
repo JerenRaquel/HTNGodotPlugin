@@ -101,7 +101,7 @@ func _validate_node_data(domain_graph: HTNDomainGraph) -> bool:
 func _validate_node_connections(domain_graph: HTNDomainGraph) -> bool:
 	for node_key: StringName in domain_graph.nodes:
 		var connected_node_connection_names: Array[StringName] =\
-			HTNGlobals.connection_handler.get_connected_nodes_from_output(domain_graph, node_key)
+			HTNConnectionHandler.get_connected_nodes_from_output(domain_graph, node_key)
 		var node = domain_graph.nodes[node_key]
 		var node_name: String = node.get_node_name()
 		if node_name.is_empty() or node_name == "": node_name = node_key
@@ -117,47 +117,47 @@ func _validate_node_connections(domain_graph: HTNDomainGraph) -> bool:
 			): return false
 		elif node is HTNTaskNode:
 			# Check for at most 1 output connection
-			if HTNGlobals.connection_handler.get_connected_nodes_from_output(domain_graph, node_key).size() > 1:
+			if HTNConnectionHandler.get_connected_nodes_from_output(domain_graph, node_key).size() > 1:
 				_send_error(domain_graph, node_name, node_key, OVER_ONE_CONNECTION)
 				return false
 			# Check for any amount of task input connections
-			if not HTNGlobals.connection_handler.has_connections_from_input(domain_graph, node_key):
+			if not HTNConnectionHandler.has_connections_from_input(domain_graph, node_key):
 				_send_error(domain_graph, node_name, node_key, NO_TASK_CONNECTIONS)
 				return false
 		elif node is HTNDomainNode:
 			# Check for at most 1 output connection
-			if HTNGlobals.connection_handler.get_connected_nodes_from_output(domain_graph, node_key).size() > 1:
+			if HTNConnectionHandler.get_connected_nodes_from_output(domain_graph, node_key).size() > 1:
 				_send_error(domain_graph, node_name, node_key, OVER_ONE_CONNECTION)
 				return false
 			# Check for any amount of task input connections
-			if not HTNGlobals.connection_handler.has_connections_from_input(domain_graph, node_key):
+			if not HTNConnectionHandler.has_connections_from_input(domain_graph, node_key):
 				_send_error(domain_graph, node_name, node_key, NO_TASK_CONNECTIONS)
 				return false
 		elif node is HTNMethodNode: # Should cover Always True
 			# Check for ONLY one task output connection
-			if HTNGlobals.connection_handler.get_connected_nodes_from_output(domain_graph, node_key).size() != 1:
+			if HTNConnectionHandler.get_connected_nodes_from_output(domain_graph, node_key).size() != 1:
 				_send_error(domain_graph, node_name, node_key, ONE_TASK_CONNECTION_REQURIED)
 				return false
 			# Check for any amount of task input connections
-			if not HTNGlobals.connection_handler.has_connections_from_input(domain_graph, node_key):
+			if not HTNConnectionHandler.has_connections_from_input(domain_graph, node_key):
 				_send_error(domain_graph, node_name, node_key, NO_TASK_CONNECTIONS)
 				return false
 		elif node is HTNApplicatorNode:
 			# Check for any amount of task input connections
-			if not HTNGlobals.connection_handler.has_connections_from_input(domain_graph, node_key):
+			if not HTNConnectionHandler.has_connections_from_input(domain_graph, node_key):
 				_send_error(domain_graph, node_name, node_key, NO_TASK_CONNECTIONS)
 				return false
 			# Check for ONLY one task output connection
-			if HTNGlobals.connection_handler.get_connected_nodes_from_output(domain_graph, node_key).size() > 1:
+			if HTNConnectionHandler.get_connected_nodes_from_output(domain_graph, node_key).size() > 1:
 				_send_error(domain_graph, node_name, node_key, ONE_TASK_CONNECTION_REQURIED)
 				return false
 		elif node is HTNModuleBaseNode:
 			# Check for any amount of task input connections
-			if not HTNGlobals.connection_handler.has_connections_from_input(domain_graph, node_key):
+			if not HTNConnectionHandler.has_connections_from_input(domain_graph, node_key):
 				_send_error(domain_graph, node_name, node_key, NO_TASK_CONNECTIONS)
 				return false
 			# Check for at most 1 output connection
-			if HTNGlobals.connection_handler.get_connected_nodes_from_output(domain_graph, node_key).size() > 1:
+			if HTNConnectionHandler.get_connected_nodes_from_output(domain_graph, node_key).size() > 1:
 				_send_error(domain_graph, node_name, node_key, OVER_ONE_CONNECTION)
 				return false
 	return true
@@ -165,13 +165,13 @@ func _validate_node_connections(domain_graph: HTNDomainGraph) -> bool:
 func _validate_root_and_compound_nodes(domain_graph: HTNDomainGraph, node_key: StringName, node_name: String,
 		connected_node_connection_names: Array[StringName]) -> bool:
 	# Check for any amount of method output connections
-	if not HTNGlobals.connection_handler.has_connections_from_output(domain_graph, node_key):
+	if not HTNConnectionHandler.has_connections_from_output(domain_graph, node_key):
 		_send_error(domain_graph, node_name, node_key, NO_METHOD_CONNECTIONS)
 		return false
 
 	# Check for >=1 task connection
 	if domain_graph.nodes[node_key] is HTNSplitterNode:
-		if not HTNGlobals.connection_handler.has_connections_from_input(domain_graph, node_key):
+		if not HTNConnectionHandler.has_connections_from_input(domain_graph, node_key):
 			_send_error(domain_graph, node_name, node_key, NO_TASK_CONNECTIONS)
 			return false
 
