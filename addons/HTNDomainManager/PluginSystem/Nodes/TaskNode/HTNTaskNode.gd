@@ -12,10 +12,11 @@ func _exit_tree() -> void:
 	HTNGlobals.task_created.disconnect(_refresh_list)
 
 func initialize() -> void:
-	_refresh_list()
-	_on_task_option_button_item_selected(0)
+	super()
 	HTNGlobals.task_deleted.connect(_refresh_list)
 	HTNGlobals.task_created.connect(_refresh_list)
+	_refresh_list()
+	_on_task_option_button_item_selected(0)
 
 func get_node_name() -> String:
 	return task_option_button.get_item_text(task_option_button.selected)
@@ -24,6 +25,8 @@ func get_node_type() -> String:
 	return "Task"
 
 func validate_self() -> String:
+	if get_node_name() == EMPTY_TASK_NAME:
+		return "Task node created with no tasks available."
 	return ""
 
 func load_data(data: Dictionary) -> void:
@@ -81,6 +84,9 @@ func _on_requires_waiting_button_toggled(toggled_on: bool) -> void:
 	HTNGlobals.file_manager.toggle_awaiting_task_state(task_name, toggled_on)
 
 func _on_task_option_button_item_selected(index: int) -> void:
+	var task_names: Array = HTNGlobals.file_manager.get_all_task_names()
+	if task_names.is_empty(): return
+
 	requires_waiting_button\
 		.set_pressed_no_signal(HTNGlobals.file_manager.get_awaiting_task_state(get_node_name()))
 	HTNGlobals.node_name_altered.emit()

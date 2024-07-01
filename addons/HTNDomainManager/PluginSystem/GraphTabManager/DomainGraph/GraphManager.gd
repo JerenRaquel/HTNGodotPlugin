@@ -20,6 +20,7 @@ func initialize(node_spawn_menu: HTNNodeSpawnMenu, graph_tab: HTNGraphTab, graph
 	_node_spawn_menu = node_spawn_menu
 	_graph_tab = graph_tab
 	domain_name = graph_tab.get_domain_name()
+	HTNGlobals.current_graph = self
 
 	HTNGlobals.graph_altered.connect(
 		func() -> void:
@@ -67,8 +68,8 @@ func register_node(node: GraphNode, reg_key: StringName="") -> String:
 
 	nodes[node_key] = node
 	node.name = node_key
-	HTNGlobals.graph_altered.emit()
 	is_saved = false
+	HTNGlobals.graph_altered.emit()
 	return node_key
 
 func clear() -> void:
@@ -130,12 +131,15 @@ func get_every_node_til_compound(node_key: String) -> Array[StringName]:
 
 func load_node(node: PackedScene, node_key: StringName,
 		node_position: Vector2, node_data: Dictionary) -> void:
-	var node_instance: GraphNode = node.instantiate()
-	add_child(node_instance)
-	register_node(node_instance, node_key)
-	node_instance.initialize()
-	node_instance.load_data(node_data)
-	node_instance.position_offset = node_position
+	if node == HTNGlobals.NODES["Root"]:
+		nodes[root_key].position_offset = node_position
+	else:
+		var node_instance: GraphNode = node.instantiate()
+		add_child(node_instance)
+		register_node(node_instance, node_key)
+		node_instance.initialize()
+		node_instance.load_data(node_data)
+		node_instance.position_offset = node_position
 
 func _get_every_node_til_compound_helper(current_key: String, task_chain: Array[StringName]) -> void:
 	var connected_nodes: Array[StringName]\
@@ -176,6 +180,7 @@ func _on_connection_to_empty(from_node: StringName, from_port: int, release_posi
 	_node_spawn_menu.enable(HTNGlobals.connection_handler.get_output_port_type(self, from_node, from_port))
 
 func _on_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
+	print("Disconnecting: ", from_node, " from ", to_node)
 	disconnect_node(from_node, from_port, to_node, to_port)
 	HTNGlobals.graph_altered.emit()
 	is_saved = false
@@ -189,8 +194,8 @@ func _on_delete_nodes_request(selected_nodes: Array[StringName]) -> void:
 			continue
 
 		_delete_node(node)
-	HTNGlobals.graph_altered.emit()
 	is_saved = false
+	HTNGlobals.graph_altered.emit()
 
 func _on_copy_nodes_request() -> void:
 	pass # Replace with function body.
@@ -200,3 +205,7 @@ func _on_paste_nodes_request() -> void:
 
 func _on_popup_request(_position: Vector2) -> void:
 	_node_spawn_menu.enable()
+
+func _on_end_node_move() -> void:
+	is_saved = false
+	HTNGlobals.graph_altered.emit()

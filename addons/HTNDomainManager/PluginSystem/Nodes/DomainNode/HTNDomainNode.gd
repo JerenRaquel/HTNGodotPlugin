@@ -13,6 +13,7 @@ TLDR: This may cause a stack overflow due to recursion."""
 @onready var domain_option_button: OptionButton = %DomainOptionButton
 
 func initialize() -> void:
+	super()
 	warning_symbol.hide()
 	HTNGlobals.domains_updated.connect(_refresh)
 	_refresh()

@@ -51,7 +51,6 @@ func _create_new_tab() -> void:
 	_empty_tab_idx += 1
 
 func _on_tab_created(graph: HTNDomainGraph, tab_instance: HTNGraphTab) -> void:
-	HTNGlobals.current_graph = graph
 	graph.initialize(node_spawn_menu, tab_instance, graph_tools_toggle.button_pressed)
 	HTNGlobals.graph_altered.emit()
 	set_tab_button_icon(current_tab, TRASH)

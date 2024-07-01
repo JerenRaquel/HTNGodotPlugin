@@ -12,9 +12,8 @@ extends Control
 #- Tasks <-> Tasks: 2
 
 const TREE_DROP_BUTTON = preload("res://addons/HTNDomainManager/PluginSystem/Components/Tree/TreeDropButton/tree_drop_button.tscn")
-const ON_PORT_BLUE: Array[String] = ["Method", "AlwaysTrueMethod"]
-const ON_PORT_GREEN: Array[String] = ["Task", "Domain", "Applicator", "Splitter"]
 
+@onready var search_bar: LineEdit = %SearchBar
 @onready var node_buttons: VBoxContainer = %NodeButtons
 
 var _mouse_local_position: Vector2
@@ -30,9 +29,12 @@ func _ready() -> void:
 	hide()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventAction or event is InputEventKey:
-		if visible:
-			hide()
+	if event is InputEventMouseButton:
+		if event.is_pressed() and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_RIGHT:
+			if visible: hide()
+	elif event is InputEventKey and event.is_pressed():
+		if (event as InputEventKey).keycode == KEY_ESCAPE:
+			if visible: hide()
 
 func enable(port_type: int=-1) -> void:
 	if visible and port_type == -1:
@@ -44,10 +46,10 @@ func enable(port_type: int=-1) -> void:
 			_show_all()
 		1:
 			for tree_drop: TreeDropButton in node_buttons.get_children():
-				tree_drop.filter(ON_PORT_BLUE)
+				tree_drop.filter(HTNGlobals.ON_PORT_BLUE)
 		2:
 			for tree_drop: TreeDropButton in node_buttons.get_children():
-				tree_drop.filter(ON_PORT_GREEN)
+				tree_drop.filter(HTNGlobals.ON_PORT_GREEN)
 		_:
 			_hide_all()
 	show()
@@ -93,10 +95,12 @@ func _add_nodes_to_menu() -> void:
 func _show_all() -> void:
 	for tree_drop_down: TreeDropButton in node_buttons.get_children():
 		tree_drop_down.show_all()
+	search_bar.editable = true
 
 func _hide_all() -> void:
 	for tree_drop_down: TreeDropButton in node_buttons.get_children():
 		tree_drop_down.hide()
+	search_bar.editable = false
 
 func _add_node(node: PackedScene) -> HTNBaseNode:
 	hide()
@@ -130,7 +134,7 @@ func _place_and_connect(node_instance: HTNBaseNode) -> void:
 		var to_node := node_instance.name
 		var to_port := node_instance.get_input_port_slot(idx)
 
-		if HTNGlobals.current_graph.connection_handler.is_connection_valid(
+		if HTNGlobals.connection_handler.is_connection_valid(
 				HTNGlobals.current_graph, from_node, from_port, to_node, to_port):
 			HTNGlobals.current_graph.connect_node(from_node, from_port, to_node, to_port)
 			connect_node_data.clear()
@@ -149,3 +153,8 @@ func _on_visibility_changed() -> void:
 
 	if visible:
 		_mouse_local_position = HTNGlobals.current_graph.get_local_mouse_position()
+
+func _on_search_bar_text_changed(new_text: String) -> void:
+	#for tree_drop: TreeDropButton in node_buttons.get_children():
+		#tree_drop.filter(ON_PORT_BLUE)
+	pass

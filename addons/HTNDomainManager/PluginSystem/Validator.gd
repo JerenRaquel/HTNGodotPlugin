@@ -4,11 +4,13 @@ extends Control
 
 #region Graph Error Messages
 const EMPTY_CONNECTIONS := "There are no connections."
-const NO_TASK_CONNECTIONS := "This node has no task connection(s)."
+const NO_TASK_CONNECTIONS := "This node has no action connection(s)."
 const NO_METHOD_CONNECTIONS := "This node has no method connections."
-const ONE_TASK_CONNECTION_REQURIED := "This node requries 1 task connected to output."
+const ONE_TASK_CONNECTION_REQURIED := "This node requries 1 action connected to output."
 const OVER_ONE_CONNECTION := "There are more than one connection."
 const OVER_ONE_ALWAYS_TRUE_METHOD_CONNECTION := "There are more than one Method Node - Always True."
+const EMPTY_FUNCTION_NAME := "Requires a function to call."
+const UNDEFINED_FUNCTION_NAME := "Can't find function to call with name: "
 
 #endregion
 
@@ -26,9 +28,6 @@ func validate(domain_graph: HTNDomainGraph) -> bool:
 	# Validate each node's rules (listed above function declaration)
 	if not _validate_node_connections(domain_graph): return false
 
-	## Save graph to domain file
-	#if not _manager.domain_builder.write_domain_file(domain_name): return false
-
 	return true
 
 func _validate_there_are_any_connections(domain_graph: HTNDomainGraph) -> bool:
@@ -40,15 +39,32 @@ func _validate_there_are_any_connections(domain_graph: HTNDomainGraph) -> bool:
 	return true
 
 func _validate_node_data(domain_graph: HTNDomainGraph) -> bool:
+	var core_module_libs: HTNCoreModuleLibrary = HTNCoreModuleLibrary.new()
 	for node_key: String in domain_graph.nodes:
 		var node := (domain_graph.nodes[node_key] as HTNBaseNode)
 		if node.is_queued_for_deletion(): continue
 
+		# Get Node Identification
+		var node_name := node.get_node_name()
+		if node_name.is_empty():
+			node_name = node_key
+
+		# Check Module Nodes for Linked Functions
+		if node is HTNModuleBaseNode:
+			var function_name: String = node.get_module_function_name()
+			if function_name.is_empty():
+				_send_error(domain_graph, node_name, node_key, EMPTY_FUNCTION_NAME)
+				return false
+			if not core_module_libs.has_method(function_name):
+				_send_error(
+					domain_graph, node_name, node_key,
+					UNDEFINED_FUNCTION_NAME + function_name
+				)
+				return false
+
+		# Check Standard Node Validation
 		var error_message := node.validate_self()
 		if not error_message.is_empty():
-			var node_name := node.get_node_name()
-			if node_name.is_empty():
-				node_name = node_key
 			_send_error(domain_graph, node_name, node_key, error_message)
 			return false
 	return true
@@ -56,11 +72,17 @@ func _validate_node_data(domain_graph: HTNDomainGraph) -> bool:
 # Validate each node's rules
 #	- Input:
 #		- Compound Node:
-#			- At least 1 task connection
+#			- At least 1 action connection
 #		- Primitive Node:
-#			- At least 1 task connection
+#			- At least 1 action connection
+#		- Domain Nodes:
+#			- At least 1 action connection
 #		- Method Nodes:
-#			- At least 1 task connection
+#			- At least 1 action connection
+#		- Applicator Nodes:
+#			- At least 1 action connection
+#		- Module Nodes:
+#			- At least 1 action connection
 #	- Output:
 #		- Root Node and Compound Node:
 #			- There can only be one Always-True-Method connected.
@@ -68,10 +90,14 @@ func _validate_node_data(domain_graph: HTNDomainGraph) -> bool:
 #			- Connected method pritories have to be unique
 #		- Primitive Node:
 #			- Can only have at most one output connection
+#		- Domain Nodes:
+#			- Can only have at most one output connection
 #		- Method Nodes:
 #			- Requires 1 output connection
 #		- Applicator:
 #			- Requires 1 output connection
+#		- Module Nodes:
+#			- Can only have at most one output connection
 func _validate_node_connections(domain_graph: HTNDomainGraph) -> bool:
 	for node_key: StringName in domain_graph.nodes:
 		var connected_node_connection_names: Array[StringName] =\
@@ -90,7 +116,16 @@ func _validate_node_connections(domain_graph: HTNDomainGraph) -> bool:
 				connected_node_connection_names
 			): return false
 		elif node is HTNTaskNode:
-			# Check for at least one task output connection
+			# Check for at most 1 output connection
+			if HTNGlobals.connection_handler.get_connected_nodes_from_output(domain_graph, node_key).size() > 1:
+				_send_error(domain_graph, node_name, node_key, OVER_ONE_CONNECTION)
+				return false
+			# Check for any amount of task input connections
+			if not HTNGlobals.connection_handler.has_connections_from_input(domain_graph, node_key):
+				_send_error(domain_graph, node_name, node_key, NO_TASK_CONNECTIONS)
+				return false
+		elif node is HTNDomainNode:
+			# Check for at most 1 output connection
 			if HTNGlobals.connection_handler.get_connected_nodes_from_output(domain_graph, node_key).size() > 1:
 				_send_error(domain_graph, node_name, node_key, OVER_ONE_CONNECTION)
 				return false
@@ -108,9 +143,22 @@ func _validate_node_connections(domain_graph: HTNDomainGraph) -> bool:
 				_send_error(domain_graph, node_name, node_key, NO_TASK_CONNECTIONS)
 				return false
 		elif node is HTNApplicatorNode:
+			# Check for any amount of task input connections
+			if not HTNGlobals.connection_handler.has_connections_from_input(domain_graph, node_key):
+				_send_error(domain_graph, node_name, node_key, NO_TASK_CONNECTIONS)
+				return false
 			# Check for ONLY one task output connection
-			if HTNGlobals.connection_handler.get_connected_nodes_from_output(domain_graph, node_key).size() != 1:
+			if HTNGlobals.connection_handler.get_connected_nodes_from_output(domain_graph, node_key).size() > 1:
 				_send_error(domain_graph, node_name, node_key, ONE_TASK_CONNECTION_REQURIED)
+				return false
+		elif node is HTNModuleBaseNode:
+			# Check for any amount of task input connections
+			if not HTNGlobals.connection_handler.has_connections_from_input(domain_graph, node_key):
+				_send_error(domain_graph, node_name, node_key, NO_TASK_CONNECTIONS)
+				return false
+			# Check for at most 1 output connection
+			if HTNGlobals.connection_handler.get_connected_nodes_from_output(domain_graph, node_key).size() > 1:
+				_send_error(domain_graph, node_name, node_key, OVER_ONE_CONNECTION)
 				return false
 	return true
 

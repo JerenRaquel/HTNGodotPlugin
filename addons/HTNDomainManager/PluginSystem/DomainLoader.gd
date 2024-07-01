@@ -41,13 +41,12 @@ func load_domain(domain_name: String) -> bool:
 
 		var node_data = graph_save_file["node_data"][node_key]
 		var node: PackedScene = HTNGlobals.get_packed_node_as_flat(node_type)
-		if node == HTNGlobals.NODES["Root"]: continue
 		new_graph.domain_graph.load_node(node, node_key, node_position, node_data)
 
 	# Connect nodes
 	for connection: Dictionary in graph_save_file["connections"]:
 		#{from_node: StringName, from_port: int, to_node: StringName, to_port: int}
-		new_graph.domain_graph.connection_handler.load_connection(
+		HTNGlobals.connection_handler.load_connection(
 			domain_graph,
 			connection["from_node"],
 			connection["from_port"],

@@ -26,3 +26,6 @@ extends Resource
 
 # { effect_node_key (StringName) : { "world_state_key" : {"type_id": int, "value": any} } }
 @export var effects: Dictionary
+
+# { module_node_key (StringName) : ["function_name", { ..module_data.. }] }
+@export var modules: Dictionary

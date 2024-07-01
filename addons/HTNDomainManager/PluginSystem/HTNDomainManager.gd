@@ -2,7 +2,6 @@
 class_name HTNDomainManager
 extends Control
 
-
 # Toolbar
 @onready var task_panel_button: Button = %TaskPanelButton
 @onready var goto_panel_button: Button = %GotoPanelButton
@@ -120,7 +119,9 @@ func _on_clear_graph_button_pressed() -> void:
 
 func _on_build_domain_button_pressed() -> void:
 	build_domain_button.disabled = true
-	if not HTNGlobals.current_graph.validator.validate(): return
+	if HTNGlobals.current_graph == null: return
+
+	if not HTNGlobals.validator.validate(HTNGlobals.current_graph): return
 	if not domain_saver.save(HTNGlobals.current_graph): return
 
 	HTNGlobals.notification_handler.send_message("Build Complete! Graph Saved!")

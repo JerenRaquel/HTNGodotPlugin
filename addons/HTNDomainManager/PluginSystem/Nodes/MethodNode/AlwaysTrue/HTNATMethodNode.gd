@@ -3,6 +3,7 @@ class_name HTNMethodNodeAlwaysTrue
 extends HTNMethodNode
 
 func initialize() -> void:
+	super()
 	condition_data = { "AlwaysTrue": true }
 
 func get_node_name() -> String:

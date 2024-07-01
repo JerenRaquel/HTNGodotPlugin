@@ -66,7 +66,7 @@ func center_on_node(node_key: StringName) -> void:
 	if data.is_empty(): return
 
 	HTNGlobals.current_graph.zoom = 1.0
-	var center := HTNGlobals.current_graph.size / 2
+	var center: Vector2 = HTNGlobals.current_graph.size / 2.0
 	var offset: Vector2 = data["offset"] + data["size"] * Vector2(0.5, 1.0) - center
 	HTNGlobals.current_graph.scroll_offset = offset / HTNGlobals.current_graph.zoom
 

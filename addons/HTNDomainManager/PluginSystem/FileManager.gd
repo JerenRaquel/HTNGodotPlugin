@@ -176,11 +176,13 @@ func _delete_files(file_type1: String, file_path1: String, file_type2: String, f
 		var error_message: String = "Missing Files::"
 		if not found_file1:
 			error_message += file_type1 + " File"
+			push_error(file_path1)
 		if not found_file1 and not found_file2:
 			error_message += " and "
 		if not found_file2:
 			error_message += file_type2 + " File"
-		push_error(error_message)
+			push_error(file_path2)
+		HTNGlobals.notification_handler.send_error(error_message)
 		return false
 
 func _build_script(task_name: String, path: String) -> Script:

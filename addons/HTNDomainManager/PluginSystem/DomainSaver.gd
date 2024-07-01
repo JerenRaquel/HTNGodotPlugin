@@ -9,6 +9,7 @@ const GRAPH_SAVE_PATH := "res://addons/HTNDomainManager/Data/GraphSaves/"
 @onready var notification_handler: HTNNotificaionHandler = %NotificationHandler
 
 func save(domain_graph: HTNDomainGraph) -> bool:
+	print("Saving")
 	var domain_file: HTNDomain = _save_to_domain_resource(domain_graph)
 	if not _save_to_graph_file(domain_graph, domain_file):
 		return false
@@ -29,6 +30,7 @@ func _save_to_domain_resource(domain_graph: HTNDomainGraph) -> HTNDomain:
 	domain_resource["effects"] = _gather_effect_data(domain_graph)
 	domain_resource["splits"] = _gather_split_data(domain_graph)
 	domain_resource["methods"] = _gather_method_data(domain_graph)
+	domain_resource["modules"] = _gather_module_data(domain_graph)
 
 	if requires_write:
 		return domain_resource	# Send the file to be saved
@@ -84,7 +86,7 @@ func _gather_split_data(domain_graph: HTNDomainGraph) -> Dictionary:
 		var node: HTNBaseNode = domain_graph.nodes[node_key]
 		if node is HTNSplitterNode or node is HTNRootNode:
 			var connected_node_keys: Array[StringName]\
-				= domain_graph.connection_handler.get_connected_nodes_from_output(domain_graph, node_key)
+				= HTNGlobals.connection_handler.get_connected_nodes_from_output(domain_graph, node_key)
 
 			connected_node_keys.sort_custom(
 				func(lhs: StringName, rhs: StringName) -> bool:
@@ -110,3 +112,15 @@ func _gather_method_data(domain_graph: HTNDomainGraph) -> Dictionary:
 				"task_chain": domain_graph.get_every_node_til_compound(node_key)
 			}
 	return method_data
+
+func _gather_module_data(domain_graph: HTNDomainGraph) -> Dictionary:
+	var module_data: Dictionary = {}
+	for node_key: StringName in domain_graph.nodes.keys():
+		var node: HTNBaseNode = domain_graph.nodes[node_key]
+		# { module_node_key (StringName) : ["function_name", { ..module_data.. }] }
+		if node is HTNModuleBaseNode:
+			module_data[node_key] = [
+				(node as HTNModuleBaseNode).get_module_function_name(),
+				(node as HTNModuleBaseNode).get_data()
+			]
+	return module_data

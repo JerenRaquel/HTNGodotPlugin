@@ -10,14 +10,14 @@ signal graph_tool_bar_toggled(button_state: bool)
 signal node_name_altered
 signal domains_updated
 
+const ON_PORT_BLUE: Array[String] = ["Method", "Always True Method"]
+const ON_PORT_GREEN: Array[String] = ["Task", "Domain", "Applicator", "Splitter", "RNG"]
 const NODES: Dictionary = {
 	"Root": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/RootNode/htn_root_node.tscn"),
 	"Actions": {
+		"Applicator": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/ApplicatorNode/htn_applicator_node.tscn"),
 		"Task": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/TaskNode/htn_task_node.tscn"),
 		"Domain": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/DomainNode/htn_domain_node.tscn"),
-	},
-	"Manipulators": {
-		"Applicator": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/ApplicatorNode/htn_applicator_node.tscn"),
 	},
 	"Methods": {
 		"Always True Method": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/MethodNode/AlwaysTrue/htn_always_true_method_node.tscn"),
@@ -26,6 +26,9 @@ const NODES: Dictionary = {
 	"Misc": {
 		"Splitter": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/SplitterNode/htn_splitter_node.tscn"),
 		"Comment": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/CommentNode/htn_comment_node.tscn"),
+	},
+	"Modules": {
+		"RNG": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/ModuleNodes/RandomNode/htn_random_node.tscn")
 	}
 }
 
@@ -49,5 +52,5 @@ func get_packed_node_as_flat(node_type: String) -> PackedScene:
 		for type: String in NODES[category].keys():
 			if type == node_type:
 				return NODES[category][type]
-
+	push_error("Couldn't load node type of " + node_type)
 	return null
