@@ -44,6 +44,20 @@ func delete_tab_if_open(domain_name: String) -> void:
 			tab_ctx.queue_free()
 			return
 
+func switch_to_tab(domain_name: String) -> bool:
+	for i in get_tab_count():
+		var tab_ctx: HTNGraphTab = get_tab_control(i)
+		var tab_name: String = tab_ctx.name.replace("*", "")
+		if tab_name == domain_name:
+			if i > current_tab:
+				while i > current_tab:
+					select_next_available()
+			elif i < current_tab:
+				while i < current_tab:
+					select_previous_available()
+			return true
+	return false
+
 func _create_new_tab() -> void:
 	var tab_instance := GRAPH_TAB.instantiate()
 	tab_instance.tab_created.connect(_on_tab_created.bind(tab_instance))

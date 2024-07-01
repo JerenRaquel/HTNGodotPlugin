@@ -46,7 +46,8 @@ func _ready() -> void:
 	_update_domain_button()
 
 func load_domain(domain_name: String) -> void:
-	%DomainLoader.load_domain(domain_name)
+	if not tab_container.switch_to_tab(domain_name):
+		%DomainLoader.load_domain(domain_name)
 	_update_toolbar_buttons()
 
 func _update_toolbar_buttons() -> void:
