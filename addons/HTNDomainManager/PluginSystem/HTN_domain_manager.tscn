@@ -175,11 +175,10 @@ layout_mode = 2
 [node name="RightSidePanelContainer" type="PanelContainer" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer"]
 layout_mode = 2
 
-[node name="DomainPanel" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer/RightSidePanelContainer" node_paths=PackedStringArray("manager") instance=ExtResource("8_jvc2b")]
+[node name="DomainPanel" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer/RightSidePanelContainer" instance=ExtResource("8_jvc2b")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-manager = NodePath("../../../../../..")
 
 [node name="NodeSpawnMenu" parent="." instance=ExtResource("4_2r86d")]
 unique_name_in_owner = true

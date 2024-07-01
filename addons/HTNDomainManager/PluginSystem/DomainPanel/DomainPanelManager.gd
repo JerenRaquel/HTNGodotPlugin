@@ -4,16 +4,14 @@ extends VBoxContainer
 
 const DOMAIN_LINE = preload("res://addons/HTNDomainManager/PluginSystem/DomainPanel/DomainLine/domain_line.tscn")
 
-@export var manager: HTNDomainManager
-
 @onready var searchbar: LineEdit = %Searchbar
 @onready var domain_container: VBoxContainer = %DomainContainer
 
-func initialize() -> void:
+func initialize(manager: HTNDomainManager) -> void:
 	hide()
-	_refresh()
+	refresh(manager)
 
-func _refresh() -> void:
+func refresh(manager: HTNDomainManager) -> void:
 	# Clear the old set
 	for child: HTNDomainLine in domain_container.get_children():
 		if child.is_queued_for_deletion(): continue

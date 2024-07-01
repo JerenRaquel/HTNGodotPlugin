@@ -40,7 +40,7 @@ func _ready() -> void:
 	tab_container.initialize()
 	task_panel.initialize()
 	goto_panel.initialize()
-	domain_panel.initialize()
+	domain_panel.initialize(self)
 
 	_update_toolbar_buttons()
 	_update_domain_button()
@@ -123,7 +123,7 @@ func _on_build_domain_button_pressed() -> void:
 
 	HTNGlobals.notification_handler.send_message("Build Complete! Graph Saved!")
 	HTNGlobals.current_graph.is_saved = true
-	domain_panel._refresh()
+	domain_panel.refresh(self)
 	HTNGlobals.domains_updated.emit()
 
 func _on_graph_tools_toggle_toggled(toggled_on: bool) -> void:
