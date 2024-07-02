@@ -38,7 +38,6 @@ func initialize(node_spawn_menu: HTNNodeSpawnMenu, graph_tab: HTNGraphTab, graph
 
 	root_key = _node_spawn_menu.spawn_root()
 	show_menu = graph_tools_button_state
-	print("Graph initialized")
 
 func generate_node_key() -> StringName:
 	var ID := _current_ID
@@ -131,7 +130,8 @@ func get_every_node_til_compound(node_key: String) -> Array[StringName]:
 
 func load_node(node: PackedScene, node_key: StringName,
 		node_position: Vector2, node_data: Dictionary) -> void:
-	if node == HTNGlobals.NODES["Root"]:
+	if not HTNGlobals.is_node_ready(): return
+	if node == HTNGlobals.get_root():
 		nodes[root_key].position_offset = node_position
 	else:
 		var node_instance: GraphNode = node.instantiate()

@@ -86,6 +86,7 @@ func _refresh() -> void:
 		_on_domain_option_button_item_selected(0)
 
 func _on_domain_option_button_item_selected(index: int) -> void:
+	if HTNGlobals.current_graph == null: return
 	# No Domains Selected
 	if get_node_name().is_empty(): return
 

@@ -58,7 +58,7 @@ func enable(port_type: int=-1) -> void:
 func spawn_root() -> String:
 	assert(HTNGlobals.current_graph != null, "Current Graph is NULL")
 
-	var root_instance: HTNRootNode = HTNGlobals.NODES["Root"].instantiate()
+	var root_instance: HTNRootNode = HTNGlobals.get_root().instantiate()
 	HTNGlobals.current_graph.add_child(root_instance)
 	root_instance.initialize()
 	var root_key: String = HTNGlobals.current_graph.register_node(root_instance)
@@ -74,7 +74,7 @@ func _add_nodes_to_menu() -> void:
 		if child.is_queued_for_deletion(): continue
 		child.queue_free()
 
-	var categories: Array = HTNGlobals.NODES.keys()
+	var categories: Array = HTNGlobals.get_categories()
 	categories.sort()
 	for category: String in categories:
 		if category == "Root": continue
@@ -83,13 +83,13 @@ func _add_nodes_to_menu() -> void:
 		node_buttons.add_child(tree_drop_button_instance)
 		tree_drop_button_instance.set_title(category)
 
-		var node_names: Array = HTNGlobals.NODES[category].keys()
+		var node_names: Array = HTNGlobals.get_sub_nodes_from_categories(category)
 		node_names.sort()
 		for node_name: String in node_names:
 			tree_drop_button_instance.add_menu_item(
 				node_name,
 				func() -> void:
-					_add_node(HTNGlobals.NODES[category][node_name])
+					_add_node(HTNGlobals.get_packed_node_as_flat(node_name))
 			)
 
 func _show_all() -> void:

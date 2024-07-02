@@ -42,6 +42,9 @@ var current_graph: HTNDomainGraph = null:
 		current_graph = value
 		current_graph_changed.emit()
 
+func get_root() -> PackedScene:
+	return NODES["Root"]
+
 func get_packed_node_as_flat(node_type: String) -> PackedScene:
 	if node_type == "Root": return NODES["Root"]
 
@@ -52,3 +55,9 @@ func get_packed_node_as_flat(node_type: String) -> PackedScene:
 				return NODES[category][type]
 	push_error("Couldn't load node type of " + node_type)
 	return null
+
+func get_categories() -> Array:
+	return NODES.keys()
+
+func get_sub_nodes_from_categories(category: String) -> Array:
+	return NODES[category].keys()

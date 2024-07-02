@@ -24,7 +24,7 @@ func _enter_tree() -> void:
 
 	manager = HTN_DOMAIN_MANAGER.instantiate()
 	print_rich(
-		"""The HTNDomainManager Plugin has added the autoload 'HTNDatabase' and 'HTNGlobals' for plugin use.
+		"""The HTNDomainManager Plugin has added the autoload 'HTNDatabase' for plugin runtime use.
 This is used for keeping track of files during editor and runtime use.
 Please remove when uninstalling this plugin.
 Thank you for using this! [rainbow freq=1.0 sat=0.8 val=0.8]:D[/rainbow]
@@ -40,6 +40,7 @@ Thank you for using this! [rainbow freq=1.0 sat=0.8 val=0.8]:D[/rainbow]
 
 func _exit_tree() -> void:
 	if manager:
+		remove_autoload_singleton("HTNGlobals")
 		manager.free()
 
 func _has_main_screen() -> bool:
