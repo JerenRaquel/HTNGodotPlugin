@@ -21,7 +21,7 @@ func open(node: HTNMethodNode, data: Dictionary) -> void:
 	_filter_children("")
 	if data.is_empty(): return
 
-	for key: StringName in data.keys():
+	for key: String in data.keys():
 		_create_and_load_condition({
 			"CompareID": data[key]["CompareID"],
 			"RangeID": data[key]["RangeID"],

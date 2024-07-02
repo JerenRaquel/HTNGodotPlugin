@@ -7,8 +7,7 @@ const TASK_PATH := "res://addons/HTNDomainManager/Data/Tasks/"
 const SCRIPT_PATH := "res://addons/HTNDomainManager/Data/Scripts/"
 const DOMAIN_PATH := "res://addons/HTNDomainManager/Data/Domains/"
 #region Task Script Template
-const FILE_TEMPLATE := "
-extends HTNTask
+const FILE_TEMPLATE := "extends HTNTask
 # IMPORTANT: For more information on what these functions do, refer to the
 # documentation by pressing F1 on your keyboard and searching
 # for HTNTask`. Happy scripting! :D
@@ -169,10 +168,9 @@ static func delete_domain(domain_name: String) -> bool:
 
 	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTN_REFERENCE_FILE_PATH)
 	var graph_path: String = HTN_reference_file["graph_saves"][domain_name]
-	var domain_resource: Resource = HTN_reference_file["domains"][domain_name]
 	var delete_state := _delete_files(
 		"Graph Save", graph_path,
-		"Domain", domain_resource.resource_path
+		"Domain", DOMAIN_PATH + domain_name + ".tres"
 	)
 	if delete_state:
 		HTN_reference_file["graph_saves"].erase(domain_name)

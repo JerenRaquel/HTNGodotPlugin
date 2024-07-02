@@ -227,6 +227,8 @@ func _on_single_type_option_item_selected(index: int) -> void:
 	_show_based_on_single_type_ID(index)
 
 func _on_visibility_changed() -> void:
+	if not is_node_ready(): return
+
 	if visible:
 		_on_compare_option_item_selected(compare_option.selected)
 		if range_type_option.visible:

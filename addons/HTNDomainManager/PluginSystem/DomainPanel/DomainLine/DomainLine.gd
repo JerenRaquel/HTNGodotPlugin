@@ -16,7 +16,8 @@ func _on_delete_button_pressed() -> void:
 		func() -> void:
 			HTNFileManager.delete_domain(domain_button.text)
 			_manager.tab_container.delete_tab_if_open(domain_button.text)
-			HTNGlobals.domains_updated.emit(),
+			HTNGlobals.domains_updated.emit()
+			queue_free(),
 		Callable()
 	)
 

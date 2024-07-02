@@ -33,6 +33,8 @@ func initialize(node_spawn_menu: HTNNodeSpawnMenu, graph_tab: HTNGraphTab, graph
 			HTNGlobals.validator._error_node_key = ""
 	)
 
+	disconnection_request.connect(_on_disconnection_request)
+
 	add_valid_connection_type(1, 1)
 	add_valid_connection_type(2, 2)
 
@@ -179,11 +181,6 @@ func _on_connection_to_empty(from_node: StringName, from_port: int, release_posi
 	}
 	_node_spawn_menu.enable(HTNConnectionHandler.get_output_port_type(self, from_node, from_port))
 
-func _on_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
-	print("Disconnecting: ", from_node, " from ", to_node)
-	disconnect_node(from_node, from_port, to_node, to_port)
-	is_saved = false
-
 func _on_delete_nodes_request(selected_nodes: Array[StringName]) -> void:
 	while not selected_nodes.is_empty():
 		var node_name: String = selected_nodes.pop_back()
@@ -205,4 +202,9 @@ func _on_popup_request(_position: Vector2) -> void:
 	_node_spawn_menu.enable()
 
 func _on_end_node_move() -> void:
+	is_saved = false
+
+func _on_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
+	print("Disconnecting: ", from_node, " from ", to_node)
+	disconnect_node(from_node, from_port, to_node, to_port)
 	is_saved = false
