@@ -10,15 +10,22 @@ static func save(notification_handler: HTNNotificaionHandler, domain_graph: HTND
 	var domain_file: HTNDomain = _save_to_domain_resource(HTN_reference_file, domain_graph)
 	if not _save_to_graph_file(HTN_reference_file, notification_handler, domain_graph, domain_file):
 		return false
-	return true
+	return ResourceSaver.save(HTN_reference_file, HTNFileManager.HTN_REFERENCE_FILE_PATH) == OK
 
 static func _save_to_domain_resource(HTN_reference_file: HTNReferenceFile, domain_graph: HTNDomainGraph) -> HTNDomain:
 	var domain_resource: HTNDomain = HTN_reference_file["domains"].get(domain_graph.domain_name, null)
 	if domain_resource == null:
 		domain_resource = HTNDomain.new()
 
+	domain_resource["root_key"] = domain_graph.root_key
 	domain_resource["required_domains"] = domain_graph.get_domain_links()
-	domain_resource["required_tasks"] = domain_graph.get_task_keys()
+	# Write task key name pairs
+	var task_key_name_pairs: Dictionary = domain_graph.get_task_key_name_pair()
+	# Reset
+	domain_resource["task_map"].clear()
+	for node_key: StringName in task_key_name_pairs.keys():
+		if node_key in domain_resource["task_map"]: continue
+		domain_resource["task_map"][node_key] = task_key_name_pairs[node_key]
 	domain_resource["effects"] = _gather_effect_data(domain_graph)
 	domain_resource["splits"] = _gather_split_data(domain_graph)
 	domain_resource["methods"] = _gather_method_data(domain_graph)
@@ -55,8 +62,6 @@ static func _save_to_graph_file(HTN_reference_file: HTNReferenceFile, notificati
 
 	HTN_reference_file["domains"][domain_graph.domain_name] = domain_resource
 	HTN_reference_file["graph_saves"][domain_graph.domain_name] = graph_save_path
-	if ResourceSaver.save(HTN_reference_file, HTNFileManager.HTN_REFERENCE_FILE_PATH) != OK:
-		return false
 	return true
 
 static func _gather_effect_data(domain_graph: HTNDomainGraph) -> Dictionary:

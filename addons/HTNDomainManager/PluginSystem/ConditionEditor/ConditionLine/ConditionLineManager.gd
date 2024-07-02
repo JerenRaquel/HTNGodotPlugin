@@ -87,7 +87,6 @@ func _load_data(data: Dictionary) -> void:
 	compare_option.select(data["CompareID"])
 	_on_compare_option_item_selected(compare_option.selected)
 	if data["RangeID"] > -1:
-		print(data)
 		range_type_option.select(data["RangeID"])
 		x_check_box.set_pressed_no_signal(data["RangeInclusivity"][0])
 		y_check_box.set_pressed_no_signal(data["RangeInclusivity"][1])

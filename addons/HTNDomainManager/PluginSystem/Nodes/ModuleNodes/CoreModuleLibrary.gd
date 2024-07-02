@@ -1,7 +1,7 @@
 class_name HTNCoreModuleLibrary
 extends RefCounted
 
-func generate_random_number(_agent: Node, world_state: Dictionary, node_data: Dictionary) -> void:
+func generate_random_number(world_state: Dictionary, node_data: Dictionary) -> void:
 	if node_data["Type"] == 0:	# Int
 		world_state["RNG"] = randi_range(int(node_data["MinValue"]), int(node_data["MaxValue"]))
 	elif node_data["Type"] == 1:	# Float

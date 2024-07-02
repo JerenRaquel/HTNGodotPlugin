@@ -19,8 +19,7 @@ func apply_effects(world_state: Dictionary) -> void:
 	pass # Replace with function body
 
 func apply_expected_effects(world_state: Dictionary) -> void:
-	pass # Replace with function body
-"
+	pass # Replace with function body"
 #endregion
 
 static func check_if_valid_name(task_name: String) -> bool:
@@ -151,10 +150,9 @@ static func delete_task(task_name: String) -> bool:
 
 	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTN_REFERENCE_FILE_PATH)
 	var script_path:String = HTN_reference_file["scripts"][task_name]
-	var task_resource: Resource = HTN_reference_file["tasks"][task_name]
 	var delete_state := _delete_files(
 		"Script", script_path,
-		"Task Resource File", task_resource.resource_path
+		"Task Resource File", TASK_PATH + task_name + ".tres"
 	)
 	if delete_state:
 		HTN_reference_file["scripts"].erase(task_name)

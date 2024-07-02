@@ -33,7 +33,7 @@ func _ready() -> void:
 	interrupt_plan.connect(_state_manager.on_interrupt)
 
 func _physics_process(_delta: float) -> void:
-	_state_manager.update(domain_name)
+	_state_manager.update()
 
 ## You can call this to check if the HTN Planner is currently generating and
 ## excuting a plan for the agent.
@@ -67,7 +67,8 @@ func is_running() -> bool:
 ## [/codeblock]
 func handle_planning(agent: Node, world_state: Dictionary) -> void:
 	_is_planning = true
-	var plan := generate_plan(world_state)
+	var plan: Array[Dictionary] = []
+	plan.assign(generate_plan(world_state))
 	if plan.is_empty():
 		_is_planning = false
 		if enable_debugging: print("Failed plan generation")
@@ -78,30 +79,29 @@ func handle_planning(agent: Node, world_state: Dictionary) -> void:
 ## for your use in the case of [b]debugging[/b] on why the HTN Planner could not
 ## plan using your created HTN Domain.[br]
 ## [color=red]This will NOT have the agent executing tasks.[/color]
-func generate_plan(world_states: Dictionary) -> Array[StringName]:
+func generate_plan(world_states: Dictionary) -> Array:
 	return _generate_plan_from_domain(domain_name, world_states)[0]
 
 # Returns: [final_plan, world_states]
 func _generate_plan_from_domain(current_domain_name: StringName, world_states: Dictionary) -> Array:
 	var world_state_copy := world_states.duplicate(true)
 	var tasks_to_process: Array[StringName] = []
-	var final_plan: Array[StringName] = []
+	var final_plan: Array[Dictionary] = []
 	var history_stack: Array[Dictionary] = []
 	var visited_methods: Array[StringName] = []
+	var current_domain_key: StringName = HTNDatabase.get_root_key_from_current_domain(current_domain_name)
 
-	tasks_to_process.push_back(HTNDatabase.domains[current_domain_name]["root_key"])
+	tasks_to_process.push_back(current_domain_key)
 
 	while not tasks_to_process.is_empty():
 		var task_key: StringName = tasks_to_process.pop_front()
-		if task_key in HTNDatabase.domains[current_domain_name]["splits"]:
-			push_warning("Found splitter")
+		if HTNDatabase.domain_has(current_domain_name, "splits", task_key):
 			var valid_method_data: Dictionary = HTNDatabase.get_task_chain_from_valid_method(
 				current_domain_name,
 				task_key,
 				visited_methods,
 				world_state_copy
 			)
-			push_warning(valid_method_data)
 			# Record Branch
 			var key: StringName = valid_method_data.get("method_key", task_key)
 			if key not in visited_methods: visited_methods.push_back(key)
@@ -110,7 +110,7 @@ func _generate_plan_from_domain(current_domain_name: StringName, world_states: D
 				# OHHHHHHHHH EVERYTHING IS ON FIRE! GO BACK! GO BACK! GO BA- *LOUD CRASH NOISES*
 				if not _roll_back(history_stack, tasks_to_process, final_plan, world_state_copy):
 					# Failed to find anything to roll back to
-					if task_key == HTNDatabase.domains[current_domain_name]["root_key"]:
+					if HTNDatabase.is_domain_root(current_domain_name, task_key):
 						# Back at the root with nothing to roll back to
 						push_warning("Failed plan generations...")
 						return []
@@ -120,16 +120,28 @@ func _generate_plan_from_domain(current_domain_name: StringName, world_states: D
 				# Queue tasks to be processed
 				for task_name: StringName in valid_method_data["task_chain"]:
 					tasks_to_process.push_back(task_name)
-		elif task_key in HTNDatabase.domains[current_domain_name]["required_tasks"]:
-			HTNDatabase.tasks[task_key].apply_effects(world_state_copy)
-			HTNDatabase.tasks[task_key].apply_expected_effects(world_state_copy)
-			final_plan.push_back(task_key)
-		elif task_key in HTNDatabase.domains[current_domain_name]["effects"]:
-			HTNDatabase.apply_effects(current_domain_name, task_key, world_states)
-			final_plan.push_back(task_key)
-		elif task_key in HTNDatabase.domains[current_domain_name]["required_domains"]:
+		elif HTNDatabase.domain_has(current_domain_name, "task_map", task_key):
+			HTNDatabase.get_task(current_domain_name, task_key).apply_effects(world_state_copy)
+			HTNDatabase.get_task(current_domain_name, task_key).apply_expected_effects(world_state_copy)
+			final_plan.push_back({
+				"Domain": current_domain_name,
+				"TaskKey": task_key
+			})
+		elif HTNDatabase.domain_has(current_domain_name, "effects", task_key):
+			HTNDatabase.apply_effects(current_domain_name, task_key, world_state_copy)
+			final_plan.push_back({
+				"Domain": current_domain_name,
+				"TaskKey": task_key
+			})
+		elif HTNDatabase.domain_has(current_domain_name, "modules", task_key):
+			HTNDatabase.apply_module(current_domain_name, task_key, world_state_copy)
+			final_plan.push_back({
+				"Domain": current_domain_name,
+				"TaskKey": task_key
+			})
+		elif HTNDatabase.domain_has(current_domain_name, "required_domains", task_key):
 			var generated_data: Array = _generate_plan_from_domain(
-				HTNDatabase.domains[task_key],
+				HTNDatabase.get_domain_key(task_key),
 				world_state_copy
 			)
 			# Check if plan is empty
@@ -145,7 +157,7 @@ func _generate_plan_from_domain(current_domain_name: StringName, world_states: D
 						return []
 
 					var next_task: StringName = tasks_to_process.back()
-					if next_task in HTNDatabase.domains[current_domain_name]["splits"]: break
+					if HTNDatabase.domain_has(current_domain_name, "splits", next_task): break
 
 			else:	# Valid
 				# Record a backup
@@ -153,8 +165,8 @@ func _generate_plan_from_domain(current_domain_name: StringName, world_states: D
 				# Set the world states
 				world_state_copy.merge(generated_data[1], true)
 				# Add tasks to the final plan
-				for task_name: StringName in generated_data[0]:
-					final_plan.push_back(task_name)
+				for task_data: Dictionary in generated_data[0]:
+					final_plan.push_back(task_data)
 		else:
 			assert(false, "So like uhh... " + task_key + " isn't something that is in the current_domain...")
 
@@ -162,7 +174,7 @@ func _generate_plan_from_domain(current_domain_name: StringName, world_states: D
 
 func _roll_back(
 		history_stack: Array[Dictionary], tasks_to_process: Array[StringName],
-		final_plan: Array[StringName], world_state: Dictionary) -> bool:
+		final_plan: Array[Dictionary], world_state: Dictionary) -> bool:
 	if history_stack.is_empty(): return false	# Nothing to roll back
 
 	var past_state := history_stack.pop_back()
@@ -174,7 +186,7 @@ func _roll_back(
 
 func _record_decomposition_task(
 		task: StringName, history_stack: Array[Dictionary], tasks_to_process: Array[StringName],
-		final_plan: Array[StringName], world_state: Dictionary) -> void:
+		final_plan: Array[Dictionary], world_state: Dictionary) -> void:
 	var tasks_to_process_copy := tasks_to_process.duplicate()
 	tasks_to_process_copy.push_back(task)
 	history_stack.push_back({

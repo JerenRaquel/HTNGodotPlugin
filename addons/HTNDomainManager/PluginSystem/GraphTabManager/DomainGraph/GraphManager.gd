@@ -104,12 +104,12 @@ func get_node_keys_with_meta() -> Dictionary:
 		}
 	return data
 
-func get_task_keys() -> Array[StringName]:
-	var keys: Array[StringName] = []
+func get_task_key_name_pair() -> Dictionary:
+	var names: Dictionary = {}
 	for node_key: StringName in nodes:
 		if nodes[node_key] is HTNTaskNode:
-			keys.push_back(node_key)
-	return keys
+			names[node_key] = (nodes[node_key] as HTNTaskNode).get_node_name()
+	return names
 
 func get_domain_links() -> Array[StringName]:
 	var keys: Array[StringName] = []
@@ -205,6 +205,5 @@ func _on_end_node_move() -> void:
 	is_saved = false
 
 func _on_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
-	print("Disconnecting: ", from_node, " from ", to_node)
 	disconnect_node(from_node, from_port, to_node, to_port)
 	is_saved = false

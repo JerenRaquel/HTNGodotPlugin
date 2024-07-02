@@ -1,8 +1,10 @@
 class_name HTNDomain
 extends Resource
 
-# [ (task_key (StringName))... ]
-@export var required_tasks: Array[StringName] = []
+@export var root_key: StringName
+
+# { task_key (StringName) : task_name (String) }
+@export var task_map: Dictionary
 
 # [ (domain_key (StringName))... ]
 @export var required_domains: Array[StringName] = []

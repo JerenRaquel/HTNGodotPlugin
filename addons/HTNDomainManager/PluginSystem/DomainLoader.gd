@@ -21,7 +21,6 @@ func load_domain(domain_name: String) -> bool:
 		tab_container.select_previous_available()
 
 	var domain_graph: HTNDomainGraph = new_graph.load_data(domain_name)
-	print(domain_graph)
 	HTNGlobals.current_graph = domain_graph
 	domain_graph.initialize(node_spawn_menu, new_graph, graph_tools_toggle.button_pressed)
 
