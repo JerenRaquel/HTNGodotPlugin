@@ -89,13 +89,18 @@ func _generate_plan_from_domain(current_domain_name: StringName, world_states: D
 	var final_plan: Array[Dictionary] = []
 	var history_stack: Array[Dictionary] = []
 	var visited_methods: Array[StringName] = []
-	var current_domain_key: StringName = HTNDatabase.get_root_key_from_current_domain(current_domain_name)
 
-	tasks_to_process.push_back(current_domain_key)
+	tasks_to_process.push_back(HTNDatabase.get_root_key_from_current_domain(current_domain_name))
 
 	while not tasks_to_process.is_empty():
 		var task_key: StringName = tasks_to_process.pop_front()
-		if HTNDatabase.domain_has(current_domain_name, "splits", task_key):
+		if HTNDatabase.domain_has(current_domain_name, "quits", task_key):
+			final_plan.push_back({
+				"Domain": current_domain_name,
+				"TaskKey": task_key
+			})
+			break
+		elif HTNDatabase.domain_has(current_domain_name, "splits", task_key):
 			var valid_method_data: Dictionary = HTNDatabase.get_task_chain_from_valid_method(
 				current_domain_name,
 				task_key,

@@ -71,6 +71,8 @@ func _validate_node_data(domain_graph: HTNDomainGraph) -> bool:
 
 # Validate each node's rules
 #	- Input:
+#		- Quit Node:
+#			- At least 1 connection
 #		- Compound Node:
 #			- At least 1 action connection
 #		- Primitive Node:
@@ -115,6 +117,11 @@ func _validate_node_connections(domain_graph: HTNDomainGraph) -> bool:
 				node_key, node_name,
 				connected_node_connection_names
 			): return false
+		elif node is HTNQuitNode:
+			# Check for any amount of task input connections
+			if not HTNConnectionHandler.has_connections_from_input(domain_graph, node_key):
+				_send_error(domain_graph, node_name, node_key, EMPTY_CONNECTIONS)
+				return false
 		elif node is HTNTaskNode:
 			# Check for at most 1 output connection
 			if HTNConnectionHandler.get_connected_nodes_from_output(domain_graph, node_key).size() > 1:

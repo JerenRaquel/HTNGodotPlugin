@@ -48,7 +48,9 @@ func _setup() -> void:
 	_plan_state = PlanState.RUN
 
 func _run() -> void:
-	if HTNDatabase.has_task(_current_task["Domain"], _current_task["TaskKey"]):
+	if HTNDatabase.is_quit_early(_current_task["Domain"], _current_task["TaskKey"]):
+		_plan_state = PlanState.FINISHED
+	elif HTNDatabase.has_task(_current_task["Domain"], _current_task["TaskKey"]):
 		var task: HTNTask = HTNDatabase.get_task(_current_task["Domain"], _current_task["TaskKey"])
 		task.run_operation(func() -> void: _plan_state = PlanState.EFFECT, _agent, _world_state_copy)
 		if task.requires_awaiting:

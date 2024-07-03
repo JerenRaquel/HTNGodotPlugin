@@ -10,14 +10,15 @@ signal graph_tool_bar_toggled(button_state: bool)
 signal node_name_altered
 signal domains_updated
 
-const ON_PORT_BLUE: Array[String] = ["Method", "Always True Method"]
-const ON_PORT_GREEN: Array[String] = ["Task", "Domain", "Applicator", "Splitter", "RNG"]
+const ON_PORT_BLUE: Array[String] = ["Method", "Always True Method", "Quit"]
+const ON_PORT_GREEN: Array[String] = ["Task", "Domain", "Applicator", "Splitter", "RNG", "Quit"]
 const NODES: Dictionary = {
 	"Root": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/RootNode/htn_root_node.tscn"),
 	"Actions": {
 		"Applicator": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/ApplicatorNode/htn_applicator_node.tscn"),
 		"Task": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/TaskNode/htn_task_node.tscn"),
 		"Domain": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/DomainNode/htn_domain_node.tscn"),
+		"Quit": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/QuitNode/htn_quit_node.tscn"),
 	},
 	"Methods": {
 		"Always True Method": preload("res://addons/HTNDomainManager/PluginSystem/Nodes/MethodNode/AlwaysTrue/htn_always_true_method_node.tscn"),

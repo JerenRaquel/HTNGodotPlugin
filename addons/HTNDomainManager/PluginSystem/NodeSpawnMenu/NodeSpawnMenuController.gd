@@ -31,10 +31,14 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.is_pressed() and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_RIGHT:
-			if visible: hide()
+			if visible:
+				connect_node_data = {}
+				hide()
 	elif event is InputEventKey and event.is_pressed():
 		if (event as InputEventKey).keycode == KEY_ESCAPE:
-			if visible: hide()
+			if visible:
+				connect_node_data = {}
+				hide()
 
 func enable(port_type: int=-1) -> void:
 	if visible and port_type == -1:

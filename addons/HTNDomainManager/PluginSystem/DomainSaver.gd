@@ -18,7 +18,7 @@ static func _save_to_domain_resource(HTN_reference_file: HTNReferenceFile, domai
 		domain_resource = HTNDomain.new()
 
 	domain_resource["root_key"] = domain_graph.root_key
-	domain_resource["required_domains"] = domain_graph.get_domain_links()
+
 	# Write task key name pairs
 	var task_key_name_pairs: Dictionary = domain_graph.get_task_key_name_pair()
 	# Reset
@@ -26,8 +26,10 @@ static func _save_to_domain_resource(HTN_reference_file: HTNReferenceFile, domai
 	for node_key: StringName in task_key_name_pairs.keys():
 		if node_key in domain_resource["task_map"]: continue
 		domain_resource["task_map"][node_key] = task_key_name_pairs[node_key]
-	domain_resource["effects"] = _gather_effect_data(domain_graph)
+	domain_resource["required_domains"] = domain_graph.get_domain_links()
+	domain_resource["quits"] = domain_graph.get_quits()
 	domain_resource["splits"] = _gather_split_data(domain_graph)
+	domain_resource["effects"] = _gather_effect_data(domain_graph)
 	domain_resource["methods"] = _gather_method_data(domain_graph)
 	domain_resource["modules"] = _gather_module_data(domain_graph)
 

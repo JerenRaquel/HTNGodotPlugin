@@ -37,6 +37,8 @@ func initialize(node_spawn_menu: HTNNodeSpawnMenu, graph_tab: HTNGraphTab, graph
 
 	add_valid_connection_type(1, 1)
 	add_valid_connection_type(2, 2)
+	add_valid_connection_type(1, 3)
+	add_valid_connection_type(2, 3)
 
 	root_key = _node_spawn_menu.spawn_root()
 	show_menu = graph_tools_button_state
@@ -115,6 +117,13 @@ func get_domain_links() -> Array[StringName]:
 	var keys: Array[StringName] = []
 	for node_key: StringName in nodes:
 		if nodes[node_key] is HTNDomainNode:
+			keys.push_back(node_key)
+	return keys
+
+func get_quits() -> Array[StringName]:
+	var keys: Array[StringName] = []
+	for node_key: StringName in nodes:
+		if nodes[node_key] is HTNQuitNode:
 			keys.push_back(node_key)
 	return keys
 

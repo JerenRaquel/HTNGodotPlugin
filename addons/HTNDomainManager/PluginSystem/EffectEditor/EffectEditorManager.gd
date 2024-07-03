@@ -5,6 +5,7 @@ extends Panel
 const EFFECT_LINE = preload("res://addons/HTNDomainManager/PluginSystem/EffectEditor/EffectLine/effect_line.tscn")
 
 @onready var nickname_line_edit: LineEdit = %NicknameLineEdit
+@onready var searchbar: LineEdit = %Searchbar
 @onready var line_container: VBoxContainer = %LineContainer
 
 var _applicator_node: HTNApplicatorNode
@@ -14,6 +15,9 @@ func _ready() -> void:
 
 func open(applicator_node: HTNApplicatorNode, data: Dictionary) -> void:
 	_applicator_node = applicator_node
+	nickname_line_edit.text = _applicator_node._nick_name
+	searchbar.clear()
+	_filter_children("")
 	if not data.is_empty():	# Load Data
 		for key: StringName in data.keys():
 			_create_and_load({
@@ -41,6 +45,8 @@ func _create_and_load(data: Dictionary) -> void:
 	effect_line_instance.initialize(data)
 
 func _filter_children(filter: String) -> void:
+	if line_container.get_child_count() == 0: return
+
 	var filter_santized := filter.to_lower()
 	for child: HTNEffectLine in line_container.get_children():
 		var line_name: String = child.world_state_line_edit.text.to_lower()

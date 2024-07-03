@@ -9,6 +9,9 @@ extends Resource
 # [ (domain_key (StringName))... ]
 @export var required_domains: Array[StringName] = []
 
+# [ (quit_key (StringName))... ]
+@export var quits: Array[StringName] = []
+
 # {splitter_node_key (StringName) : [(method_node_key: (StringName))...] *sorted high -> low }
 @export var splits: Dictionary
 

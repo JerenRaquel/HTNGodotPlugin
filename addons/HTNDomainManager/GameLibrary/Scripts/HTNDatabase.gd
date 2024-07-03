@@ -14,6 +14,9 @@ func _ready() -> void:
 	_tasks = HTN_REFERENCE_FILE["tasks"]
 	_HTN_core_module_library = HTNCoreModuleLibrary.new()
 
+func is_quit_early(current_domain_name: StringName, task_key: StringName) -> bool:
+	return task_key in _domains[current_domain_name]["quits"]
+
 func domain_has(current_domain_name: StringName, type: String, node_key: StringName) -> bool:
 	if _domains[current_domain_name][type].is_empty(): return false
 
@@ -40,6 +43,8 @@ func get_task(current_domain_name: StringName, task_key: StringName) -> HTNTask:
 	return _tasks[task_name]
 
 func get_task_name(current_domain_name: StringName, task_key: StringName) -> String:
+	if task_key in _domains[current_domain_name]["quits"]:
+		return "Quit Early"
 	var task_name: String = _domains[current_domain_name]["task_map"].get(task_key, "")
 	if task_name.is_empty(): return "Non-Task: "+task_key
 	return task_name
