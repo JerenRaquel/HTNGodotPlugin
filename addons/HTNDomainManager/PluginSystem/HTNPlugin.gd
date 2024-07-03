@@ -17,6 +17,9 @@ func _enter_tree() -> void:
 		push_error("Data Cache Could Not Be Made...\nPreventing Startup....")
 		return
 
+	if not ProjectSettings.get_setting("editor/export/convert_text_resources_to_binary"):
+		ProjectSettings.set_setting("editor/export/convert_text_resources_to_binary", false)
+
 	if not ProjectSettings.has_setting("autoload/HTNDatabase"):
 		add_autoload_singleton("HTNDatabase", HTN_DATABASE_SCRIPT)
 	if not ProjectSettings.has_setting("autoload/HTNGlobals"):
@@ -24,10 +27,11 @@ func _enter_tree() -> void:
 
 	manager = HTN_DOMAIN_MANAGER.instantiate()
 	print_rich(
-		"""The HTNDomainManager Plugin has added the autoload 'HTNDatabase' for plugin runtime use.
+		"""The HTNDomainManager Plugin has added the autoloads 'HTNDatabase' and 'HTNGlobals' for plugin use.
 This is used for keeping track of files during editor and runtime use.
 Please remove when uninstalling this plugin.
-Thank you for using this! [rainbow freq=1.0 sat=0.8 val=0.8]:D[/rainbow]
+[color=yellow]WARNING: Use of this plugin disables converting resources to binary on export.[/color]
+[color=green]Thank you for using this![/color] [rainbow freq=1.0 sat=0.8 val=0.8]:D[/rainbow]
 """
 	)
 	EditorInterface.get_editor_main_screen().add_child(manager)
@@ -56,6 +60,7 @@ func _get_plugin_icon() -> Texture2D:
 	return EditorInterface.get_base_control().get_theme_icon("GraphEdit", "EditorIcons")
 
 func _setup_data() -> bool:
+	print("Setting Up Data Cache...")
 	# Create Base Data Folder
 	if not _create_and_validate_folder("res://addons/HTNDomainManager/Data/"):
 		return false
@@ -70,18 +75,8 @@ func _setup_data() -> bool:
 	if not _create_and_validate_folder("res://addons/HTNDomainManager/Data/Tasks/"):
 		return false
 
-	var directory: DirAccess = DirAccess.open("res://addons/HTNDomainManager/Data/")
-	if directory.file_exists("res://addons/HTNDomainManager/Data/HTNReferenceFile.tres"):
-		return true
-
-	var reference_resource_file: HTNReferenceFile = HTNReferenceFile.new()
-	var success_state := ResourceSaver.save(
-		reference_resource_file,
-		"res://addons/HTNDomainManager/Data/HTNReferenceFile.tres"
-	) == OK
-	if success_state:
-		print("Data Cache Created...")
-	return success_state
+	print_rich("[color=green]Data Cache Setup Complete...[/color]")
+	return true
 
 func _create_and_validate_folder(path: String) -> bool:
 	if DirAccess.dir_exists_absolute(path): return true

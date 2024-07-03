@@ -1,8 +1,6 @@
 extends Node
 ## [color=red][b]This is only used by the HTN Planner. DO NOT USE.[/b][/color]
 
-const HTN_REFERENCE_FILE = preload("res://addons/HTNDomainManager/Data/HTNReferenceFile.tres")
-
 # { domain_key : domain_resource (HTNDomain) }
 var _domains: Dictionary
 # { task_key : task_resource (HTNTask) }
@@ -10,8 +8,8 @@ var _tasks: Dictionary
 var _HTN_core_module_library: HTNCoreModuleLibrary
 
 func _ready() -> void:
-	_domains = HTN_REFERENCE_FILE["domains"]
-	_tasks = HTN_REFERENCE_FILE["tasks"]
+	_domains = HTNFileManager.get_all_domain_files()
+	_tasks = HTNFileManager.get_all_task_files()
 	_HTN_core_module_library = HTNCoreModuleLibrary.new()
 
 func is_quit_early(current_domain_name: StringName, task_key: StringName) -> bool:

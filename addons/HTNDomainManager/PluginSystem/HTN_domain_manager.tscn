@@ -9,7 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://bl31umnhdg1uw" path="res://addons/HTNDomainManager/PluginSystem/TaskPanel/task_panel.tscn" id="4_dcdp5"]
 [ext_resource type="PackedScene" uid="uid://4rfd8im0s35y" path="res://addons/HTNDomainManager/PluginSystem/GotoPanel/goto_panel.tscn" id="5_arhpn"]
 [ext_resource type="PackedScene" uid="uid://d2k5i0p65qudy" path="res://addons/HTNDomainManager/PluginSystem/ConditionEditor/condition_editor.tscn" id="5_j8nky"]
-[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/DomainLoader.gd" id="5_jn8qg"]
+[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/SerializationScripts/DomainLoader.gd" id="5_jn8qg"]
 [ext_resource type="PackedScene" uid="uid://bt8e1tea2412b" path="res://addons/HTNDomainManager/PluginSystem/EffectEditor/effect_editor.tscn" id="6_kek1x"]
 [ext_resource type="PackedScene" uid="uid://b82i43crgrl08" path="res://addons/HTNDomainManager/PluginSystem/DomainPanel/domain_panel.tscn" id="8_jvc2b"]
 [ext_resource type="PackedScene" uid="uid://ds1u2m48u03x8" path="res://addons/HTNDomainManager/PluginSystem/WarningBox/warning_box.tscn" id="14_lspda"]

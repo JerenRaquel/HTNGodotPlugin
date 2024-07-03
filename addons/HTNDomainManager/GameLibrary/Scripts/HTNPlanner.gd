@@ -1,4 +1,4 @@
-@icon("res://addons/HTNDomainManager/PluginSystem/Icons/PlannerIconFlat.png")
+@icon("res://addons/HTNDomainManager/PluginSystem/Icons/HTN.svg")
 class_name HTNPlanner
 extends Node
 ## This is a script attached to the HTNPlanner node intended to be added as a child

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://chmjtvb01a7cy"
-path="res://.godot/imported/PlannerIcon.png-6090f6ae05773e726579ab55f73309ed.ctex"
+uid="uid://cwp4trad0snhe"
+path="res://.godot/imported/HTN.svg-ac780e7becf241e2573e31a7b64c856b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/HTNDomainManager/PluginSystem/Icons/PlannerIcon.png"
-dest_files=["res://.godot/imported/PlannerIcon.png-6090f6ae05773e726579ab55f73309ed.ctex"]
+source_file="res://addons/HTNDomainManager/PluginSystem/Icons/HTN.svg"
+dest_files=["res://.godot/imported/HTN.svg-ac780e7becf241e2573e31a7b64c856b.ctex"]
 
 [params]
 
@@ -32,3 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

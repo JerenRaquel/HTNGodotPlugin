@@ -6,16 +6,16 @@ const DOMAIN_PATH := "res://addons/HTNDomainManager/Data/Domains/"
 const GRAPH_SAVE_PATH := "res://addons/HTNDomainManager/Data/GraphSaves/"
 
 static func save(notification_handler: HTNNotificaionHandler, domain_graph: HTNDomainGraph) -> bool:
-	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTNFileManager.HTN_REFERENCE_FILE_PATH)
-	var domain_file: HTNDomain = _save_to_domain_resource(HTN_reference_file, domain_graph)
-	if not _save_to_graph_file(HTN_reference_file, notification_handler, domain_graph, domain_file):
-		return false
-	return ResourceSaver.save(HTN_reference_file, HTNFileManager.HTN_REFERENCE_FILE_PATH) == OK
+	var domain_file: HTNDomain = _save_to_domain_resource(domain_graph)
+	return _save_to_graph_file(notification_handler, domain_graph, domain_file)
 
-static func _save_to_domain_resource(HTN_reference_file: HTNReferenceFile, domain_graph: HTNDomainGraph) -> HTNDomain:
-	var domain_resource: HTNDomain = HTN_reference_file["domains"].get(domain_graph.domain_name, null)
+static func _save_to_domain_resource(domain_graph: HTNDomainGraph) -> HTNDomain:
+	var domain_resource: HTNDomain = null
 	if domain_resource == null:
-		domain_resource = HTNDomain.new()
+		if FileAccess.file_exists(DOMAIN_PATH + domain_graph.domain_name + ".tres"):
+			domain_resource = ResourceLoader.load(DOMAIN_PATH + domain_graph.domain_name + ".tres")
+		else:
+			domain_resource = HTNDomain.new()
 
 	domain_resource["root_key"] = domain_graph.root_key
 
@@ -41,8 +41,8 @@ static func _save_to_domain_resource(HTN_reference_file: HTNReferenceFile, domai
 	# Send the file to be saved
 	return domain_resource
 
-static func _save_to_graph_file(HTN_reference_file: HTNReferenceFile, notification_handler: HTNNotificaionHandler,
-		domain_graph: HTNDomainGraph, domain_resource: HTNDomain) -> bool:
+static func _save_to_graph_file(notification_handler: HTNNotificaionHandler, domain_graph: HTNDomainGraph,
+		domain_resource: HTNDomain) -> bool:
 	var graph_save_path: String = GRAPH_SAVE_PATH + domain_graph.domain_name + ".tres"
 	var graph_save: HTNGraphSave = null
 	if FileAccess.file_exists(graph_save_path):
@@ -54,6 +54,7 @@ static func _save_to_graph_file(HTN_reference_file: HTNReferenceFile, notificati
 	if graph_save == null:
 		graph_save = HTNGraphSave.new()
 
+	print("Saving Graph: ", domain_graph.domain_name, "...")
 	graph_save["root_key"] = domain_graph.root_key
 	graph_save["connections"] = domain_graph.get_connection_list()
 	for node_key: StringName in domain_graph.nodes.keys():
@@ -71,8 +72,6 @@ static func _save_to_graph_file(HTN_reference_file: HTNReferenceFile, notificati
 		DirAccess.remove_absolute(domain_path)
 		return false
 
-	HTN_reference_file["domains"][domain_graph.domain_name] = domain_resource
-	HTN_reference_file["graph_saves"][domain_graph.domain_name] = graph_save_path
 	return true
 
 static func _gather_effect_data(domain_graph: HTNDomainGraph) -> Dictionary:
