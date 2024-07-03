@@ -37,7 +37,7 @@ script = ExtResource("2_didlq")
 text = "Splitter/Root"
 
 [node name="Output" parent="HBoxContainer" index="2"]
-text = "Task/Applicator"
+text = "Action"
 
 [node name="Conditions" type="Button" parent="." index="2"]
 layout_mode = 2

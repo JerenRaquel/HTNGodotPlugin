@@ -43,10 +43,10 @@ slot/3/draw_stylebox = true
 script = ExtResource("2_a5lv0")
 
 [node name="Input" parent="HBoxContainer" index="0"]
-text = "Task/Applicator"
+text = "Action"
 
 [node name="Output" parent="HBoxContainer" index="2"]
-text = "Task/Applicator"
+text = "Action"
 
 [node name="RequiresWaitingButton" type="CheckButton" parent="." index="2"]
 unique_name_in_owner = true
@@ -73,10 +73,9 @@ text = "Edit File"
 [node name="TaskOptionButton" type="OptionButton" parent="." index="4"]
 unique_name_in_owner = true
 layout_mode = 2
-item_count = 1
 selected = 0
+item_count = 1
 popup/item_0/text = "N/A"
-popup/item_0/id = 0
 popup/item_0/disabled = true
 
 [connection signal="toggled" from="RequiresWaitingButton" to="." method="_on_requires_waiting_button_toggled"]

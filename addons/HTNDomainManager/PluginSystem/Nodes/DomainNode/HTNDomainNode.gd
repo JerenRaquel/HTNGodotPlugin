@@ -97,3 +97,8 @@ func _on_domain_option_button_item_selected(index: int) -> void:
 	else:
 		warning_symbol.hide()
 	HTNGlobals.graph_altered.emit()
+
+func _on_show_link_button_pressed() -> void:
+	var target: String = get_node_name()
+	if target.is_empty(): return
+	HTNGlobals.tab_access_requested.emit(target)

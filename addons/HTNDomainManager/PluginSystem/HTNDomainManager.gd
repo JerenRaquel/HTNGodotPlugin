@@ -33,6 +33,7 @@ func _ready() -> void:
 	)
 	HTNGlobals.current_graph_changed.connect(_update_toolbar_buttons)
 	HTNGlobals.domains_updated.connect(_update_domain_button)
+	HTNGlobals.tab_access_requested.connect(load_domain)
 
 	left_v_separator.hide()
 	right_v_separator.hide()
@@ -46,6 +47,11 @@ func _ready() -> void:
 	_update_domain_button()
 
 func load_domain(domain_name: String) -> void:
+	if domain_name.is_empty(): return
+	if HTNGlobals.current_graph != null:
+		if domain_name == HTNGlobals.current_graph.domain_name:
+			return
+
 	if not tab_container.switch_to_tab(domain_name):
 		%DomainLoader.load_domain(domain_name)
 	_update_toolbar_buttons()

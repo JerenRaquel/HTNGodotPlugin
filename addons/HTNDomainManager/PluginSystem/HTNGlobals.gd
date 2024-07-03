@@ -9,6 +9,7 @@ signal task_deleted
 signal graph_tool_bar_toggled(button_state: bool)
 signal node_name_altered
 signal domains_updated
+signal tab_access_requested(domain_name: String)
 
 const ON_PORT_BLUE: Array[String] = ["Method", "Always True Method", "Quit"]
 const ON_PORT_GREEN: Array[String] = ["Task", "Domain", "Applicator", "Splitter", "RNG", "Quit"]
