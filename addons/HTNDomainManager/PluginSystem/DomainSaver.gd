@@ -26,7 +26,12 @@ static func _save_to_domain_resource(HTN_reference_file: HTNReferenceFile, domai
 	for node_key: StringName in task_key_name_pairs.keys():
 		if node_key in domain_resource["task_map"]: continue
 		domain_resource["task_map"][node_key] = task_key_name_pairs[node_key]
-	domain_resource["required_domains"] = domain_graph.get_domain_links()
+	# Write domain key name pairs
+	var domain_key_name_pairs: Dictionary = domain_graph.get_domain_key_name_pair()
+	domain_resource["domain_map"].clear()
+	for node_key: StringName in domain_key_name_pairs.keys():
+		if node_key in domain_resource["domain_map"]: continue
+		domain_resource["domain_map"][node_key] = domain_key_name_pairs[node_key]
 	domain_resource["quits"] = domain_graph.get_quits()
 	domain_resource["splits"] = _gather_split_data(domain_graph)
 	domain_resource["effects"] = _gather_effect_data(domain_graph)
@@ -42,6 +47,10 @@ static func _save_to_graph_file(HTN_reference_file: HTNReferenceFile, notificati
 	var graph_save: HTNGraphSave = null
 	if FileAccess.file_exists(graph_save_path):
 		graph_save = load(graph_save_path)
+		graph_save["connections"].clear()
+		graph_save["node_types"].clear()
+		graph_save["node_positions"].clear()
+		graph_save["node_data"].clear()
 	if graph_save == null:
 		graph_save = HTNGraphSave.new()
 

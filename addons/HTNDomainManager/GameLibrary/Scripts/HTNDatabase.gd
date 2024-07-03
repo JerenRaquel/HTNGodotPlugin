@@ -22,13 +22,15 @@ func domain_has(current_domain_name: StringName, type: String, node_key: StringN
 
 	if type == "task_map":
 		return _domains[current_domain_name]["task_map"].has(node_key)
+	elif type == "domain_map":
+		return _domains[current_domain_name]["domain_map"].has(node_key)
 	return node_key in _domains[current_domain_name][type]
 
 func is_domain_root(current_domain_key: StringName, node_key: StringName) -> bool:
 	return node_key == _domains[current_domain_key]["root_key"]
 
-func get_domain_key(node_key) -> StringName:
-	return _domains[node_key]
+func get_domain_name_from_key(current_domain_name: StringName, node_key) -> StringName:
+	return _domains[current_domain_name]["domain_map"].get(node_key, "")
 
 func get_root_key_from_current_domain(current_domain_name: StringName) -> StringName:
 	return _domains[current_domain_name]["root_key"]
@@ -116,13 +118,13 @@ func _evaluate(method_data: Dictionary, world_state_data: Dictionary) -> bool:
 		else:
 			if method_data[world_state_key]["SingleID"] == 6:	# World State
 				# Invalid indexing
-				if world_state_data_value not in world_state_data:
+				if world_state_key not in world_state_data:
 					push_error(
 						"Attempting to access " + world_state_data_value + " in world state data.\nReturning false."
 					)
 					return false
 				else:
-					rhs = world_state_data[method_data[world_state_key]["value"]]
+					rhs = world_state_data[method_data[world_state_key]["Value"]]
 			if _evaluate_compare(compare_ID, world_state_data_value, rhs):
 				continue
 			else:

@@ -113,12 +113,12 @@ func get_task_key_name_pair() -> Dictionary:
 			names[node_key] = (nodes[node_key] as HTNTaskNode).get_node_name()
 	return names
 
-func get_domain_links() -> Array[StringName]:
-	var keys: Array[StringName] = []
+func get_domain_key_name_pair() -> Dictionary:
+	var names: Dictionary = {}
 	for node_key: StringName in nodes:
 		if nodes[node_key] is HTNDomainNode:
-			keys.push_back(node_key)
-	return keys
+			names[node_key] = (nodes[node_key] as HTNDomainNode).get_node_name()
+	return names
 
 func get_quits() -> Array[StringName]:
 	var keys: Array[StringName] = []

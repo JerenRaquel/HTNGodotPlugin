@@ -91,7 +91,7 @@ func _on_domain_option_button_item_selected(index: int) -> void:
 	if get_node_name().is_empty(): return
 
 	# Check if domain links to itself
-	if HTNFileManager.check_if_domain_links(HTNGlobals.current_graph.domain_name, get_node_name()):
+	if HTNFileManager.check_if_domain_links_to_self(HTNGlobals.current_graph.domain_name, get_node_name()):
 		warning_symbol.tooltip_text = SELF_LINK
 		warning_symbol.show()
 	else:

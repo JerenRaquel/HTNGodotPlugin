@@ -1,3 +1,4 @@
+@icon("res://addons/HTNDomainManager/PluginSystem/Icons/PlannerIconFlat.png")
 class_name HTNPlanner
 extends Node
 ## This is a script attached to the HTNPlanner node intended to be added as a child
@@ -144,9 +145,9 @@ func _generate_plan_from_domain(current_domain_name: StringName, world_states: D
 				"Domain": current_domain_name,
 				"TaskKey": task_key
 			})
-		elif HTNDatabase.domain_has(current_domain_name, "required_domains", task_key):
+		elif HTNDatabase.domain_has(current_domain_name, "domain_map", task_key):
 			var generated_data: Array = _generate_plan_from_domain(
-				HTNDatabase.get_domain_key(task_key),
+				HTNDatabase.get_domain_name_from_key(current_domain_name, task_key),
 				world_state_copy
 			)
 			# Check if plan is empty

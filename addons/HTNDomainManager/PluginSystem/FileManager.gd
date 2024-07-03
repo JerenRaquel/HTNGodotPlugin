@@ -37,7 +37,7 @@ static func check_if_no_domains() -> bool:
 
 # NOTE: Time Complexity: O(N) where N is every domain linked
 # Utilizes DFS for searching
-static func check_if_domain_links(original_domain_name: String, domain_name_link: String) -> bool:
+static func check_if_domain_links_to_self(original_domain_name: String, domain_name_link: String) -> bool:
 	var HTN_reference_file: HTNReferenceFile = ResourceLoader.load(HTN_REFERENCE_FILE_PATH)
 	# Lazy Checks
 	# - Check if domain exists
@@ -46,24 +46,24 @@ static func check_if_domain_links(original_domain_name: String, domain_name_link
 	if original_domain_name == domain_name_link: return true
 	# - Check if there's no domains to check
 	if HTN_reference_file["domains"].is_empty(): return false
-	# - Check if current domain name has any domains linked
-	var domain_names: Array[StringName] = HTN_reference_file["domains"][original_domain_name]["required_domains"]
+	# - Check if the linking domain has any domains within
+	var domain_names: Array = HTN_reference_file["domains"][domain_name_link]["domain_map"].values()
 	if domain_names.is_empty(): return false
+	# - Check if original domain is within this linking domain
+	if original_domain_name in domain_names: return true
 
 	# DFS Search
 	var closed_set: Array[StringName] = [original_domain_name]
 	for cur_domain_name: StringName in domain_names:
-		# Check if sub domain name is the same as the one wanting to link
-		if cur_domain_name == domain_name_link: return true
 		# Check if current domain name has any domains linked
-		var sub_domain_list: Array[StringName] = HTN_reference_file["domains"][cur_domain_name]["required_domains"]
+		var sub_domain_list: Array = HTN_reference_file["domains"][cur_domain_name]["domain_map"].values()
 		if sub_domain_list.is_empty():
 			if cur_domain_name not in closed_set:
 				closed_set.push_back(cur_domain_name)
 			continue
 
 		# Dig deeper
-		if _check_if_domain_links_helper(HTN_reference_file, closed_set, cur_domain_name, domain_name_link):
+		if _check_if_domain_links_helper(HTN_reference_file, closed_set, cur_domain_name, original_domain_name):
 			return true
 		# Found nothing
 		if cur_domain_name not in closed_set:
@@ -73,23 +73,24 @@ static func check_if_domain_links(original_domain_name: String, domain_name_link
 	return false
 
 static func _check_if_domain_links_helper(HTN_reference_file: HTNReferenceFile,
-			closed_set: Array[StringName], current_domain_name: String, domain_name_link: String) -> bool:
-	for cur_domain_name: StringName in HTN_reference_file["domains"][current_domain_name]["required_domains"]:
+			closed_set: Array[StringName], current_domain_name: String, original_domain_name: String) -> bool:
+	for cur_domain_name: StringName in HTN_reference_file["domains"][current_domain_name]["domain_map"].values():
 		# Already Searched
 		if cur_domain_name in closed_set: continue
 
-		# Check if sub domain name is the same as the one wanting to link
-		if cur_domain_name == domain_name_link: return true
+		# Check if sub domain name is the same as the original root domain
+		if cur_domain_name == original_domain_name: return true
 
 		# Check if current domain name has any domains linked
-		var sub_domain_list: Array[StringName] = HTN_reference_file["domains"][cur_domain_name]["required_domains"]
+		var sub_domain_list: Array = HTN_reference_file["domains"][cur_domain_name]["domain_map"].values()
 		if sub_domain_list.is_empty():
 			if cur_domain_name not in closed_set:
 				closed_set.push_back(cur_domain_name)
 			continue
 
 		# Dig deeper
-		if _check_if_domain_links_helper(HTN_reference_file, closed_set, cur_domain_name, domain_name_link): return true
+		if _check_if_domain_links_helper(HTN_reference_file, closed_set, cur_domain_name, original_domain_name):
+			return true
 		# Found nothing
 		if cur_domain_name not in closed_set:
 			closed_set.push_back(cur_domain_name)

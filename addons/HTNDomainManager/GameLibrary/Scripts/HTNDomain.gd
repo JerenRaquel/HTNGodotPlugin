@@ -6,8 +6,8 @@ extends Resource
 # { task_key (StringName) : task_name (String) }
 @export var task_map: Dictionary
 
-# [ (domain_key (StringName))... ]
-@export var required_domains: Array[StringName] = []
+# { domain_key (StringName) : domain_name (String) }
+@export var domain_map: Dictionary
 
 # [ (quit_key (StringName))... ]
 @export var quits: Array[StringName] = []
