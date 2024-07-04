@@ -22,8 +22,14 @@ slot/1/right_icon = null
 slot/1/draw_stylebox = true
 script = ExtResource("2_k7ghy")
 
+[node name="HBoxContainer" parent="." index="1"]
+mouse_filter = 2
+
 [node name="Input" parent="HBoxContainer" index="0"]
 text = "Action"
+
+[node name="HSeparator" parent="HBoxContainer" index="1"]
+mouse_filter = 2
 
 [node name="Output" parent="HBoxContainer" index="2"]
 text = "Action"

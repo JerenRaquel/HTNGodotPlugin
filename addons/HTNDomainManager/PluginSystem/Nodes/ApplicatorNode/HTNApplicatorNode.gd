@@ -13,7 +13,10 @@ var _nick_name: String:
 		else:
 			title = "Applicator - " + value
 
-var effect_data: Dictionary
+var effect_data: Dictionary:
+	set(value):
+		effect_data = value
+		_update_tool_tip()
 
 func get_node_name() -> String:
 	if not _nick_name.is_empty():
@@ -41,6 +44,16 @@ func get_data() -> Dictionary:
 		"effect_data": effect_data,
 		"nickname": _nick_name
 	}
+
+func _update_tool_tip() -> void:
+	if effect_data.is_empty():
+		tooltip_text = ""
+		return
+	var text := ""
+	for key: String in effect_data:
+		text += key + " = " + str(effect_data[key]["Value"])
+		text += "\n"
+	tooltip_text = text
 
 func _on_edit_button_pressed() -> void:
 	HTNGlobals.effect_editor.open(self, effect_data)

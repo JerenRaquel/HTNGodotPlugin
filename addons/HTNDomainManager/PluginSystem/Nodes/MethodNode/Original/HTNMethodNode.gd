@@ -14,7 +14,10 @@ var _nick_name: String:
 		else:
 			title = PREFIX + value
 
-var condition_data: Dictionary = {}
+var condition_data: Dictionary = {}:
+	set(value):
+		condition_data = value
+		_update_tool_tip()
 
 func get_node_name() -> String:
 	if not _nick_name.is_empty():
@@ -48,6 +51,41 @@ func get_data() -> Dictionary:
 
 func get_priority() -> int:
 	return _priority
+
+func _update_tool_tip() -> void:
+	if condition_data.is_empty():
+		tooltip_text = ""
+		return
+	var text: String = ""
+	for key: String in condition_data.keys():
+		if key == "AlwaysTrue":
+			tooltip_text = ""
+			return
+		if condition_data[key]["CompareID"] == 5:	# Range
+			text += str(condition_data[key]["Value"].x)
+			if condition_data[key]["RangeInclusivity"][0]:
+				text += " <= " + key
+			else:
+				text += " < " + key
+			if condition_data[key]["RangeInclusivity"][1]:
+				text += " <= " + str(condition_data[key]["Value"].y)
+			else:
+				text += " < " + str(condition_data[key]["Value"].y)
+		else:
+			text += key
+			match condition_data[key]["CompareID"]:
+				0:	# >
+					text += " > " + str(condition_data[key]["Value"])
+				1:	# <
+					text += " < " + str(condition_data[key]["Value"])
+				2:	# ==
+					text += " == " + str(condition_data[key]["Value"])
+				3:	# >=
+					text += " >= " + str(condition_data[key]["Value"])
+				4:	# <=
+					text += " <= " + str(condition_data[key]["Value"])
+		text += "\n"
+	tooltip_text = text
 
 func _on_conditions_pressed() -> void:
 	HTNGlobals.condition_editor.open(self, condition_data)
