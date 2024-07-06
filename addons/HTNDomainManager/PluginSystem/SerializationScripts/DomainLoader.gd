@@ -17,7 +17,7 @@ func load_domain(domain_name: String) -> bool:
 	var new_graph: HTNPreloadedGraphTab = PRELOADED_GRAPH_TAB.instantiate()
 	tab_container.add_child(new_graph)
 	tab_container.move_child(new_graph, 0)
-	tab_container.set_tab_button_icon(0, tab_container.TRASH)
+	tab_container.set_tab_button_icon(0, tab_container.CLOSE)
 	while tab_container.current_tab > 0:
 		tab_container.select_previous_available()
 

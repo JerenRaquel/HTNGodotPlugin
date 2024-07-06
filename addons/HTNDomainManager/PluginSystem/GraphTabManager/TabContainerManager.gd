@@ -3,7 +3,7 @@ class_name HTNTabGraphManager
 extends TabContainer
 
 const GRAPH_TAB = preload("res://addons/HTNDomainManager/PluginSystem/GraphTabManager/GraphTab/graph_tab.tscn")
-const TRASH = preload("res://addons/HTNDomainManager/PluginSystem/Icons/Trash.svg")
+const CLOSE = preload("res://addons/HTNDomainManager/PluginSystem/Icons/Close.svg")
 
 @export var node_spawn_menu: HTNNodeSpawnMenu
 @export var graph_tools_toggle: CheckButton
@@ -67,7 +67,7 @@ func _create_new_tab() -> void:
 func _on_tab_created(graph: HTNDomainGraph, tab_instance: HTNGraphTab) -> void:
 	graph.initialize(node_spawn_menu, tab_instance, graph_tools_toggle.button_pressed)
 	HTNGlobals.graph_altered.emit()
-	set_tab_button_icon(current_tab, TRASH)
+	set_tab_button_icon(current_tab, CLOSE)
 	_create_new_tab()
 
 func _on_tab_changed(tab: int) -> void:
