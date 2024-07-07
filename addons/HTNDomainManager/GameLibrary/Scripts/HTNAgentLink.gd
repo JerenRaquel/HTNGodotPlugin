@@ -1,3 +1,4 @@
+@icon("res://addons/HTNDomainManager/PluginSystem/Icons/Agent7.svg")
 class_name HTNAgentLink
 extends Node
 

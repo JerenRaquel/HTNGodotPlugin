@@ -68,7 +68,6 @@ theme_override_styles/separator = SubResource("StyleBoxEmpty_pv0eo")
 [node name="SpinBox" type="SpinBox" parent="Priority" index="2"]
 unique_name_in_owner = true
 layout_mode = 2
-mouse_filter = 2
 rounded = true
 allow_greater = true
 allow_lesser = true

@@ -69,13 +69,23 @@ func _on_close_button_pressed() -> void:
 	hide()
 	# Save Data
 	_method_node._nick_name = nickname_line_edit.text
-	_method_node.condition_data = _get_data()
+	var data := _get_data()
+	var different_data := false
+	for key: String in data:
+		if key not in _method_node.condition_data.keys():
+			different_data = true
+			break
+		if data[key] != _method_node.condition_data[key]:
+			different_data = true
+			break
+	_method_node.condition_data = data
 
 	# Reset Editor
 	for child: HTNConditionLine in condition_line_container.get_children():
 		child.queue_free()
 
-	HTNGlobals.graph_altered.emit()
+	if different_data:
+		HTNGlobals.current_graph.is_saved = false
 
 func _on_search_bar_text_changed(new_text: String) -> void:
 	_filter_children(new_text)

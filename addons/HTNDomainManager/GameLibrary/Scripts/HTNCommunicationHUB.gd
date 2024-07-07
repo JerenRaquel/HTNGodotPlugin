@@ -1,3 +1,4 @@
+@icon("res://addons/HTNDomainManager/PluginSystem/Icons/HUB3.svg")
 extends Node
 
 # Emitted by self

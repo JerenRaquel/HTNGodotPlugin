@@ -92,3 +92,4 @@ func _on_conditions_pressed() -> void:
 
 func _on_spin_box_value_changed(value: float) -> void:
 	_priority = int(value)
+	HTNGlobals.current_graph.is_saved = false
