@@ -84,6 +84,9 @@ func _finished() -> void:
 		_agent = null
 		_running_plan = false
 		htn_planner._is_planning = false
+		if not htn_planner._queued_AI_behavior.is_empty():
+			htn_planner.domain_name = htn_planner._queued_AI_behavior
+			htn_planner._queued_AI_behavior = ""
 		htn_planner.finished.emit()
 	else:
 		_plan_state = PlanState.SETUP

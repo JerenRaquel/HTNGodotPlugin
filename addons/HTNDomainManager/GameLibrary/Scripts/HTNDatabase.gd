@@ -1,7 +1,7 @@
 extends Node
 ## [color=red][b]This is only used by the HTN Planner. DO NOT USE.[/b][/color]
 
-# { domain_key : domain_resource (HTNDomain) }
+# { domain_name : domain_resource (HTNDomain) }
 var _domains: Dictionary
 # { task_key : task_resource (HTNTask) }
 var _tasks: Dictionary
@@ -14,6 +14,9 @@ func _ready() -> void:
 
 func is_quit_early(current_domain_name: StringName, task_key: StringName) -> bool:
 	return task_key in _domains[current_domain_name]["quits"]
+
+func domain_exists(domain_name: StringName) -> bool:
+	return domain_name in _domains
 
 func domain_has(current_domain_name: StringName, type: String, node_key: StringName) -> bool:
 	if _domains[current_domain_name][type].is_empty(): return false
