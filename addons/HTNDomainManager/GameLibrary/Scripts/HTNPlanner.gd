@@ -1,4 +1,4 @@
-@icon("res://addons/HTNDomainManager/PluginSystem/Icons/HTN.svg")
+@icon("res://addons/HTNDomainManager/GameLibrary/Resources/Icons/HTN.svg")
 class_name HTNPlanner
 extends Node
 ## This is a script attached to the HTNPlanner node intended to be added as a child
@@ -123,7 +123,7 @@ func handle_planning(agent: Node, world_state: Dictionary) -> void:
 	plan.assign(generate_plan(world_state))
 	if plan.is_empty():
 		_is_planning = false
-		if enable_debugging: print("Failed plan generation")
+		if enable_debugging: print_debug("Failed plan generation")
 	else:
 		_state_manager.start(agent, plan, world_state)
 

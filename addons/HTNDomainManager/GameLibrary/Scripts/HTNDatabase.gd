@@ -1,6 +1,9 @@
 extends Node
 ## [color=red][b]This is only used by the HTN Planner. DO NOT USE.[/b][/color]
 
+const TASK_PATH := "res://addons/HTNDomainManager/Data/Tasks/"
+const DOMAIN_PATH := "res://addons/HTNDomainManager/Data/Domains/"
+
 # { domain_name : domain_resource (HTNDomain) }
 var _domains: Dictionary
 # { task_key : task_resource (HTNTask) }
@@ -8,8 +11,8 @@ var _tasks: Dictionary
 var _HTN_core_module_library: HTNCoreModuleLibrary
 
 func _ready() -> void:
-	_domains = HTNFileManager.get_all_domain_files()
-	_tasks = HTNFileManager.get_all_task_files()
+	_domains = _get_all_domain_files()
+	_tasks = _get_all_task_files()
 	_HTN_core_module_library = HTNCoreModuleLibrary.new()
 
 func is_quit_early(current_domain_name: StringName, task_key: StringName) -> bool:
@@ -175,3 +178,21 @@ func _evaluate_range(range_ID: int, range_inclusivity: Array, world_state_data_v
 		elif not range_inclusivity[0] and world_state_data_value > (condition_value as Vector2).x and rhs_state:
 				return true
 		return false
+
+func _get_all_domain_files() -> Dictionary:
+	var domain_files: Dictionary = {}
+	var files: PackedStringArray = DirAccess.get_files_at(DOMAIN_PATH)
+	for file: String in files:
+		var file_name: String = file.replace(".tres", "").replace(".remap", "")
+		if file_name in domain_files: continue
+		domain_files[file_name] = load(DOMAIN_PATH + file.replace(".remap", ""))
+	return domain_files
+
+func _get_all_task_files() -> Dictionary:
+	var task_files: Dictionary = {}
+	var files: PackedStringArray = DirAccess.get_files_at(TASK_PATH)
+	for file: String in files:
+		var file_name: String = file.replace(".tres", "").replace(".remap", "")
+		if file_name in task_files: continue
+		task_files[file_name] = load(TASK_PATH + file.replace(".remap", ""))
+	return task_files

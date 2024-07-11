@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d3ja545j5msm2"
-path="res://.godot/imported/Agent7.svg-972f92190afe536d3592b72c2ee749d0.ctex"
+uid="uid://cwp4trad0snhe"
+path="res://.godot/imported/HTN.svg-37988b4d49431c4f349005c72608e8fa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/HTNDomainManager/PluginSystem/Icons/Agent7.svg"
-dest_files=["res://.godot/imported/Agent7.svg-972f92190afe536d3592b72c2ee749d0.ctex"]
+source_file="res://addons/HTNDomainManager/GameLibrary/Resources/Icons/HTN.svg"
+dest_files=["res://.godot/imported/HTN.svg-37988b4d49431c4f349005c72608e8fa.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cwp4trad0snhe"
-path="res://.godot/imported/HTN.svg-ac780e7becf241e2573e31a7b64c856b.ctex"
+uid="uid://dk4j0fqa0bhox"
+path="res://.godot/imported/HUB.svg-b7353626082cf21aa5818ae76917f4b6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/HTNDomainManager/PluginSystem/Icons/HTN.svg"
-dest_files=["res://.godot/imported/HTN.svg-ac780e7becf241e2573e31a7b64c856b.ctex"]
+source_file="res://addons/HTNDomainManager/GameLibrary/Resources/Icons/HUB.svg"
+dest_files=["res://.godot/imported/HUB.svg-b7353626082cf21aa5818ae76917f4b6.ctex"]
 
 [params]
 

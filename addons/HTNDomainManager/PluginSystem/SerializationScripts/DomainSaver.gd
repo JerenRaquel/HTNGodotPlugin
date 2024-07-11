@@ -54,7 +54,6 @@ static func _save_to_graph_file(notification_handler: HTNNotificaionHandler, dom
 	if graph_save == null:
 		graph_save = HTNGraphSave.new()
 
-	print("Saving Graph: ", domain_graph.domain_name, "...")
 	graph_save["root_key"] = domain_graph.root_key
 	graph_save["connections"] = domain_graph.get_connection_list()
 	for node_key: StringName in domain_graph.nodes.keys():

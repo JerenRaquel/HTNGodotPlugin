@@ -1,4 +1,4 @@
-@icon("res://addons/HTNDomainManager/PluginSystem/Icons/Agent7.svg")
+@icon("res://addons/HTNDomainManager/GameLibrary/Resources/Icons/Agent.svg")
 class_name HTNAgentLink
 extends Node
 

@@ -30,7 +30,7 @@ static func check_if_domain_name_exists(domain_name: String) -> HTNDomain:
 	var files: PackedStringArray = DirAccess.get_files_at(DOMAIN_PATH)
 	for file: String in files:
 		if file.replace(".tres", "") == domain_name:
-			return ResourceLoader.load(DOMAIN_PATH + file)
+			return load(DOMAIN_PATH + file)
 	return null
 
 static func check_if_no_domains() -> bool:
@@ -42,7 +42,7 @@ static func check_if_domain_links_to_self(original_domain_name: String, domain_n
 	var file_names: PackedStringArray = DirAccess.get_files_at(DOMAIN_PATH)
 	var domain_files: Dictionary = {}
 	for file: String in file_names:
-		domain_files[file.replace(".tres", "")] = ResourceLoader.load(DOMAIN_PATH + file)
+		domain_files[file.replace(".tres", "")] = load(DOMAIN_PATH + file)
 	# Lazy Checks
 	# - Check if same
 	if original_domain_name == domain_name_link: return true
@@ -108,7 +108,7 @@ static func get_all_domain_files() -> Dictionary:
 	for file: String in files:
 		var file_name: String = file.replace(".tres", "")
 		if file_name in domain_files: continue
-		domain_files[file_name] = ResourceLoader.load(DOMAIN_PATH + file)
+		domain_files[file_name] = load(DOMAIN_PATH + file)
 	return domain_files
 
 static func get_all_task_files() -> Dictionary:
@@ -117,7 +117,7 @@ static func get_all_task_files() -> Dictionary:
 	for file: String in files:
 		var file_name: String = file.replace(".tres", "")
 		if file_name in task_files: continue
-		task_files[file_name] = ResourceLoader.load(TASK_PATH + file)
+		task_files[file_name] = load(TASK_PATH + file)
 	return task_files
 
 static func get_all_task_names() -> Array:
@@ -139,13 +139,13 @@ static func get_all_domain_names() -> Array:
 static func get_awaiting_task_state(task_name: String) -> bool:
 	var path := TASK_PATH + task_name + ".tres"
 	assert(FileAccess.file_exists(path), "This task: " + task_name + " doesn't exists.")
-	var task: HTNTask = ResourceLoader.load(path)
+	var task: HTNTask = load(path)
 	return task.requires_awaiting
 
 static func toggle_awaiting_task_state(task_name: String, state: bool) -> void:
 	var path := TASK_PATH + task_name + ".tres"
 	assert(FileAccess.file_exists(path), "This task: " + task_name + " doesn't exists.")
-	var task: HTNTask = ResourceLoader.load(path)
+	var task: HTNTask = load(path)
 	task.requires_awaiting = state
 	ResourceSaver.save(task, path)
 

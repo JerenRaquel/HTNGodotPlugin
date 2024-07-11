@@ -73,7 +73,7 @@ func _effect() -> void:
 
 func _finished() -> void:
 	if htn_planner.enable_debugging:
-		print(_agent, "::Finished Task Operation: ",
+		print_debug(_agent, "::Finished Task Operation: ",
 			HTNDatabase.get_task_name(_current_task["Domain"], _current_task["TaskKey"])
 		)
 	if _plan.is_empty():

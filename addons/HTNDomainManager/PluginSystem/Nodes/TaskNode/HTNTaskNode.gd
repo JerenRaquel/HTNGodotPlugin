@@ -74,6 +74,8 @@ func _refresh_list() -> void:
 		_on_task_option_button_item_selected(0)
 
 func _on_edit_button_pressed() -> void:
+	if not Engine.is_editor_hint(): return
+
 	var task_name := get_node_name()
 	if task_name == EMPTY_TASK_NAME: return
 	HTNFileManager.edit_script(task_name)
