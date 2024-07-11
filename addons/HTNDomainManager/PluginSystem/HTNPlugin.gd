@@ -6,7 +6,30 @@ const PLUGIN_NAME := "HTNDomainManager"
 const HTN_DATABASE_SCRIPT := "res://addons/HTNDomainManager/GameLibrary/Scripts/HTNDatabase.gd"
 const HTN_GLOBALS := "res://addons/HTNDomainManager/PluginSystem/HTNGlobals.gd"
 
+class HTNExportManager extends EditorExportPlugin:
+	var _globals_autoload_loaded := false
+	var _remove_globals: Callable
+	var _add_globals: Callable
+
+	func _init(adder: Callable, remover: Callable) -> void:
+		_add_globals = adder
+		_remove_globals = remover
+
+	func _get_name() -> String:
+		return "HTNExportManager"
+
+	func _export_begin(features: PackedStringArray, is_debug: bool, path: String, flags: int) -> void:
+		if ProjectSettings.has_setting("autoload/HTNGlobals"):
+			_remove_globals.call()
+			_globals_autoload_loaded = true
+
+	func _export_end() -> void:
+		if _globals_autoload_loaded:
+			_add_globals.call()
+			_globals_autoload_loaded = false
+
 var manager: Control
+var _exporter: EditorExportPlugin
 
 func _enter_tree() -> void:
 	# If not running in editor mode, shut off the plugin
@@ -35,6 +58,15 @@ Please remove when uninstalling this plugin.
 """
 	)
 	EditorInterface.get_editor_main_screen().add_child(manager)
+	_exporter = HTNExportManager.new(
+		func() -> void:
+			if not ProjectSettings.has_setting("autoload/HTNGlobals"):
+				add_autoload_singleton("HTNGlobals", HTN_GLOBALS),
+		func() -> void:
+			if ProjectSettings.has_setting("autoload/HTNGlobals"):
+				remove_autoload_singleton("HTNGlobals")
+	)
+	add_export_plugin(_exporter)
 	_make_visible(false)
 	main_screen_changed.connect(
 		func(screen_name: String):
@@ -43,6 +75,10 @@ Please remove when uninstalling this plugin.
 	)
 
 func _exit_tree() -> void:
+	if _exporter:
+		remove_export_plugin(_exporter)
+		_exporter = null
+
 	if manager:
 		manager.queue_free()
 
