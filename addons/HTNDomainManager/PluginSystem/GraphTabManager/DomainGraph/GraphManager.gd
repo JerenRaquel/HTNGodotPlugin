@@ -177,7 +177,7 @@ func _delete_node(node: HTNBaseNode) -> void:
 	HTNConnectionHandler.remove_connections(self, node)
 	if not nodes.erase(node.name):
 		push_error(node.name + " did not exist and is trying to erase.")
-	node.free()
+	node.queue_free()
 
 func _on_connection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	HTNConnectionHandler.load_connection(self, from_node, from_port, to_node, to_port)

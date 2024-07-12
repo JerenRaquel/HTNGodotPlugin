@@ -163,7 +163,6 @@ layout_mode = 2
 [node name="TabContainer" parent="ContainerRoot/PluginContainer/ContentContainer/EditorContainer" node_paths=PackedStringArray("node_spawn_menu", "graph_tools_toggle") instance=ExtResource("2_n8gmp")]
 unique_name_in_owner = true
 layout_mode = 2
-current_tab = 0
 node_spawn_menu = NodePath("../../../../../NodeSpawnMenu")
 graph_tools_toggle = NodePath("../../ToolBox/GraphToolsToggle")
 
@@ -185,7 +184,6 @@ unique_name_in_owner = true
 
 [node name="ConditionEditor" parent="." instance=ExtResource("5_j8nky")]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 
 [node name="EffectEditor" parent="." instance=ExtResource("6_kek1x")]
@@ -195,7 +193,6 @@ layout_mode = 1
 
 [node name="WarningBox" parent="." instance=ExtResource("14_lspda")]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 
 [connection signal="timeout" from="NotificationHandler/Timer" to="NotificationHandler" method="_on_timer_timeout"]

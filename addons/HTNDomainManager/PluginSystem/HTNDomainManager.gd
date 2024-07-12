@@ -25,7 +25,9 @@ func _ready() -> void:
 	HTNGlobals.notification_handler = %NotificationHandler
 	HTNGlobals.validator = %Validator
 
-	graph_tools_toggle.toggled.connect(HTNGlobals.graph_tool_bar_toggled.emit)
+	graph_tools_toggle.toggled.connect(
+		func() -> void: HTNGlobals.graph_tool_bar_toggled.emit()
+	)
 	HTNGlobals.graph_altered.connect(_update_toolbar_buttons)
 	HTNGlobals.graph_tab_changed.connect(
 		func() -> void:

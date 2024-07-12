@@ -96,7 +96,8 @@ func _get_plugin_icon() -> Texture2D:
 	return EditorInterface.get_base_control().get_theme_icon("GraphEdit", "EditorIcons")
 
 func _setup_data() -> bool:
-	print("Setting Up Data Cache...")
+	print("Initializing Data Cache...")
+
 	# Create Base Data Folder
 	if not _create_and_validate_folder("res://addons/HTNDomainManager/Data/"):
 		return false
@@ -111,7 +112,7 @@ func _setup_data() -> bool:
 	if not _create_and_validate_folder("res://addons/HTNDomainManager/Data/Tasks/"):
 		return false
 
-	print_rich("[color=green]Data Cache Setup Complete...[/color]")
+	print_rich("[color=green]Data Cache Initializing Complete...[/color]")
 	return true
 
 func _create_and_validate_folder(path: String) -> bool:

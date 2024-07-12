@@ -9,7 +9,6 @@ const CLOSE = preload("res://addons/HTNDomainManager/PluginSystem/Icons/Close.sv
 @export var graph_tools_toggle: CheckButton
 
 var _regex: RegEx
-var _empty_tab_idx: int
 
 func initialize() -> void:
 	_regex = RegEx.new()
@@ -60,9 +59,10 @@ func switch_to_tab(domain_name: String) -> bool:
 
 func _create_new_tab() -> void:
 	var tab_instance := GRAPH_TAB.instantiate()
-	tab_instance.tab_created.connect(_on_tab_created.bind(tab_instance))
+	tab_instance.tab_created.connect(
+		func(graph: HTNDomainGraph) -> void: _on_tab_created(graph, tab_instance)
+	)
 	add_child(tab_instance)
-	_empty_tab_idx += 1
 
 func _on_tab_created(graph: HTNDomainGraph, tab_instance: HTNGraphTab) -> void:
 	graph.initialize(node_spawn_menu, tab_instance, graph_tools_toggle.button_pressed)
@@ -71,13 +71,17 @@ func _on_tab_created(graph: HTNDomainGraph, tab_instance: HTNGraphTab) -> void:
 	_create_new_tab()
 
 func _on_tab_changed(tab: int) -> void:
+	if get_tab_count() == 0: return
+
 	var tab_ctx: HTNGraphTab = get_tab_control(tab)
 	HTNGlobals.current_graph = tab_ctx.domain_graph
 	HTNGlobals.graph_tab_changed.emit()
 
 func _on_tab_button_pressed(tab: int) -> void:
-	var tab_control: HTNGraphTab = get_current_tab_control()
-	if tab_control.domain_graph.is_saved:
+	if get_tab_count() == 0: return
+	var tab_control: HTNGraphTab = get_tab_control(tab)
+
+	if tab_control.domain_graph and tab_control.domain_graph.is_saved:
 		tab_control.queue_free()
 	else:
 		HTNGlobals.warning_box.open(
