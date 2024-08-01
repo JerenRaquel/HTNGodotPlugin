@@ -16,14 +16,12 @@ func run_operation(HTN_finished_op_callback: Callable, agent: Node, world_state:
 	pass # Replace with function body
 
 func apply_effects(world_state: Dictionary) -> void:
-	pass # Replace with function body
-
-func apply_expected_effects(world_state: Dictionary) -> void:
 	pass # Replace with function body"
 #endregion
 
 static func check_if_task_name_exists(task_name: String) -> bool:
 	var files: PackedStringArray = DirAccess.get_files_at(TASK_PATH)
+	var file_name: String = task_name.to_pascal_case()
 	return task_name + ".tres" in files
 
 static func check_if_domain_name_exists(domain_name: String) -> HTNDomain:

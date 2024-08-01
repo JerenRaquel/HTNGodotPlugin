@@ -53,18 +53,21 @@ func _run() -> void:
 		return
 	elif HTNDatabase.has_task(_current_task["Domain"], _current_task["TaskKey"]):
 		var task: HTNTask = HTNDatabase.get_task(_current_task["Domain"], _current_task["TaskKey"])
-		task.run_operation(func() -> void: _plan_state = PlanState.EFFECT, _agent, _world_state_copy)
 		if task.requires_awaiting:
 			_plan_state = PlanState.WAIT
+			task.run_operation(func() -> void: _plan_state = PlanState.EFFECT, _agent, _world_state_copy)
 			return
+		else:
+			task.run_operation(func() -> void: _plan_state = PlanState.EFFECT, _agent, _world_state_copy)
+			_plan_state = PlanState.FINISHED
+			return
+
 	_plan_state = PlanState.EFFECT
 
 func _effect() -> void:
 	var task_key: StringName = _current_task["TaskKey"]
 	var domain: String = _current_task["Domain"]
-	if HTNDatabase.has_task(domain, task_key):
-		var task: HTNTask = HTNDatabase.get_task(domain, task_key)
-		task.apply_effects(_world_state_copy)
+	if HTNDatabase.has_task(domain, task_key): pass	# Left here for edge cases
 	elif HTNDatabase.domain_has(domain, "modules", task_key):
 		HTNDatabase.apply_module(domain, task_key, _world_state_copy)
 	else:	# Apply Effects from Applicator Node

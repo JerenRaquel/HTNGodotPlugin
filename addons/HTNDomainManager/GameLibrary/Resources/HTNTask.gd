@@ -50,33 +50,19 @@ extends Resource
 func run_operation(HTN_finished_op_callback: Callable, agent: Node, world_state: Dictionary) -> void:
 	pass
 
-## Used to apply [b]Immediate[/b] effects to the [param world_state].
-## Used mainly while plan is running
-##
-## [param world_state]: This is a dictionary of the [param world_state] that has been altered
-## by all previous tasks before this. Consider the world_state given here to be
-## what the agent is/will act upon. You may alter the [param world_state] here as needed.
-## [br][br]
-## [color=yellow]Warning:[/color] This may be merged with [method run_operation].
-## [codeblock]
-## func apply_effects(world_state: Dictionary) -> void:
-##     world_state["is_travelling"] = false
-## [/codeblock]
-## @experimental
-func apply_effects(world_state: Dictionary) -> void:
-	pass
-
-## Used to apply effects to the [param world_state] and used
-## [b][color=yellow]ONLY[/color][/b] in plan generation.
-## Use this for a task that requires to wait but you still need to update the
+## - Used to apply [b]Immediate[/b] effects to the [param world_state].[br]
+## - Used [b][color=yellow]ONLY[/color][/b] in plan generation.[br]
+## - Use this for a task that requires to wait but you still need to update the
 ## [param world_state].[br][br]
 ##
 ## [param world_state]: This is a dictionary of the [param world_state] that has been altered
 ## by all previous tasks before this. Consider the world_state given here to be
 ## what the agent is/will act upon. You may alter the [param world_state] here as needed.
+## [br][br]
 ## [codeblock]
-## func apply_expected_effects(world_state: Dictionary) -> void:
+## func apply_effects(world_state: Dictionary) -> void:
+##     world_state["is_travelling"] = false
 ##     world_state["current_position"] = world_state["target"]
 ## [/codeblock]
-func apply_expected_effects(world_state: Dictionary) -> void:
+func apply_effects(world_state: Dictionary) -> void:
 	pass

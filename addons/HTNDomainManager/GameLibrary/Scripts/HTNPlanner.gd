@@ -64,7 +64,6 @@ var _is_planning := false
 var _queued_AI_behavior: StringName = ""
 
 func _ready() -> void:
-	assert(not domain_name.is_empty(), "You forgot to select a domain silly. :D")
 	interrupt_plan.connect(_state_manager.on_interrupt)
 
 func _physics_process(_delta: float) -> void:
@@ -131,6 +130,7 @@ func handle_planning(agent: Node, world_state: Dictionary) -> void:
 ## by sending the recieved data to the [method execute_plan] function.[br]
 ## [b]IMPORTANT:[/b] This will NOT have the agent executing tasks by itself.
 func generate_plan(world_states: Dictionary) -> Array:
+	assert(not domain_name.is_empty(), "You forgot to select a domain silly. :D")
 	return _generate_plan_from_domain(domain_name, world_states)[0]
 
 ## This can be used to manually execute a plan.[br]
@@ -188,7 +188,6 @@ func _generate_plan_from_domain(current_domain_name: StringName, world_states: D
 					tasks_to_process.push_back(task_name)
 		elif HTNDatabase.domain_has(current_domain_name, "task_map", task_key):
 			HTNDatabase.get_task(current_domain_name, task_key).apply_effects(world_state_copy)
-			HTNDatabase.get_task(current_domain_name, task_key).apply_expected_effects(world_state_copy)
 			final_plan.push_back({
 				"Domain": current_domain_name,
 				"TaskKey": task_key
