@@ -50,6 +50,7 @@ func _get_data() -> Dictionary:
 
 	for child: HTNConditionLine in condition_line_container.get_children():
 		var child_data: Dictionary = child.get_data()
+		if child_data["WorldState"].is_empty(): continue	# Ignore invalid conditions
 		if child_data["WorldState"] in data: continue	# Skip Repeats
 
 		data[child_data["WorldState"]] = {

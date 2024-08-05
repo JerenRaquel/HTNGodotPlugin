@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://d2k5i0p65qudy"]
+[gd_scene load_steps=6 format=3 uid="uid://d2k5i0p65qudy"]
 
 [ext_resource type="Theme" uid="uid://diu3ahrw1puva" path="res://addons/HTNDomainManager/PluginSystem/PluginTheme.tres" id="1_8tksc"]
 [ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/ConditionEditor/ConditionEditorManager.gd" id="2_83nmd"]
@@ -9,8 +9,9 @@
 color = Color(0.0666667, 0.0784314, 0.0941176, 1)
 thickness = 6
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2a3bu"]
+
 [node name="ConditionEditor" type="Panel"]
-visible = false
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -39,13 +40,9 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "Method Nickname"
 
-[node name="AddButton" type="Button" parent="VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "Add Condition"
-
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_styles/separator = SubResource("StyleBoxEmpty_t4xhv")
 
 [node name="CloseButton" type="Button" parent="VBoxContainer/HBoxContainer"]
@@ -60,6 +57,23 @@ placeholder_text = "Search..."
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer"]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_042x6")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="HSeparator" type="HSeparator" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_2a3bu")
+
+[node name="AddButton" type="Button" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Add Condition"
+
+[node name="HSeparator2" type="HSeparator" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/separator = SubResource("StyleBoxEmpty_2a3bu")
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -79,6 +93,6 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/AddButton" to="." method="_on_add_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]
 [connection signal="text_changed" from="VBoxContainer/SearchBar" to="." method="_on_search_bar_text_changed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer2/AddButton" to="." method="_on_add_button_pressed"]
