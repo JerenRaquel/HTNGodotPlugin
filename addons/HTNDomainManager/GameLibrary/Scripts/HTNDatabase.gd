@@ -98,38 +98,37 @@ func get_task_chain_from_valid_method(
 
 	return {}	# Fail
 
-func _evaluate(method_data: Dictionary, world_state_data: Dictionary) -> bool:
-	# Data is only: { "AlwaysTrue": true }
-	if method_data.has("AlwaysTrue"): return true
+func _evaluate(method_data: Array[Array], world_state_data: Dictionary) -> bool:
+	# Data is only: [["AlwaysTrue"]]
+	if method_data.size() == 1:
+		if method_data[0].has("AlwaysTrue"): return true
 
 	# Evaluate every condition in the method
-	for world_state_key: String in method_data:
-		if world_state_key not in world_state_data: return false
+	for condition: Array in method_data:
+		if condition.size() == 3:	# Standard Check
+			var lhs_result: Array = _get_world_state_or_value(condition[0], world_state_data)
+			if not lhs_result[0]: return false	# Invalid Data
 
-		var world_state_data_value = world_state_data[world_state_key]
-		var rhs = method_data[world_state_key]["Value"]
-		var compare_ID: int = method_data[world_state_key]["CompareID"]
-		if compare_ID == 5:	# Range
-			if _evaluate_range(
-				method_data[world_state_key]["RangeID"],
-				method_data[world_state_key]["RangeInclusivity"],
-				world_state_data_value,
-				rhs
-			):
-				return true
-			else:
+			var rhs_result: Array = _get_world_state_or_value(condition[2], world_state_data)
+			if not rhs_result[0]: return false	# Invalid Data
+
+			if _evaluate_compare(condition[1], lhs_result[1], rhs_result[1]):
 				continue
-		else:
-			if method_data[world_state_key]["SingleID"] == 6:	# World State
-				# Invalid indexing
-				if world_state_key not in world_state_data:
-					push_error(
-						"Attempting to access " + world_state_data_value + " in world state data.\nReturning false."
-					)
-					return false
-				else:
-					rhs = world_state_data[method_data[world_state_key]["Value"]]
-			if _evaluate_compare(compare_ID, world_state_data_value, rhs):
+			else:
+				# Un-true condition
+				return false
+		else:	# Range Check
+			var lhs_result: Array = _get_world_state_or_value(condition[0], world_state_data)
+			if not lhs_result[0]: return false	# Invalid Data
+
+			var mid_result: Array = _get_world_state_or_value(condition[2], world_state_data)
+			if not mid_result[0]: return false	# Invalid Data
+
+			var rhs_result: Array = _get_world_state_or_value(condition[4], world_state_data)
+			if not rhs_result[0]: return false	# Invalid Data
+
+			if _evaluate_compare(condition[1], lhs_result, mid_result)\
+					and _evaluate_compare(condition[3], mid_result, rhs_result):
 				continue
 			else:
 				# Un-true condition
@@ -138,46 +137,30 @@ func _evaluate(method_data: Dictionary, world_state_data: Dictionary) -> bool:
 	# All conditions are true
 	return true
 
-func _evaluate_compare(compare_id: int, lhs, rhs) -> bool:
+# [is_valid, value]
+func _get_world_state_or_value(token: Variant, world_state_data: Dictionary) -> Array:
+	if token is String and token.begins_with("$"):
+		var world_state_key: String = token.substr(1)
+		if world_state_key not in world_state_data: return [false, null]
+		return [true, world_state_data[world_state_key]]
+	else:
+		return [true, token]
+
+func _evaluate_compare(compare_id: String, lhs, rhs) -> bool:
 	match compare_id:
-		0:	# Greater Than | >
+		">":
 			return lhs > rhs
-		1:	# Less Than | <
+		"<":
 			return lhs < rhs
-		2:	# Equal To | ==
+		"==":
 			return lhs == rhs
-		3:	# Greater Than or Equal To | >=
+		"!=":
+			return lhs != rhs
+		">=":
 			return lhs >= rhs
-		4:	# Less Than or Equal To | <=
+		"<=":
 			return lhs <= rhs
 		_: return false	# Unknown
-
-func _evaluate_range(range_ID: int, range_inclusivity: Array, world_state_data_value, condition_value) -> bool:
-	var rhs_state := false
-	if range_ID == 0:	#Int
-		# RHS
-		if range_inclusivity[1] and world_state_data_value <= (condition_value as Vector2i).y:
-				rhs_state = true
-		elif not range_inclusivity[1] and world_state_data_value < (condition_value as Vector2i).y:
-				rhs_state = true
-		# LHS
-		if range_inclusivity[0] and world_state_data_value >= (condition_value as Vector2i).x and rhs_state:
-				return true
-		elif not range_inclusivity[0] and world_state_data_value > (condition_value as Vector2i).x and rhs_state:
-				return true
-		return false
-	else:	# Float
-		# RHS
-		if range_inclusivity[1] and world_state_data_value <= (condition_value as Vector2).y:
-				rhs_state = true
-		elif not range_inclusivity[1] and world_state_data_value < (condition_value as Vector2).y:
-				rhs_state = true
-		# LHS
-		if range_inclusivity[0] and world_state_data_value >= (condition_value as Vector2).x and rhs_state:
-				return true
-		elif not range_inclusivity[0] and world_state_data_value > (condition_value as Vector2).x and rhs_state:
-				return true
-		return false
 
 func _get_all_domain_files() -> Dictionary:
 	var domain_files: Dictionary = {}

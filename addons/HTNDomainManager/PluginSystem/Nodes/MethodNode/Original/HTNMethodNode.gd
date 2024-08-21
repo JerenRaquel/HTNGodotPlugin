@@ -14,7 +14,7 @@ var _nick_name: String:
 		else:
 			title = PREFIX + value
 
-var condition_data: Dictionary = {}:
+var condition_data: Array[Array] = []:
 	set(value):
 		condition_data = value
 		_update_tool_tip()
@@ -30,11 +30,7 @@ func get_node_type() -> String:
 func validate_self() -> String:
 	if condition_data.is_empty():
 		return "There are no conditions set."
-	else:
-		for world_state_key: String in condition_data:
-			if world_state_key != "": continue
-			return "Missing WorldStateKey field for at least one condition."
-		return ""
+	return ""
 
 func load_data(data: Dictionary) -> void:
 	_nick_name = data["nickname"]
@@ -56,36 +52,32 @@ func _update_tool_tip() -> void:
 	if condition_data.is_empty():
 		tooltip_text = ""
 		return
-	var text: String = ""
-	for key: String in condition_data.keys():
-		if key == "AlwaysTrue":
+
+	if condition_data.size() == 1:
+		if condition_data[0][0] == "AlwaysTrue":
 			tooltip_text = ""
 			return
-		if condition_data[key]["CompareID"] == 5:	# Range
-			text += str(condition_data[key]["Value"].x)
-			if condition_data[key]["RangeInclusivity"][0]:
-				text += " <= " + key
-			else:
-				text += " < " + key
-			if condition_data[key]["RangeInclusivity"][1]:
-				text += " <= " + str(condition_data[key]["Value"].y)
-			else:
-				text += " < " + str(condition_data[key]["Value"].y)
-		else:
-			text += key
-			match condition_data[key]["CompareID"]:
-				0:	# >
-					text += " > " + str(condition_data[key]["Value"])
-				1:	# <
-					text += " < " + str(condition_data[key]["Value"])
-				2:	# ==
-					text += " == " + str(condition_data[key]["Value"])
-				3:	# >=
-					text += " >= " + str(condition_data[key]["Value"])
-				4:	# <=
-					text += " <= " + str(condition_data[key]["Value"])
+
+	var text: String = ""
+	for condition: Array in condition_data:
+		text += _data_to_str(condition)
 		text += "\n"
+
 	tooltip_text = text
+
+func _data_to_str(condition: Array) -> String:
+	var text: String = ""
+	var idx: int = 0
+	for token: Variant in condition:
+		if token is String and token.begins_with("$"):
+			text += "WorldState['" + token.replace("$", "") + "']"
+		else:
+			text += str(token)
+
+		if idx < condition.size()-1:
+			text += " "
+
+	return text
 
 func _on_conditions_pressed() -> void:
 	HTNGlobals.condition_editor.open(self, condition_data)

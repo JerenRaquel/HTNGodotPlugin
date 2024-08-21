@@ -33,14 +33,8 @@ slot/2/right_icon = null
 slot/2/draw_stylebox = true
 script = ExtResource("2_didlq")
 
-[node name="HBoxContainer" parent="." index="1"]
-mouse_filter = 2
-
 [node name="Input" parent="HBoxContainer" index="0"]
 text = "Splitter/Root"
-
-[node name="HSeparator" parent="HBoxContainer" index="1"]
-mouse_filter = 2
 
 [node name="Output" parent="HBoxContainer" index="2"]
 text = "Action"

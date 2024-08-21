@@ -83,6 +83,7 @@ func _update_toolbar_buttons() -> void:
 func _update_domain_button() -> void:
 	if HTNFileManager.check_if_no_domains():
 		domain_panel_button.disabled = true
+		domain_panel.hide()
 	else:
 		domain_panel_button.disabled = false
 

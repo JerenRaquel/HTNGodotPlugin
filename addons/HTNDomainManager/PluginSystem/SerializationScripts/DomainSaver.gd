@@ -107,9 +107,6 @@ static func _gather_method_data(domain_graph: HTNDomainGraph) -> Dictionary:
 		var node: HTNBaseNode = domain_graph.nodes[node_key]
 		if node is HTNMethodNode:
 			method_data[node_key] = {
-				#node.condition_data = {
-					#"WorldState" = { "CompareID", "RangeID", "SingleID", "Value", "RangeInclusivity" }
-				#}
 				"method_data": node.condition_data,
 				"task_chain": domain_graph.get_every_node_til_compound(node_key)
 			}

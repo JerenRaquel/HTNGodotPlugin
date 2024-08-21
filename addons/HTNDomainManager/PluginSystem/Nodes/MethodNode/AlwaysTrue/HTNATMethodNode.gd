@@ -4,7 +4,7 @@ extends HTNMethodNode
 
 func initialize() -> void:
 	super()
-	condition_data = { "AlwaysTrue": true }
+	condition_data = [["AlwaysTrue"]]
 
 func get_node_name() -> String:
 	return ""

@@ -17,6 +17,7 @@ slot/0/draw_stylebox = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="Input" type="Label" parent="HBoxContainer"]
 layout_mode = 2
@@ -24,6 +25,7 @@ layout_mode = 2
 [node name="HSeparator" type="HSeparator" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 theme_override_styles/separator = SubResource("StyleBoxEmpty_uiy5p")
 
 [node name="Output" type="Label" parent="HBoxContainer"]

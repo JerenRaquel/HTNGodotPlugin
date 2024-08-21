@@ -17,17 +17,11 @@ extends Resource
 
 #	{
 #		method_node_key (StringName) : {
-#			"method_data" (WorldState => String): {
-#				"CompareID": (int),
-#				"RangeID": (int),
-#				"SingleID": (int),
-#				"Value": any,
-#				"RangeInclusivity": [boolean, boolean]
-#			},
+#			"method_data" (WorldState => String): [ [condition tokens](Array[Variant])... ],
 #			"task_chain": [(task_name: StringName)...]
 #		}
 #	}
-@export var methods: Dictionary
+@export var methods: Dictionary = {}
 
 # { effect_node_key (StringName) : { "world_state_key" : {"type_id": int, "value": any} } }
 @export var effects: Dictionary

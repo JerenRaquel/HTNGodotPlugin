@@ -2,7 +2,8 @@
 class_name HTNConditionEditor
 extends Panel
 
-const CONDITION_LINE = preload("res://addons/HTNDomainManager/PluginSystem/ConditionEditor/ConditionLine/condition_line.tscn")
+const CONDITION_LINE: PackedScene\
+	= preload("res://addons/HTNDomainManager/PluginSystem/ConditionEditor/condition_line/condition_line.tscn")
 
 @onready var condition_line_container: VBoxContainer = %ConditionLineContainer
 @onready var nickname_line_edit: LineEdit = %NicknameLineEdit
@@ -13,7 +14,7 @@ var _method_node: HTNMethodNode
 func _ready() -> void:
 	hide()
 
-func open(node: HTNMethodNode, data: Dictionary) -> void:
+func open(node: HTNMethodNode, data: Array[Array]) -> void:
 	show()
 	_method_node = node
 	nickname_line_edit.text = _method_node._nick_name
@@ -21,15 +22,8 @@ func open(node: HTNMethodNode, data: Dictionary) -> void:
 	_filter_children("")
 	if data.is_empty(): return
 
-	for key: String in data.keys():
-		_create_and_load_condition({
-			"CompareID": data[key]["CompareID"],
-			"RangeID": data[key]["RangeID"],
-			"SingleID": data[key]["SingleID"],
-			"WorldState": key,
-			"Value":  data[key]["Value"],
-			"RangeInclusivity":  data[key]["RangeInclusivity"]
-		})
+	for condition: Array in data:
+		_create_and_load_condition(condition)
 
 func _filter_children(filter: String) -> void:
 	var filter_santized := filter.to_lower()
@@ -40,27 +34,18 @@ func _filter_children(filter: String) -> void:
 		else:
 			child.hide()
 
-func _create_and_load_condition(data: Dictionary={}) -> void:
+func _create_and_load_condition(data: Array=[]) -> void:
 	var condition_line := CONDITION_LINE.instantiate()
 	condition_line_container.add_child(condition_line)
 	condition_line.initialize(data)
 
-func _get_data() -> Dictionary:
-	var data := {}
-
+func _get_data() -> Array[Array]:
+	var data: Array[Array] = []
 	for child: HTNConditionLine in condition_line_container.get_children():
-		var child_data: Dictionary = child.get_data()
-		if child_data["WorldState"].is_empty(): continue	# Ignore invalid conditions
-		if child_data["WorldState"] in data: continue	# Skip Repeats
+		var child_data: Array[Variant] = child.get_data()
+		if child_data.is_empty(): continue	# Ignore invalid conditions
 
-		data[child_data["WorldState"]] = {
-			"CompareID": child_data["CompareID"],
-			"RangeID": child_data["RangeID"],
-			"SingleID": child_data["SingleID"],
-			"Value":  child_data["Value"],
-			"RangeInclusivity":  child_data["RangeInclusivity"]
-		}
-
+		data.push_back(child_data)
 	return data
 
 func _on_add_button_pressed() -> void:
@@ -70,15 +55,16 @@ func _on_close_button_pressed() -> void:
 	hide()
 	# Save Data
 	_method_node._nick_name = nickname_line_edit.text
-	var data := _get_data()
+	var data: Array[Array] = _get_data()
+
 	var different_data := false
-	for key: String in data:
-		if key not in _method_node.condition_data.keys():
-			different_data = true
-			break
-		if data[key] != _method_node.condition_data[key]:
-			different_data = true
-			break
+	if data.size() != _method_node.condition_data.size():
+		different_data = true
+	else:
+		for condition: Array in data:
+			if condition not in _method_node.condition_data:
+				different_data = true
+				break
 	_method_node.condition_data = data
 
 	# Reset Editor

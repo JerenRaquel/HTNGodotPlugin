@@ -1,0 +1,58 @@
+[gd_scene load_steps=6 format=3 uid="uid://bntcntd6t0p5b"]
+
+[ext_resource type="Script" path="res://addons/HTNDomainManager/PluginSystem/ConditionEditor/condition_line/condition_line_manager.gd" id="1_xfaw1"]
+[ext_resource type="PackedScene" uid="uid://driybkq8qi0rh" path="res://addons/HTNDomainManager/PluginSystem/Components/DeleteButton.tscn" id="2_r7wf6"]
+[ext_resource type="Texture2D" uid="uid://cciagns2ch1m5" path="res://addons/HTNDomainManager/PluginSystem/Icons/Error.svg" id="3_l0n7c"]
+[ext_resource type="Theme" uid="uid://diu3ahrw1puva" path="res://addons/HTNDomainManager/PluginSystem/PluginTheme.tres" id="4_ofyw4"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y20c2"]
+
+[node name="MarginContainer" type="MarginContainer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 33.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 5
+script = ExtResource("1_xfaw1")
+
+[node name="ConditionLine" type="HBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="DeleteButton" parent="ConditionLine" instance=ExtResource("2_r7wf6")]
+layout_mode = 2
+
+[node name="VSeparator" type="VSeparator" parent="ConditionLine"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_y20c2")
+
+[node name="ValidationIcon" type="TextureRect" parent="ConditionLine"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 0
+texture = ExtResource("3_l0n7c")
+expand_mode = 3
+stretch_mode = 5
+
+[node name="VSeparator2" type="VSeparator" parent="ConditionLine"]
+custom_minimum_size = Vector2(4, 0)
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxEmpty_y20c2")
+
+[node name="LineEdit" type="LineEdit" parent="ConditionLine"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_ofyw4")
+placeholder_text = "$example == NULL"
+context_menu_enabled = false
+clear_button_enabled = true
+caret_blink = true
+
+[connection signal="pressed" from="ConditionLine/DeleteButton" to="." method="_on_delete_button_pressed"]
+[connection signal="text_changed" from="ConditionLine/LineEdit" to="." method="_on_line_edit_text_changed"]
