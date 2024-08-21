@@ -40,8 +40,6 @@ func _tokenize(text: String) -> Array[Variant]:
 	for arg: String in args:
 		if arg in VALID_COMPARE_TOKENS:
 			data.push_back(arg)
-		elif arg == "NULL":
-			data.push_back(null)
 		elif arg.is_valid_float():
 			data.push_back(float(arg))
 		elif arg.is_valid_int():

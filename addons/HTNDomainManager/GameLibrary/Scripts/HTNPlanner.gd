@@ -47,6 +47,11 @@ extends Node
 ## this for you.
 signal finished	# Emits success state
 
+## Emits on when the planner couldn't find a plan.[br]
+## [b]IMPORTANT:[/b] You don't need to emit this signal. The planner will emit
+## this for you.
+signal failed	# Emits fail state
+
 ## Used to stop the HTN Planner from executing tasks.[br]
 ## You can use this as a reactionary reponse by outside forces such as when your
 ## agent get's hit and you must handle that.
@@ -123,6 +128,7 @@ func handle_planning(agent: Node, world_state: Dictionary) -> void:
 	if plan.is_empty():
 		_is_planning = false
 		if enable_debugging: print_debug("Failed plan generation")
+		failed.emit()
 	else:
 		_state_manager.start(agent, plan, world_state)
 

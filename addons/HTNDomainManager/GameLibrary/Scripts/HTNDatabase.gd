@@ -144,6 +144,8 @@ func _get_world_state_or_value(token: Variant, world_state_data: Dictionary) -> 
 		if world_state_key not in world_state_data: return [false, null]
 		return [true, world_state_data[world_state_key]]
 	else:
+		if token == "NULL":
+			return [true, null]
 		return [true, token]
 
 func _evaluate_compare(compare_id: String, lhs, rhs) -> bool:
@@ -153,6 +155,7 @@ func _evaluate_compare(compare_id: String, lhs, rhs) -> bool:
 		"<":
 			return lhs < rhs
 		"==":
+			if lhs == null and rhs == null: return true
 			return lhs == rhs
 		"!=":
 			return lhs != rhs
